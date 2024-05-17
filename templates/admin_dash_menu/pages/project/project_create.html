@@ -1,0 +1,311 @@
+
+<style>
+ 
+  input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #df5858; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 99999999; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+  </style>
+
+  <h5 class="mb-4 text-center text-uppercase">Create Project </h5>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label for="id_project_name">Project Name<span style="color: red;">*</span></label>
+        <input   type="text" class="form-control" 
+        
+          name="project_name" maxlength="100"  id="id_project_name">
+      </div>
+      <div class="col-md-6">
+    <label for="id_Project_location">Project Location<span style="color: red;">*</span></label>
+    <input  class="form-control" type="text" 
+    
+      name="Project_location" maxlength="200"  id="id_Project_location">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <label for="id_Latitude">Latitude<span style="color: red;">*</span></label>
+    <input  class="form-control" type="number" 
+    
+      name="Latitude" step="any"  id="id_Latitude">
+</div>
+  <div class="col-md-6">
+    <label for="id_Longitude">Longitude<span style="color: red;">*</span></label>
+    <input  class="form-control" type="number" 
+    
+      name="Longitude" step="any"  id="id_Longitude">
+  </div>
+</div>
+    
+<div class="row">
+  <div class="col-md-6">
+    <label for="id_Project_value">Project Value</label>
+    <input  class="form-control" type="number"  name="Project_value" id="id_Project_value">
+  </div>
+  <div class="col-md-6">
+    <label for="id_Kickoff_date">Kickoff Date</label>
+    <input  class="form-control" type="date" 
+    
+      name="Kickoff_date"  id="id_Kickoff_date">
+  </div>
+  </div>
+    
+  <div class="row">
+    <div class="col-md-4">
+    <label for="id_Returns_projection_type">Returns Projection Type <br>(<span style="color: green; font-size: 12px;">Unit</span>)</label>
+    <input  class="form-control" type="number" name="Returns_projection_type" id="id_Returns_projection_type" value="">
+  </div>
+    <div class="col-md-4">
+    <label for="id_Returns_projection_value">Returns Projection Value  <br>(<span style="color: green; font-size: 12px;">Per Unit Value</span>)</label>
+    <input  class="form-control" type="number" name="Returns_projection_value" value=""  id="id_Returns_projection_value">
+  </div>
+  <div class="col-md-4">
+    <label for="id_total_unit_value">Total Projection Value <br>(<span style="color: green; font-size: 12px;">Total Unit's Cost</span>)</label>
+    <select type="number" class="form-control" name="total_unit_value">
+      <option value="" id="id_total_unit_value"></option>
+
+    </select>
+  </div>
+</div>
+
+    
+    <div class="row">
+      <div class="col-md-6">
+    <label for="id_Other_expense">Other Expense</label>
+    <input  class="form-control" type="number" 
+      name="Other_expense"   id="id_Other_expense">
+  </div>
+    
+    
+    <div class="col-md-6">
+    <label for="id_Total_share">Total Share</label>
+    <select  class="form-control" type="number"name="Total_share"  >
+      <option value="" id="id_Total_share">0</option>
+  </select>
+    
+  </div>
+</div>
+    
+  <div class="row">
+    <div class="col-md-6">
+    <label for="id_Share_count">Share Count</label>
+    <input class="form-control" type="number" name="share_count" id="share_count">
+  </div>
+  <div class="col-md-6">
+    <label for="id_Per_share_value">Per Share Value</label>
+    <select  class="form-control" type="number" name="Per_share_value" >
+      <option value="" id="id_Per_share_value">0</option>
+  </select>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6">
+    <label for="id_Expected_return_date">Expected Return Date</label>
+    <input  class="form-control" type="date" name="Expected_return_date"  id="id_Expected_return_date">
+  </div>
+    
+    <div class="col-md-6 mt-4">
+      <label for="id_status">Status</label>
+      <input  type="checkbox" value="True" name="status" checked id="id_status" class="form-check-input">
+  </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+      Close
+    </button>
+    <button type="button" class="btn btn-primary" id="project_create_btn">Create Project</button>
+  </div>
+  </form>
+      
+</div>
+</div>
+
+
+<script>
+function snackbar_show() {
+      // Get the snackbar DIV
+      var x = document.getElementById("snackbar");
+    
+      // Add the "show" class to DIV
+      x.className = "show";
+    
+      // After 3 seconds, remove the show class from DIV
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+  
+    $(document).ready(function() {
+      // Function to validate the form
+      function validateForm() {
+        var projectName = $("#id_project_name").val();
+        var projectLocation = $("#id_Project_location").val();
+        var latitude = $("#id_Latitude").val();
+        var longitude = $("#id_Longitude").val();
+       
+       
+        
+
+        var text_regex=/^[a-zA-Z ]+$/;
+
+    
+        var x = document.getElementById("snackbar");
+        if (projectName === "" ) {
+          snackbar_show();
+          x.innerHTML = "Please enter a Project Name.";
+          return false;
+        }
+        if (text_regex.test(projectName) === false) {
+          snackbar_show();
+          x.innerHTML = "Project Name can't contain numbers.";
+          return false;
+        }
+        if (projectLocation === "") {
+          snackbar_show();
+          x.innerHTML = "Please enter a Project Location.";
+          return false;
+        }
+        if (text_regex.test(projectLocation) === false) {
+          snackbar_show();
+          x.innerHTML = "Location can't contain numbers.";
+          return false;
+        }
+        if (latitude === "") {
+          snackbar_show();
+          x.innerHTML = "Please enter the Latitude.";
+          return false;
+        }
+        
+        if (longitude === "") {
+          snackbar_show();
+          x.innerHTML = "Please enter the Longitude.";
+          return false;
+        }
+        
+        return true;
+      }
+
+     
+      // Attach form submission event handler
+      $("#project_create_btn").on("click", function(e) {
+        if (!validateForm()) {
+          e.preventDefault(); 
+        }
+        if (validateForm()) {
+          console.log("True");
+          var btn = document.getElementById("project_create_btn");
+          btn.type = "submit";
+        }
+        
+      });
+    });
+    jQuery(document).ready(function(){
+      // This button will increment the value
+      $('#id_Returns_projection_type, #id_Returns_projection_value').on('keyup', function(e){
+        var returnsProjectionType = $("#id_Returns_projection_type").val();
+        var returnsProjectionValue = $("#id_Returns_projection_value").val();
+        var total_unit_value = $("#id_total_unit_value").val();
+       
+        if (returnsProjectionType === "" || returnsProjectionValue === "" || returnsProjectionType === 0 || returnsProjectionValue === 0) {
+          total_unit_value=0;
+        }
+        var sum = parseFloat(returnsProjectionType) * parseFloat(returnsProjectionValue);
+         document.getElementById("id_total_unit_value").value = sum;
+         document.getElementById("id_total_unit_value").innerHTML = sum;
+
+      });
+    }); 
+  jQuery(document).ready(function(){
+    // This button will increment the value
+    $('#id_Other_expense').on('keyup', function(e){
+      var projectValue = $("#id_Project_value").val();
+      var otherExpense = $("#id_Other_expense").val();
+      var totalShare = $("#id_Total_share");
+  
+      var sum = parseFloat(projectValue) + parseFloat(otherExpense);
+      totalShare.val(sum);
+      document.getElementById("id_Total_share").innerHTML = sum;
+
+    });
+  });
+  jQuery(document).ready(function(){
+    // This button will increment the value
+    $('#id_Project_value').on('keyup', function(e){
+      var projectValue = $("#id_Project_value").val();
+      var otherExpense = $("#id_Other_expense").val();
+      var totalShare = $("#id_Total_share");
+  
+      var sum = parseFloat(projectValue) + parseFloat(otherExpense);
+      totalShare.val(sum);
+      document.getElementById("id_Total_share").innerHTML = sum;
+    });
+  });
+  jQuery(document).ready(function() {
+    // This button will increment the value
+    $('#share_count').on('keyup', function(e) {
+      var totalShare = parseFloat($("#id_Total_share").val());
+      var perShareValue = parseFloat($("#share_count").val());
+      var shareCount = Math.round(totalShare / perShareValue);
+      $("#id_Per_share_value").val(shareCount);
+      $("#id_Per_share_value").html(shareCount);
+    });
+  });
+    function snackbar_project() {
+      // Get the snackbar DIV
+      var x = document.getElementById("snackbar");
+    
+      // Add the "show" class to DIV
+      x.className = "show";
+    
+      // After 3 seconds, remove the show class from DIV
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+
+</script>

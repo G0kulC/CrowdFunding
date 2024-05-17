@@ -1,0 +1,172 @@
+
+
+
+
+<button id="open-modal-button">Open Company List</button>
+	
+<!-- Modal -->
+<div class="modal fade" id="company-modal" tabindex="-1" aria-labelledby="company-modal-label" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+  <div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="company-modal-label">Select a Company</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <ul class="list-group">
+    <li class="list-group-item company-item" data-company-id="1">Company 1</li>
+    <li class="list-group-item company-item" data-company-id="2">Company 2</li>
+    <li class="list-group-item company-item" data-company-id="3">Company 3</li>
+    <!-- Add more list items for additional companies -->
+    </ul>
+  </div>
+  </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const companyName = document.getElementById("id_company_name");
+const email = document.getElementById("id_email_id");
+const password = document.getElementById("id_password");
+const contactNumber = document.getElementById("id_contact_number");
+const companyPan = document.getElementById("id_company_pan");
+const gstin = document.getElementById("id_gstin");
+const companyAddress = document.getElementById("id_Company_addresss");
+const city = document.getElementById("id_City");
+const state = document.getElementById("id_State");
+const pincode = document.getElementById("id_pincode");
+const status = document.getElementById("id_status");
+const mailFormat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,4})+$/;
+
+
+const submitButton = document.querySelector('button[type="submit"]');
+submitButton.addEventListener("click", (event) => {
+  let valid = true;
+  if (companyName.value.trim() === "") {
+    companyName.style.borderColor = "red";
+    valid = false;
+  }else if (!/^[a-zA-Z ]*$/.test(companyName.value)){
+    companyName.style.borderColor = "red";
+    valid = false;
+  }
+  else {
+    companyName.style.borderColor = "green";
+  }
+
+  // Check emailvar 
+  if (email.value.trim() === "" || !email.value.match(mailFormat)) {
+    email.style.borderColor = "red";
+    valid = false;
+  } else {
+    email.style.borderColor = "green";
+  }
+
+  // Check password
+  if (password.value.trim() === "") {
+    password.style.borderColor = "red";
+    valid = false;
+  } else {
+    password.style.borderColor = "green";
+  }
+
+  // Check contact number
+  if (contactNumber.value.trim() === "" || contactNumber.value.length !== 10) {
+    contactNumber.style.borderColor = "red";
+    valid = false;
+  } else {
+    contactNumber.style.borderColor = "green";
+  }
+
+  // Check company PAN
+  if (companyPan.value.trim() === "" || companyPan.value.length !== 10) {
+    companyPan.style.borderColor = "red";
+    valid = false;
+  }
+  else {
+    companyPan.style.borderColor = "green";
+  }
+
+  // Check GSTIN
+  if (gstin.value.trim() === "" || gstin.value.length != 15) {
+    gstin.style.borderColor = "red";
+    valid = false;
+  } else {
+    gstin.style.borderColor = "green";
+  }
+
+  // Check company address
+  if (companyAddress.value.trim() === "") {
+    companyAddress.style.borderColor = "red";
+    valid = false;
+  } else {
+    companyAddress.style.borderColor = "green";
+  }
+
+  // Check city
+  if (city.value.trim() === "") {
+    city.style.borderColor = "red";
+    valid = false;
+  } else if (!/^[a-zA-Z ]*$/.test(city.value)){
+    city.style.borderColor = "red";
+    valid = false;
+  }
+  else {
+    city.style.borderColor = "green";
+  }
+
+  // Check state
+  if (state.value.trim() === "") {
+    state.style.borderColor = "red";
+    valid = false;
+  } else if (!/^[a-zA-Z ]*$/.test(state.value)){
+    state.style.borderColor = "red";
+    valid = false;
+  }
+  else {
+    state.style.borderColor = "green";
+  }
+
+  // Check pincode
+  if (pincode.value.trim() === "" || isNaN(pincode.value) || pincode.value.length !== 6) {
+    pincode.style.borderColor = "red";
+    valid = false;
+  } else {
+    pincode.style.borderColor = "green";
+  }
+  if (status.value.trim() === "unknown" ) {
+    status.style.borderColor = "red";
+    valid = false;
+  }
+   else {
+    status.style.borderColor = "green";
+  }
+
+  // Prevent form submission if input values are invalid
+  if (!valid) {
+    
+    event.preventDefault();
+  }
+  
+});

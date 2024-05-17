@@ -1,0 +1,293 @@
+
+<style>
+  #snackbar {
+    visibility: hidden; /* Hidden by default. Visible on click */
+    min-width: 250px; /* Set a default minimum width */
+    margin-left: -125px; /* Divide value of min-width by 2 */
+    background-color: #da5050; /* Black background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Centered text */
+    border-radius: 2px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: 99999999; /* Add a z-index if needed */
+    left: 50%; /* Center the snackbar */
+    bottom: 30px; /* 30px from the bottom */
+  }
+  
+  /* Show the snackbar when clicking on a button (class added with JavaScript) */
+  #snackbar.show {
+    visibility: visible; /* Show the snackbar */
+    /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+    However, delay the fade out process for 2.5 seconds */
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  
+  /* Animations to fade the snackbar in and out */
+  @-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+  }
+</style>
+  <h5 class="mb-3 text-center">ADD SALES </h5>
+  
+  <div class="row">
+  <div class="col-md-12">
+    <label for="id_sales_name">Project name:(<span style="color: green; font-size: 12px;">Active Project  </span>)</label>
+    <select class="form-control" type="text" name="project" maxlength="100"  id="id_sales" onfocus='this.size=4;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+  {% if request.user.is_authenticated %}
+      <option value="none">-- Select a project --</option>
+  {% endif %}
+  </select>
+  
+  <script>
+  $(document).ready(function() {
+      $.ajax({
+          url: "{% url 'get_company_projects_project' %}",
+          type: "GET",
+          success: function(data) {
+              $.each(data.projects, function(index, project) {
+                  $('#id_sales').append('<option value="' + project.name + '">'+ project.name + '</option>');
+              });
+          },
+          error: function(xhr, status, error) {
+              console.log(xhr.responseText);
+          }
+      });
+  });
+
+  </script>
+</div>
+
+  <div class="col-md-6 mt-2">
+     <label for="ava_unit_count">Available Units</label>
+      <select class="form-control text-center" type="number" id="select_unit" >
+        <option value=""  id="ava_unit_count"></option>
+      </select>
+    </div>
+    <div class="col-md-6 mt-2">
+      <label for="cost_sales_amount">Per Unit Cost</label>
+      <div class="input-group">
+        <select class="form-control" type="number"  min="1" id="select_unit_cost">
+          <option value="" id="cost_sales_amount"></option>
+        </select>
+        <div class="input-group-append input-group-text ">INR</div>
+    </div>
+  </div>
+
+
+  <div class="col-md-6 mt-2">
+    <label for="unit_count">Unit <span style="color: red;">*</span></label>
+    <div class="input-group mb-3">
+      <a class="input-group-prepend btn btn-outline-danger" id="decrement_btn_sales" onclick="decrement()">
+          <i class='bx bx-minus'></i>
+      </a>
+      <input class="form-control text-center" type="number" name="unit_sold" min=0  value="0" id="unit_count">
+      <a class="input-group-append input-group-text btn btn-outline-success" onclick="increment()" id="increment_btn_sales" >
+          <i class='bx bx-plus'></i>
+      </a>
+  </div>
+</div>
+
+    <div class="col-md-6 mt-2">
+      <label for="sales_amount">Amount<span style="color: red;">*</span></label>
+      <div class="input-group">
+      <input class="form-control" type="number" name="amount" min="1" value="0" id="sales_amount">
+      <div class="input-group-append input-group-text ">INR</div>
+    </div>
+  </div>
+  
+  
+ 
+      <div class="modal-footer"> 
+        <button type="button" class="btn btn-outline-secondary " data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary" id="submit_btn_sales">Submit</button>
+      </div>
+</form>
+</div>
+
+<script>
+
+  function snackbar_show() {
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar");
+  
+    // Add the "show" class to DIV
+    x.className = "show";
+  
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
+
+
+  $(document).ready(function() {
+    $('#id_sales').on('change', function(e) {
+      var project_name = document.getElementById("id_sales").value;
+
+      if (project_name == "none") {
+        document.getElementById("ava_unit_count").value = 0;
+            document.getElementById("ava_unit_count").innerHTML = 0;
+            document.getElementById("select_unit").style = 'border: red 1px solid; background-color: pink; color: black;';
+
+
+            document.getElementById("cost_sales_amount").value =0;
+            document.getElementById("cost_sales_amount").innerHTML = 0;
+            document.getElementById("select_unit_cost").style = 'border: red 1px solid; background-color: pink; color: black;';
+      }
+      else{
+        $.ajax({
+          url: "/get_project_unit_value/"+project_name+"/",
+          type: "GET",
+          success: function(data) {
+            if (data.unit_count && data.unit_value && data.unit_count > 0) {
+              document.getElementById("ava_unit_count").value = data.unit_count;
+              document.getElementById("ava_unit_count").innerHTML = data.unit_count;
+              document.getElementById("select_unit").style = 'border: green 1px solid; background-color: lightgreen; color: black;';
+
+
+              document.getElementById("cost_sales_amount").value = data.unit_value;
+              document.getElementById("cost_sales_amount").innerHTML = data.unit_value;
+              document.getElementById("select_unit_cost").style = 'border: green 1px solid; background-color: lightgreen; color: black;';
+
+
+              document.getElementById("unit_count").max = data.unit_count;
+              document.getElementById("unit_count").title = 'Maximum units:'+ data.unit_count;
+
+              
+             
+
+              document.getElementById("submit_btn_sales").disabled = false
+
+            }
+          else if (data.unit_count == 0) {
+            document.getElementById("ava_unit_count").innerHTML = 0;
+            document.getElementById("cost_sales_amount").innerHTML = 0;
+            document.getElementById("select_unit").style = 'border: red 1px solid; background-color: pink; color: black;';
+            document.getElementById("select_unit_cost").style = 'border: red 1px solid; background-color: pink; color: black;';
+            var x = document.getElementById("snackbar");
+            snackbar_show();
+            x.innerHTML = "No units available for this project";
+            document.getElementById("submit_btn_sales").disabled = true
+          }
+
+        },
+      });
+    }
+
+      
+    });
+  });
+
+  function increment() {
+    document.getElementById('unit_count').stepUp();
+ }
+ function decrement() {
+    document.getElementById('unit_count').stepDown();
+ }
+
+
+
+
+  $(document).ready(function() {
+    $('#increment_btn_sales, #decrement_btn_sales').on('click', function(e) {
+      var unit_count = document.getElementById("unit_count").value
+      var amount = document.getElementById("sales_amount").value
+      var select_unit=document.getElementById("select_unit").value
+      var unit_value=document.getElementById("select_unit_cost").value
+
+      var total= parseInt(unit_count * unit_value);
+      document.getElementById("sales_amount").value = total ;
+      document.getElementById("sales_amount").min = total ;
+    });
+  });
+  $(document).ready(function() {
+    $('#unit_count').on('keyup', function(e) {
+      var unit_count = document.getElementById("unit_count").value
+      var amount = document.getElementById("sales_amount").value
+      var select_unit=document.getElementById("select_unit").value
+      var unit_value=document.getElementById("select_unit_cost").value
+      var total= parseInt(unit_count * unit_value);
+      var unit_count_limit=document.getElementById("unit_count").max
+      if (unit_count > unit_count_limit) {
+        document.getElementById("unit_count").value = unit_count_limit;
+        document.getElementById("sales_amount").value = parseInt(unit_count_limit * unit_value);
+        document.getElementById("sales_amount").min = parseInt(unit_count_limit * unit_value); ;
+      }
+      else{
+        document.getElementById("sales_amount").value = total ;
+        document.getElementById("sales_amount").min = total ;
+      }
+    });
+  });
+  $(document).ready(function() {
+    // Function to validate the form
+    function validateForm() {
+      var project = $("#id_sales").val();
+      var unit_count = $("#unit_count").val();
+      var amount = $("#amount").val();
+        console.log(unit_count);
+      var x = document.getElementById("snackbar");
+
+      if (project === "") {
+        snackbar_show();
+        x.innerHTML = "Please Select the Project.";
+        return false;
+      }
+      if (amount === "" || amount == 0) {
+        snackbar_show();
+        x.innerHTML = "Please enter the Amount.";
+        return false;
+      }
+      if (amount < 1 ) {
+        snackbar_show();
+        x.innerHTML = "Please More then 1 INR.";
+        return false;
+      }
+      if (unit_count == 0) {
+        snackbar_show();
+        x.innerHTML = "Please enter the UNIT.";
+        return false;
+      }
+     
+      return true;
+    }
+  
+    // Attach form submission event handler
+    $("#submit_btn_sales").on("click", function(e) {
+      if (!validateForm()) {
+        e.preventDefault(); 
+      }
+      if (validateForm()) {
+        console.log("True");
+        var btn = document.getElementById("submit_btn_sales");
+        btn.type = "submit";
+      }
+      
+    });
+  });
+  </script>

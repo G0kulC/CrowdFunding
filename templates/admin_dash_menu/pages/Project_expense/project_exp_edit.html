@@ -1,0 +1,297 @@
+<style>
+
+  input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+  </style>
+  
+  <form method="post" action="{% url 'project_expense_update' form.instance.pk %}" class="project_up_form">
+    {% csrf_token %}
+    <div class="modal-header">
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-6">
+  <h5 class="mb-4 modal-title text-uppercase">Expense Approval</h5>
+  </div>
+  <div class="col-md-6">
+  <h5 class="mb-4">
+    {% if form.instance.Second_Approved_by != Null %}
+    <i class='bx bxs-badge-check' style="color: green; font-size: 30px;"></i>Expense Approved
+    {% else %}
+    <i class='bx bx-error-circle' style='color:#c10c0f; font-size: 30px;'  ></i>Not Approved
+    {% endif %}
+
+  </h5>
+  </div>
+</div>
+
+
+  <div class="row">
+
+<div class="col-md-6">
+  <label for="id_project_name">Project name:</label>
+    <select class="form-control" name="project_name" mxlength="100" required="" id="id_project_name" disabled>
+      <option value="{{form.instance.project_name}}">{{form.instance.project_name}}</option>
+    </select>
+</div>    
+    
+<div class="col-md-6">
+
+    <label for="id_Expense_date">Expense date:</label>
+    <select class="form-control" type="date" name="Expense_date" disabled
+ required="" id="id_Expense_date">
+ <option value="{{form.instance.Expense_date|date:'Y-m-d'}}">{{form.instance.Expense_date|date:'Y-m-d'}}</option>
+ 
+
+    </select>
+</div>    
+</div>    
+<div class="row">
+    
+<div class="col-md-6">
+
+    <label for="id_amount">Amount:</label>
+    <select class="form-control" type="number" name="amount" disabled
+     min="-9223372036854775808" max="9223372036854775807" required="" id="id_amount">
+<option value="{{form.instance.amount}}">{{form.instance.amount}}</option>
+    </select>
+</div>    
+    
+<div class="col-md-6">
+
+    <label for="id_Mode_of_payment">Mode of payment:</label>
+    <select class="form-control" type="text" name="Mode_of_payment" disabled
+
+     maxlength="100" required="" id="id_Mode_of_payment">
+     <option value="{{form.instance.Mode_of_payment}}">{{form.instance.Mode_of_payment}}</option>
+
+    </select>
+</div>    
+</div>    
+
+
+{% if form.instance.First_Approved_by != Null  %}
+
+<div class="row">
+  <div class="col-md-6">
+    <label for="id_First_Approved_by">First Approved by:</label>
+    <select class="form-control" type="text" name="First_Approved_by_view" disabled 
+    maxlength="200"id="id_First_Approved_by">
+    <option value="{{form.instance.First_Approved_by}}" 
+
+
+    >{{form.instance.First_Approved_by}}</option>
+    
+  </select>
+</div>  
+    
+<div class="col-md-6">
+  <label for="id_Second_Approved_date">First Approved date:</label>
+  <input class="form-control" type="date" name="First_Approved_date_view" 
+  disabled
+  value="{{form.instance.First_Approved_date|date:'Y-m-d'}}"
+ id="id_Second_Approved_date">
+</div>    
+</div>  
+{% else %}
+<div class="row">
+  <div class="col-md-12">
+      <label for="id_First_Approved_by">First Approved by:</label>
+      <select class="form-control" type="text" name="First_Approved_by" 
+       maxlength="200"id="id_First_Approved_by_add_view">
+       <option value="{{request.user}}">{{request.user}}</option>
+
+      </select>
+  </div>
+  <div class="col-md-6 visually-hidden">
+    <label for="id_Second_Approved_date">First Approved date:</label>
+    <input class="form-control" type="date" name="First_Approved_date_add" 
+           value="" id="id_Second_Approved_date">
+  
+  <script>
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+    var day = ("0" + currentDate.getDate()).slice(-2);
+    var formattedDate = year + "-" + month + "-" + day;
+    document.getElementById("id_Second_Approved_date").value = formattedDate;
+  </script>
+  
+</div>
+
+
+
+
+</div>  
+{% endif %}
+  {% if form.instance.Second_Approved_by != Null  %}
+<div class="row">
+  <div class="col-md-6">
+      <label for="id_Second_Approved_by">Second Approved by:</label>
+       <select class="form-control" type="text" name="Second_Approved_by" 
+       disabled
+       maxlength="200"id="id_Second_Approved_by_add">
+       <option value="{{form.instance.Second_Approved_by}}">{{form.instance.Second_Approved_by}}</option>
+      </select>
+  </div>
+  <div class="col-md-6">
+    <label for="id_Second_Approved_date">Second Approved Date:</label>
+    <input class="form-control" type="date" name="Second_Approved_date" 
+    disabled value="{{form.instance.Second_Approved_date|date:'Y-m-d'}}" id="">
+  </div>
+</div>
+  
+
+{% else %}
+{% if form.instance.First_Approved_by != Null  %}
+{% if form.instance.Second_Approved_by == Null  %}
+{% if not hidden_field %}
+
+<div class="row">
+  <div class="col-md-12">
+      <label for="id_Second_Approved_by">Second Approved by:</label>
+       <select class="form-control" type="text" name="Second_Approved_by" 
+       maxlength="200"id="id_Second_Approved_by_add">
+       <option value="{{request.user}}">{{request.user}}</option>
+      </select>
+  </div>    
+      
+     
+  <div class="col-md-6 visually-hidden">
+    <label for="id_Second_Approved_date">Second Approved Date:</label>
+    <input class="form-control" type="date" name="Second_Approved_date_add" 
+           value="" id="id_Second_Approved_date_add">
+  </div>
+  <script>
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+    var day = ("0" + currentDate.getDate()).slice(-2);
+    var formattedDate = year + "-" + month + "-" + day;
+    document.getElementById("id_Second_Approved_date_add").value = formattedDate;
+  </script>
+  
+</div>
+{% endif %}
+{% endif %}
+
+{% endif %}
+{% endif %}
+
+
+
+<div class="row">
+<div class="col-md-6">
+  {% if form.instance.Second_Approved_by != Null  %}
+     <label for="id_status">Status:</label>
+      <select class="form-control" name="status" id="id_status" disabled>
+        <option value="{{form.instance.status}}">Active</option>
+     
+      {% endif %}
+</select>
+</div>    
+</div>    
+    
+    <div class="modal-footer mt-3">
+    
+      {% if form.instance.Second_Approved_by != Null %}
+      <button type="submit" class="btn btn-primary w-100" disabled>Approval</button>
+      {% else %}
+      {% if not hidden_field %}
+      <button type="submit" class="btn btn-primary w-100" id="expences_update_btn" >Approval</button>
+      {% endif %}
+      {% endif %}
+
+    </div>
+  </form>
+
+  <script>
+
+
+
+
+
+
+
+
+
+    function snackbar_show() {
+      // Get the snackbar DIV
+      var x = document.getElementById("snackbar");
+    
+      // Add the "show" class to DIV
+      x.className = "show";
+    
+      // After 3 seconds, remove the show class from DIV
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+  
+    $(document).ready(function() {
+      // Function to validate the form
+      function validateForm() {
+        // Change const to var
+        var project = $("#id_project").val();
+        var amount = $("#id_amount").val();
+        var modeOfPayment = $("#id_Mode_of_payment").val();
+        var paymentId = $("#payment_id").val();
+        
+        var x = document.getElementById("snackbar");
+        if (project === "") {
+          snackbar_show();
+          x.innerHTML = "Please Select a Project.";
+          return false;
+        }
+        
+        if (amount === "") {
+          snackbar_show();
+          x.innerHTML = "Please Enter the Amount.";
+          return false;
+        } else if (!Number(amount)) {
+          snackbar_show();
+          x.innerHTML = "Amount must be a number.";
+          return false;
+        }
+  
+        if (modeOfPayment === "") {
+          snackbar_show();
+          x.innerHTML = "Please Select a Mode of Payment.";
+          return false;
+        } 
+  
+        if (paymentId === "") {
+          snackbar_show();
+          x.innerHTML = "Please Enter the Payment ID.";
+          return false;
+        } 
+        
+  
+        
+  
+        return true;
+      }
+    
+      // Attach form submission event handler
+      $("#expences_update_btn").on("click", function(e) {
+        if (!validateForm()) {
+          e.preventDefault(); 
+        }
+        if (validateForm()) {
+          console.log("True");
+          var btn = document.getElementById("expences_update_btn");
+          btn.type = "submit";
+        }
+        
+      });
+    });
+  
+  
+  
+  
+    </script>

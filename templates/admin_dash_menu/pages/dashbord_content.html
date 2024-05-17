@@ -1,0 +1,794 @@
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+{% block title %}
+Dashboard | 
+{% if request.user.is_superuser %}
+  {{satus}}
+  {% else %}
+  {{name}}
+{% endif %}
+  
+{% endblock title %}
+{% block content %}
+{% load static %}
+<style>
+ 
+  .animated-text {
+    
+    opacity: 0;
+    animation: slide-up 1s ease-in-out forwards;
+  }
+  
+  .animated-content {
+   
+    opacity: 0;
+    animation: fade-in 1s ease-in-out forwards 0.5s;
+  }
+  
+  @keyframes slide-up {
+    from {
+      transform: translateY(50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+        
+</style>
+<div class="content-wrapper">
+  {% if not request.user.is_superuser %}
+  {% if company or dashbord_permissions.view %} 
+    <div class="container-xxl flex-grow-1 container-p-y animated-content" >
+      <div class="row">
+        <div class="col-lg-8 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+              <div class="col-sm-7">
+                <div class="card-body">
+                  <h5 class="card-title text-primary">Congratulations 
+                    {% if name and satus  %}
+                    {{name}}
+                    {% endif %}
+                    🎉</h5>
+                  <p class="mb-4">
+                    You have done <span class="fw-bold text-success">
+                      <i class="bx bx-chevron-up"></i>
+                      
+                      {% if get_profit_percentage %}
+                      {{get_profit_percentage}}
+                      {% else %}
+                      0%
+                      {% endif %}
+                      
+                    
+                        
+                        
+
+                    </span> more profit today. Check your new profit in
+                    your profit.
+                  </p>
+
+                </div>
+              </div>
+              <div class="col-sm-5 text-center text-sm-left">
+                <div class="card-body pb-0 px-0 px-md-4">
+                  <img src="{% static 'admin/assets/laptop.png' %}" height="140" alt="View Badge User" />
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 order-1">
+          <div class="row">
+            
+            <div class="col-lg-6 col-md-12 col-6 mb-4"  title="Your Profit">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title d-flex align-items-start justify-content-between">
+                    <div class="avatar flex-shrink-0" >
+                      <span class="badge bg-label-success">
+                        
+                        <i class='bx bx-line-chart rounded '></i>
+                      </span>
+                    </div>
+                  </div>
+                  <span class="fw-semibold d-block mb-1">Profit</span>
+                   
+                  {% if total_profit %}
+                  <span id="total_profit"></span>
+                  {% else %}
+                  <span id="">₹ 0</span>
+
+                    {% endif %}
+                  </h4>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-6 mb-4"  title="Your Investment">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title d-flex align-items-start justify-content-between">
+                    <div class="avatar flex-shrink-0">
+                      <span class="badge bg-label-warning">
+
+                        <i class='bx bxs-left-top-arrow-circle'></i>
+                      </span>
+                    </div>
+                   
+                  </div>
+                  <span class="fw-semibold">
+                      Investment
+                  </span>
+                  <br>
+                  
+                  {% if totale_investor_value %}
+                  <span id="totale_investor_value"></span>
+                  {% else %}
+                  <span id="">₹ 0</span>
+                  {% endif %}
+
+                    
+              
+                      
+                  </h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Total Revenue -->
+        <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
+          <div class="card">
+            <div class="row row-bordered g-0">
+              <div class="card h-100">
+                <div class="card-header d-flex align-items-center justify-content-between pb-0">
+                  <div class="card-title mb-0">
+                    <center>
+                      <h5 class="m-0 me-2 text-primary">
+                        <i class='bx bxs-bar-chart-alt-2 bx-flip-horizontal ' ></i>
+                        Statistics</h5>
+                    </center>
+                  </div>
+                  
+                  
+                </div>
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex flex-column align-items-center gap-1">
+                     
+                   
+                      
+
+                    
+                        
+                        
+                   
+                      
+
+
+                    </div>
+                  
+                  </div>
+                    
+                    
+                    {% if not investor_is_active  %}
+                      <table class="table table-borderless" id="project_table_dash">
+                        <thead>
+                          <tr>
+                            <th>project name</th>
+                            <th>Project Value</th>
+                            <th>Total Share</th>
+                            <th>Status</th>
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for project in new_projects %}
+                          <tr>
+                            <td>{{project.project_name}}</td>
+
+                            <td>
+                              <span class="badge bg-label-success">
+                                ₹{{project.Project_value}}</td>
+                              </span>
+                            <td>
+                              <span class="badge bg-label-warning">
+                              
+                              ₹{{project.Total_share}}
+                            </span>
+                            
+                            </td>
+                            <td>
+                              
+                              {% if project.status == True %}
+                              <i class='bx bxs-badge-check' style="color: green;"></i>Active
+                                {% else %}
+                                <i class='bx bx-error-circle' style='color:#c10c0f'  ></i>In Active
+                              {% endif %}
+                            </td>
+
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    {% endif %}
+                      
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/ Total Revenue -->
+        <div class="col-12 col-md-8 col-lg-4 order-3 order-md-2" >
+          <div class="row">
+            <div class="col-6 mb-4">
+              <div class="card" title="Your Expenses">
+                <div class="card-body">
+                  <div class="card-title d-flex align-items-start justify-content-between">
+                    <span class="badge bg-label-info">
+                      <i class='bx bxs-bank'></i>
+                    </span>
+                  </div>
+                  <span class="fw-semibold d-block mb-1">Expenses</span>
+                  {% if total_Expenses %}
+                  <span id="total_Expenses"></span>
+                  {% else %}  
+                  <span id="">₹ 0</span>
+                  {% endif %}
+                  
+                  <span id="total_Expenses"></span>
+                  </h4>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title d-flex align-items-start justify-content-between">
+                    <div class="avatar flex-shrink-0">
+                      <span class="badge bg-label-primary">
+
+                        <i class='bx bxs-pie-chart-alt-2'></i>
+                      </span>
+                    </div>
+                  </div>
+                  <span class="fw-semibold d-block mb-1">Total Share</span>
+
+                    {% if total_project_value %}
+                    <span id="amount"></span>
+                    {% else %}
+                    <span id="">₹ 0</span>
+                    {% endif %}
+
+                      
+                 
+                  </h4>
+                </div>
+              </div>
+            </div>
+           </div>
+
+           <div class="row"> 
+            <div class="col-12 mb-4">
+              <div class="card" 
+              
+              >
+                <div class="card-body" title="Profit Report">
+                  <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
+                    <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
+                      <div class="card-title">
+                        <h5 class="text-nowrap mb-2">Profit Report</h5>
+                        <span class="badge bg-label-warning rounded-pill">Year 
+                          <span id="report_year"></span>
+
+
+
+                        </span>
+                      </div>
+                      <div class="mt-sm-auto">
+                        <small class="text-success text-nowrap fw-semibold"
+                          ><i class="bx bx-chevron-up"></i>
+                          
+                          {% if get_profit_percentage %}
+                             {{get_profit_percentage}}
+                          {% endif %}
+                          
+                           
+                           </small
+                        >
+                        <h3 class="mb-0">
+                          <span id="total_profit_report"></span>
+                        </h3>
+                      </div>
+                    </div>
+                    <div id="profileReportChart"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Order Statistics -->
+        <style>
+          .statistics-card{
+            height: 75vh;
+          }
+        </style>
+        <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4 statistics-card">
+          <div class="card h-100 ">
+            <div class="card-header d-flex align-items-center justify-content-between pb-0">
+              <div class="card-title mb-0">
+                <h5 class="m-0 me-2">Sales Statistics</h5>
+                <small class="text-muted ">
+                  <span id="total_sales">
+
+                  </span>
+                  Total Sales</small>
+              </div>
+              <div class="dropdown">
+                <button
+                  class="btn p-0"
+                  type="button"
+                  id="orederStatistics"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orederStatistics">
+                  <a class="dropdown-item" href="{% url 'project_profit_list' %}">View More</a>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex flex-column align-items-center gap-1">
+                  <h2 class="mb-2">{{sales_count}}</h2>
+                  <span>Recent Sales</span>
+                </div>
+              </div>
+              <ul class="p-0 m-0">
+                {% if list_sales %}
+                
+                {% for l in list_sales %}
+                  
+                  
+                <li class="d-flex mb-4 pb-1">
+                  <div class="avatar flex-shrink-0 me-3">
+                    <span class="avatar-initial rounded bg-label-primary"
+                      ><i class='bx bxs-hand-right'></i>
+                    </span>
+                  </div>
+                  
+                    
+                  <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                    <div class="me-2">
+                      <h6 class="mb-0">{{l.project_name}}</h6>
+                      <small class="text-muted">Unit: {{l.unit_sold}}</small>
+                    </div>
+                    <div class="user-progress">
+                      <small class="fw-semibold">₹ {{l.amount}}</small>
+                    </div>
+                  </div>
+                </li>
+                {% endfor %}
+
+                {% endif %}
+
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!--/ Order Statistics -->
+
+        <!-- Expense Overview -->
+        <div class="col-md-6 col-lg-4 order-2 mb-4">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <h5 class="card-title m-0 me-2">Expense</h5>
+              <div class="dropdown">
+                <button
+                  class="btn p-0"
+                  type="button"
+                  id="transactionID"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+                  <a class="dropdown-item" href="{% url 'project_expense_list' %}">View More</a>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <ul class="p-0 m-0">
+                
+                {% if card_exp_list %}
+                  
+                
+                {% for e_in in card_exp_list  %}
+                  
+                  
+                  
+                <li class="d-flex mb-4 pb-1">
+                  <div class="avatar flex-shrink-0 me-3">
+                    <img src="https://ui-avatars.com/api/?name={{e_in.project_name}}&background=696CFF&color=ffff&length=1&bold=true/" alt class="w-px-40 h-auto rounded-circle" title="{{e_in.project_name}}"/>
+                  </div>
+                  <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                    <div class="me-2">
+                      <small class="text-muted d-block mb-1 text-uppercase">{{e_in.project_name}}</small>
+                      <h6 class="mb-0">{{e_in.Mode_of_payment}}</h6>
+                    </div>
+                    <div class="user-progress d-flex align-items-center gap-1">
+                      <h6 class="mb-0">{{e_in.amount}}</h6>
+                      <span class="text-muted">INR</span>
+                    </div>
+                  </div>
+                </li>
+                {% endfor %}
+
+                {% endif %}
+                
+              </ul>
+          </div>
+        </div>
+      </div>
+
+        <!--/ Expense Overview -->
+
+        <!-- Transactions -->
+        <div class="col-md-6 col-lg-4 order-2 mb-4">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <h5 class="card-title m-0 me-2">Investments</h5>
+              <div class="dropdown">
+                <button
+                  class="btn p-0"
+                  type="button"
+                  id="transactionID"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+                  <a class="dropdown-item" href="{% url 'project_investors_list' %}">View More</a>
+                  
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <ul class="p-0 m-0">
+                
+                {% if card_invesment_list %}
+                  
+                
+                {% for c_in in card_invesment_list  %}
+                  
+                  
+                  
+                <li class="d-flex mb-4 pb-1">
+                  <div class="avatar flex-shrink-0 me-3">
+                    <img src="https://ui-avatars.com/api/?name={{c_in.investor_name}}&background=696CFF&color=ffff&length=1&bold=true/" alt class="w-px-40 h-auto rounded-circle" title="{{c_in.investor_name}}"/>
+                  </div>
+                  <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                    <div class="me-2">
+                      <small class="text-muted d-block mb-1 text-uppercase">{{c_in.mode_of_payment}}</small>
+                      <h6 class="mb-0">Send money</h6>
+                    </div>
+                    <div class="user-progress d-flex align-items-center gap-1">
+                      <h6 class="mb-0">{{c_in.amount}}</h6>
+                      <span class="text-muted">INR</span>
+                    </div>
+                  </div>
+                </li>
+                {% endfor %}
+
+                {% endif %}
+                
+              </ul>
+          </div>
+        </div>
+        <!--/ Expense Overview -->
+
+      </div>
+    </div>
+
+
+    
+
+    {% elif staff and not dashbord_permissions.view %} 
+    <div class="mt-3">
+     
+     <h2 class="text-center animated-text">Welcome Staff {{name}}</h2>
+
+    <style>
+
+      .error-message {
+       background-color: #f44336;
+       color: #fff;
+       padding: 10px;
+       text-align: center;
+     }
+     
+     .error-message p {
+       margin: 0;
+     }
+    </style>
+    
+    <h4 
+      class="text-center animated-text error-message">
+  
+        <p class="error-message">You are not permitted to view the dashboard.</p>
+      
+      
+     </h4>
+    </div>
+
+
+
+
+    
+     
+        {% endif %}
+      {% endif %}
+
+  {% if request.user.is_superuser %}
+  <style>
+      .animated-text {
+      
+      opacity: 0;
+      animation: slide-up 1s ease-in-out forwards;
+    }
+    
+    .animated-content {
+     
+      opacity: 0;
+      animation: fade-in 1s ease-in-out forwards 0.5s;
+    }
+    
+    @keyframes slide-up {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+           
+  </style>
+  <div class="container-xxl flex-grow-1 container-p-y animation-containe">
+    <h2 class="text-center animated-text">Welcome Super Admin</h2>
+    <p class="text-center text-secondary animated-text">Please use the navigation menu to access different areas of the site, or click on the links below to get started</p>
+    <div class="row animated-content ">
+
+      
+    <div class="col-md-6 col-lg-4">
+        <div class="card text-center mb-3">
+          <div class="card-body">
+            <h5 class="card-title">
+             <i class='bx bxs-business' style="font-size:30px" ></i>
+              Total Company</h5>
+
+            <h1 class="card-text">
+              
+              {{company_count}}</h1>
+            <a href="{% url 'company_list' %}" class="btn rounded-pill btn-primary">View All</a>
+          </div>
+        </div>
+      </div> <div class="col-md-6 col-lg-4">
+        <div class="card text-center mb-3">
+          <div class="card-body">
+            <h5 class="card-title">
+             <i class='bx bxs-user-circle' style="font-size:30px" ></i>
+              Total Investors</h5>
+            <h1 class="card-text">
+              {{invs_count}}</h1>
+            <a href="{% url 'admin_investors_list' %}" class="btn rounded-pill btn-primary">View All</a>
+          </div>
+        </div>
+      </div> <div class="col-md-6 col-lg-4">
+        <div class="card text-center mb-3">
+          <div class="card-body">
+            <h5 class="card-title">
+             <i class='bx bxs-user-badge' style="font-size:30px" ></i>
+              Total Staff </h5>
+
+            <h1 class="card-text">
+              {{staff_count}}</h1>
+            <a href="{% url 'admin_staff_list' %}" class="btn rounded-pill btn-primary">View All</a>
+          </div>
+        </div>
+     
+       
+      </div>
+    </div>
+    <canvas id="myChart"></canvas>
+    <div> 
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+      
+      const ctx = document.getElementById('myChart');
+    
+      new Chart(ctx, {
+        
+        type: 'bar',
+        data: {
+          labels: ['Company', 'Investors', 'Staff'],
+          datasets: [{
+            label: '# of Users',
+            data: [{{company_count}}, {{invs_count}}, {{staff_count}}],
+            backgroundColor: 'rgba(231, 231, 255, 0.7)', 
+            borderColor: 'rgba(105, 108, 255, 1)', 
+            borderWidth: 2
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+      
+    </script>
+  
+
+  </div>
+
+
+  {% endif %}
+
+
+    <!-- / Content -->
+    <div class="buy-now">
+      <a
+        onclick="window.location.href=window.location.href"
+        target="_blank"
+        class="btn btn-danger btn-buy-now"
+        style="color: white;"
+        >Refresh</a
+      >
+    </div>
+    <!-- Footer -->
+    <footer class="content-footer footer bg-footer-theme">
+      <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+        <div class="mb-2 mb-md-0">
+          ©
+          <span id="fotter_year"></span>
+          ,All Rights Reserved. 
+          <a href="https://blazon.in/" target="_blank" class="footer-link fw-bolder text-warning">Blazon</a>
+        </div>
+        <div>
+
+
+        </div>
+      </div>
+    </footer>
+    
+  </div>
+  <script>
+
+        var currentYear = new Date().getFullYear();
+        document.getElementById("fotter_year").innerHTML = currentYear;
+        document.getElementById("report_year").innerHTML = currentYear;
+
+        {% if total_profit  %}
+        const total_profit = {{total_profit}}; // Example total_profit value
+        let formattedtotal_profit;
+        if (total_profit >= 10000000) {
+          formattedtotal_profit = "₹ "+(total_profit / 10000000).toFixed(2) + " Crore";
+    
+        } else if (total_profit >= 100000) {
+          formattedtotal_profit = "₹ "+(total_profit / 100000).toFixed(2) + " Lakh";
+        }  else {
+          formattedtotal_profit = total_profit.toLocaleString("en-IN", { style: "currency", currency: "INR" });
+        }
+        document.getElementById("total_profit").innerHTML = formattedtotal_profit;
+        document.getElementById("total_profit_report").innerHTML = formattedtotal_profit;
+          
+        {% endif %}
+        {% if total_sales  %}
+        const total_sales = {{total_sales}}; // Example total_sales value
+        let formattedtotal_sales;
+        if (total_sales >= 1000) {
+          formattedtotal_sales = "₹ "+(total_sales / 1000).toFixed(2) + " K";
+    
+        }
+        else if (total_sales >= 10000000) {
+          formattedtotal_sales = "₹ "+(total_sales / 10000000).toFixed(2) + " Crore";
+    
+        } else if (total_sales >= 100000) {
+          formattedtotal_sales = "₹ "+(total_sales / 100000).toFixed(2) + " Lakh";
+        }  else {
+          formattedtotal_sales = total_sales.toLocaleString("en-IN", { style: "currency", currency: "INR" });
+        }
+        document.getElementById("total_sales").innerHTML = formattedtotal_sales;
+          
+        {% endif %}
+
+        {% if totale_investor_value %}
+          const totale_investor_value ={{totale_investor_value}}; // Example totale_investor_value value
+          let formattedtotale_investor_value;
+            if (totale_investor_value >= 10000000) {
+              formattedtotale_investor_value = "₹ "+(totale_investor_value / 10000000).toFixed(2) + " Crore";
+
+            } else if (totale_investor_value >= 100000) {
+              formattedtotale_investor_value = "₹ "+(totale_investor_value / 100000).toFixed(2) + " Lakh";
+            }  else {
+              formattedtotale_investor_value = totale_investor_value.toLocaleString("en-IN", { style: "currency", currency: "INR" });
+            }
+                     
+                  
+          document.getElementById("totale_investor_value").innerHTML = formattedtotale_investor_value;
+        
+        
+        {% endif %}
+        
+        {% if total_Expenses %}
+        
+          const total_Expenses = {{total_Expenses}}; // Example total_Expenses value
+          let formattedtotal_Expenses;
+          if (total_Expenses >= 10000000) {
+            formattedtotal_Expenses = "₹ "+(total_Expenses / 10000000).toFixed(2) + " Crore";
+
+          } else if (total_Expenses >= 100000) {
+            formattedtotal_Expenses = "₹ "+(total_Expenses / 100000).toFixed(2) + " Lakh";
+          }  else {
+            formattedtotal_Expenses = total_Expenses.toLocaleString("en-IN", { style: "currency", currency: "INR" });
+          }
+         
+      
+          document.getElementById("total_Expenses").innerHTML = formattedtotal_Expenses;
+       
+        {% endif %}
+        
+        {% if total_project_value %}
+    
+          const amount = {{total_project_value}}; // Example amount value
+          let formattedAmount;
+          if (amount >= 10000000) {
+            formattedAmount = "₹ "+(amount / 10000000).toFixed(2) + " Crore";
+
+          } else if (amount >= 100000) {
+            formattedAmount = "₹ "+(amount / 100000).toFixed(2) + " Lakh";
+          }  else {
+            formattedAmount = amount.toLocaleString("en-IN", { style: "currency", currency: "INR" });
+          }
+          document.getElementById("amount").innerHTML = formattedAmount;
+   
+        {% endif %}
+
+      </script>
+{% endblock content %}

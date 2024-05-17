@@ -1,0 +1,89 @@
+   <div class="modal-header">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </button>
+ </div>
+ <div class="modal-body">
+ <div class="row">
+ 
+       <div class="col-md-6">
+          <h4>
+             {{my_model_instances.project_name }}
+          </h4>
+       </div>
+       <div class="col-md-6">
+          {% if my_model_instances.Second_Approved_by != Null %}
+          <i class='bx bxs-badge-check' style="color: green; font-size: 30px;"></i>Expense Approved
+          {% else %}
+          <i class='bx bx-error-circle' style='color:#c10c0f; font-size: 30px;'  ></i>Not Approved
+          {% endif %}
+      
+        </h5>
+        </div>
+   
+    <hr>
+    <div class="row small">
+      <div class="col-md-6">
+    <table  class="table table-hover">
+      <tr>
+        <td><b>Company Name</b>:</td>
+        <td>{{my_model_instances.company_name }}</td>
+      </tr>
+      <tr>
+        <td><b>Expense Date</b>:</td>
+        <td>{{my_model_instances.Expense_date|date:"d-m-Y" }}</td>
+      </tr>
+      <tr>
+        <td><b>Amount</b>:</td>
+        <td>{{my_model_instances.amount }}</td>
+      </tr>
+      <tr>
+        <td><b>Mode of payment</b>:</td>
+        <td>{{my_model_instances.Mode_of_payment}}</td>
+      </tr>
+      <tr>
+        <td><b>Payment ID</b>:</td>
+        <td>{{my_model_instances.payment_id}}</td>
+      </tr>
+
+    </table>
+   </div>
+
+    <div class="col-md-6">
+<table  class="table table-hover">
+
+      
+      <tr>
+        <td><b>First Approved by</b>:</td>
+        <td>{{my_model_instances.First_Approved_by }}</td>
+      </tr>
+      <tr>
+        <td><b>First Approved date</b>:</td>
+        <td>{{my_model_instances.First_Approved_date }}</td>
+      </tr>
+      <tr>
+        <td><b>Second Approved by</b>:</td>
+        <td>{{my_model_instances.Second_Approved_by}}</td>
+      </tr>
+      <tr>
+        <td><b>Second Approved date</b>:</td>
+        <td>{{my_model_instances.Second_Approved_date }}</td>
+      </tr>
+   </table>
+</div>
+
+   <center>
+
+      <tr>
+         <td><b> Status</b>:</td>
+         <td>{% if my_model_instances.status == True %}
+            <i class='bx bxs-badge-check' style="color: green;"></i>Active
+            {% else %}
+            <i class='bx bx-error-circle' style='color:#c10c0f'  ></i>In Active
+            {% endif %}</td>
+         </tr>
+      </center>
+    
+ </div>
+ <div class="modal-footer">
+    <button type="button"  class="btn btn-primary"  data-bs-dismiss="modal" >Close</button>
+ </div>

@@ -1,0 +1,391 @@
+
+<style>
+  #snackbar {
+    visibility: hidden; /* Hidden by default. Visible on click */
+    min-width: 250px; /* Set a default minimum width */
+    margin-left: -125px; /* Divide value of min-width by 2 */
+    background-color: #da5050; /* Black background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Centered text */
+    border-radius: 2px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: 99999999; /* Add a z-index if needed */
+    left: 50%; /* Center the snackbar */
+    bottom: 30px; /* 30px from the bottom */
+  }
+  
+  /* Show the snackbar when clicking on a button (class added with JavaScript) */
+  #snackbar.show {
+    visibility: visible; /* Show the snackbar */
+    /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+    However, delay the fade out process for 2.5 seconds */
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  
+  /* Animations to fade the snackbar in and out */
+  @-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+  }
+</style>
+  <h5 class="mb-3 text-center">Create Settlement</h5>
+  
+  <div class="row">
+  <div class="col-md-12">
+    <label for="id_sales_name">Investor name:<span style="color: red;">*</span></label>
+    <select class="form-control" type="text" maxlength="100" name="investor_name" id="id_investorname" onfocus='this.size=4;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+
+      <option value="none">-- Select a Name --</option>
+   </select>
+  
+<script>
+  $(document).ready(function() {
+      $.ajax({
+          url: "{% url 'get_company_setletment_investors' %}",
+          type: "GET",
+          success: function(data) {
+              $.each(data.projects, function(index, project) {
+                  $('#id_investorname').append('<option value="' + project.id + '">'+ project.name + '</option>');
+              });
+          },
+          error: function(xhr, status, error) {
+              console.log(xhr.responseText);
+          }
+      });
+  });
+  
+  </script>
+  
+</div>
+<div class="col-md-12">
+  <label for="id_sales_name">Invested Project name:<span style="color: red;">*</span>(<span style="color: green; font-size: 12px;">Active Project  </span>)</label>
+  <select class="form-control" type="text" name="project" maxlength="100"  id="id_project_name" onfocus='this.size=4;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+{% if request.user.is_authenticated %}
+    <option value="none">-- Select a project --</option>
+{% endif %}
+</select>
+
+<script>
+  $(document).ready(function() {
+    var addedProjectNames = [];
+    $('#id_investorname').on('change', function() {
+    var invesId_sent=$('#id_investorname').val();
+    if (invesId_sent !=="none") {
+    addedProjectNames=[];
+    $('#id_project_name').empty();
+    $('#id_project_name').append('<option value="none">-- Select a project --</option>');
+    const investedAmountInput_in = $("#invested_amount");
+    const purchasedSharesInput_in = $("#purchased_shares");
+    const amountSettledInput_in = $("#amount_settled");
+    const profitAmountInput_in = $("#profit_amount");
+    const settlementBalanceTotalInput_in = $("#Settlement_blance_total");
+    const settlementBalanceInput_in = $("#Settlement_blance");
+    const availableBalanceInput_in = $("#Available_blance");
+    purchasedSharesInput_in.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+    investedAmountInput_in.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+    profitAmountInput_in.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+    settlementBalanceTotalInput_in.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+    availableBalanceInput_in.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+    settlementBalanceInput_in.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+    amountSettledInput_in.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+
+    $.ajax({
+        url: "/get_company_setletment_project/"+invesId_sent+"/",
+        type: "GET",
+        success: function(data) {
+
+							$.each(data.projects, function(index, project) {
+								if (!addedProjectNames.includes(project.project_name)) {
+									$('#id_project_name').append('<option value="' + project.id + '">'+ project.project_name + '</option>');
+									addedProjectNames.push(project.project_name);
+								}
+							});
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+        }
+    });
+    }
+  })
+
+});
+
+</script>
+</div>
+
+
+ 
+<div class="col-md-6 mt-2">
+  <label for="sales_amount">Purchased Shares</label>
+  
+  <input class="form-control text-center" type="number" name="purchased_shares" id="purchased_shares" disabled>
+</div>
+
+ 
+<div class="col-md-6 mt-2">
+  <label for="sales_amount">Invested Amount</label>
+  <div class="input-group">
+
+  <input class="form-control" type="number" name="invested_amount_slect" id="invested_amount" disabled>
+    <div class="input-group-append input-group-text ">INR</div>
+  </div>
+
+  
+ 
+</div>
+<div class="col-md-6 mt-2">
+  <label for="sales_amount">Profit Amount</label>
+  
+  <input class="form-control" type="number" name="profit_amount" id="profit_amount" readonly>
+
+</div>
+
+<div class="col-md-6 mt-2">
+  <label for="sales_amount">Total Amount</label>
+  <input class="form-control" name="" type="number" id="Settlement_blance_total" readonly>
+  
+</div>
+
+<div class="col-md-6 mt-2">
+  <label for="sales_amount">Settled Amount</label>
+  <input class="form-control" name="" id="Settlement_blance" readonly>
+</div>
+<div class="col-md-6 mt-2">
+  <label for="sales_amount">Available Amount</label>
+  <input class="form-control" name="Settlement_blance" id="Available_blance" readonly>
+</div>
+
+
+
+
+ 
+    <div class="col-md-12 mt-2">
+      <label for="sales_amount">Amount<span style="color: red;">*</span></label>
+      <div class="input-group">
+      <input class="form-control" type="number" name="amount" min="1" value="0" id="amount_settled">
+      <div class="input-group-append input-group-text ">INR</div>
+    </div>
+    
+
+  </div>
+  
+  
+ 
+      <div class="modal-footer"> 
+        <button type="button" class="btn btn-outline-secondary " data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary" id="submit_btn_sales">Submit</button>
+      </div>
+</form>
+</div>
+<script>
+ 
+  $(document).ready(function() {
+    const investedAmountInput = $("#invested_amount");
+    const purchasedSharesInput = $("#purchased_shares");
+    const amountSettledInput = $("#amount_settled");
+    const profitAmountInput = $("#profit_amount");
+    const settlementBalanceTotalInput = $("#Settlement_blance_total");
+    const settlementBalanceInput = $("#Settlement_blance");
+    const availableBalanceInput = $("#Available_blance");
+   
+    const snackbar = $("#snackbar");
+  
+    const resetInputs = function() {
+      purchasedSharesInput.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+      investedAmountInput.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+      profitAmountInput.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+      settlementBalanceTotalInput.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+      availableBalanceInput.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+      settlementBalanceInput.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+      amountSettledInput.css({ borderColor: "red", backgroundColor: "pink" }).val(0);
+      $("#submit_btn_sales").prop("disabled", true);
+              snackbar_show();
+              snackbar.html("All fields are required.");
+    };
+    const EmptyInputs = function() {
+      purchasedSharesInput.val(0);
+      investedAmountInput.val(0);
+      profitAmountInput.val(0);
+      settlementBalanceTotalInput.val(0);
+      availableBalanceInput.val(0);
+      settlementBalanceInput.val(0);
+      amountSettledInput.val(0);
+    };
+      
+    $('#id_project_name, #id_investorname').on('change', function(e) {
+      const projId = $("#id_project_name").val();
+      const invesId = $("#id_investorname").val();
+
+      if (projId == "none") {
+        resetInputs();
+      }
+      if (invesId == "none") {
+        resetInputs();
+      }
+      if (projId !== "none" && invesId !== "none") {
+        $.ajax({
+          url: `/get_company_setletment_invested_amount/${invesId}/${projId}/`,
+          type: "GET",
+          success: function(data) {
+            EmptyInputs();
+            amountSettledInput.prop("max", data.setment_blc).css({ borderColor: "green", backgroundColor: "lightgreen" });
+            const purchasedShares = data.get_unit_buy;
+            const investedAmount = data.get_invested_amount;
+            const settlementBalance = data.setment_blc;
+            const profitAmount = data.profit_amount;
+            const total = profitAmount + investedAmount;
+
+            if (purchasedShares > 0) {
+
+              purchasedSharesInput.css({ borderColor: "green", backgroundColor: "lightgreen" }).val(purchasedShares);
+
+            }
+  
+            if (investedAmount > 0) {
+              investedAmountInput.css({ borderColor: "green", backgroundColor: "lightgreen" }).val(investedAmount);
+            }
+  
+            
+  
+            if (purchasedShares === 0 || investedAmount === 0) {
+              resetInputs();
+            }
+  
+            if (settlementBalance > 0) {
+              availableBalanceInput.val(settlementBalance).css({ borderColor: "green", backgroundColor: "lightgreen" });
+              amountSettledInput.prop("max", settlementBalance);
+              settlementBalanceInput.val(total - settlementBalance).css({ borderColor: "green", backgroundColor: "lightgreen" });
+            }
+  
+            if (settlementBalance === 0) {
+              availableBalanceInput.val(settlementBalance).css({ backgroundColor: "pink", borderColor: "red" });
+              amountSettledInput.prop("max", settlementBalance);
+              settlementBalanceInput.val(total - settlementBalance).css({ backgroundColor: "pink", borderColor: "red" });
+              snackbar_show();
+              
+              snackbar.html("All Settlements are settled.");
+              
+              
+            }
+  
+            if (profitAmount > 0) {
+              profitAmountInput.css({ borderColor: "green", backgroundColor: "lightgreen" }).val(profitAmount);
+            }
+  
+            if (profitAmount > 0 && investedAmount > 0) {
+              settlementBalanceTotalInput.val(total).css({ borderColor: "green", backgroundColor: "lightgreen" });
+              $("#submit_btn_sales").prop("disabled", false);
+
+            }
+  
+            if (profitAmount === 0 && investedAmount > 0 && settlementBalance > 0) {
+              availableBalanceInput.val(settlementBalance).css({ backgroundColor: "pink", borderColor: "red" });
+              amountSettledInput.val(settlementBalance).css({ backgroundColor: "pink", borderColor: "red" }).prop("disabled", true);
+            }
+
+
+          },
+          error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+          }
+        });
+      }
+    });
+  });
+  
+
+  function snackbar_show() {
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar");
+  
+    // Add the "show" class to DIV
+    x.className = "show";
+  
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
+
+
+  function increment() {
+    document.getElementById('unit_count').stepUp();
+ }
+ function decrement() {
+    document.getElementById('unit_count').stepDown();
+ }
+
+
+
+  $(document).ready(function() {
+    // Function to validate the form
+    function validateForm() {
+      var investor_name = $("#id_investorname").val();
+      var project = $("#id_project_name").val();
+      var amount = $("#amount_settled").val();
+      var x = document.getElementById("snackbar");
+
+     
+      if (investor_name === "none") {
+        snackbar_show();
+        x.innerHTML = "Please Select the Investor.";
+        return false;
+      }
+      if (project === "none") {
+        snackbar_show();
+        x.innerHTML = "Please Select the Project.";
+        return false;
+      }
+      if (amount === "" || amount == 0) {
+        snackbar_show();
+        x.innerHTML = "Please enter the Amount.";
+        return false;
+      }
+      if (amount < 1 ) {
+        snackbar_show();
+        x.innerHTML = "Please More then 1 INR.";
+        return false;
+      }
+     
+     
+      return true;
+    }
+  
+    // Attach form submission event handler
+    $("#submit_btn_sales").on("click", function(e) {
+      if (!validateForm()) {
+        e.preventDefault(); 
+      }
+      if (validateForm()) {
+        console.log("True");
+        var btn = document.getElementById("submit_btn_sales");
+        btn.type = "submit";
+      }
+      
+    });
+  });
+  </script>

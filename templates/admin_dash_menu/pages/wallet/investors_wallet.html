@@ -1,0 +1,480 @@
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+{% block title %}
+Wallet | {{name}}
+{% endblock title %}
+
+{% block content %}
+<style>
+  .excel:hover{
+    background-color: #4CAF50;
+    color: black;
+  }
+  .csv:hover{
+    background-color: yellow;
+    color: black;
+  }
+  .pdf:hover{
+    background-color: #ce0d11;
+    color: black;
+  }
+  .sub_title{
+    color: #64768A;
+  }
+.sub_title:hover{
+  color: #696CFF;
+}
+.dataTables_length{
+  padding-top: 20px;
+  padding-left: 20px;
+
+}
+.dataTables_info{
+  padding: 20px;
+}
+.dataTables_paginate {
+  padding-right: 30px;
+}
+.dataTables_filter{
+  margin-right:80px;
+}
+</style>
+<div class="card m-3">
+  <div class="row">
+    <div class="col-md-6">
+      <strong>
+        <h4 class="card-header">
+          <b>
+            Investor Wallet
+          </b>
+          <br>
+          <span class="" style="font-size: 16px" > <a href="{% url 'base' %}" class="sub_title" title="Dashboard"> Dashboard</a>/Investor Wallet</span>
+        </h4>
+      </strong>
+    </div>
+    <div class="col-md-3 mt-3">
+      <div class="input-group" title="Download Investors History">
+
+        <select class="form-control" type="text" name="investor_name" maxlength="100"  id="id_investor_name_down"  onfocus='this.size=1;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+          {% if request.user.is_authenticated %}  
+          <option value="">-- Select a Name --</option>
+          {% endif %}
+        </select>
+        <div class="btn-group">
+          <button type="button"  class="btn btn-outline-success dropdown-toggle input-group-append input-group-text" data-bs-toggle="dropdown" aria-expanded="true">
+            <i class='bx bxs-download' style='color:#000000' ></i>
+          </button>
+          <ul class="dropdown-menu " data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-40px, 41px);">
+            <li><a class="dropdown-item excel" href="" id="excel" value="xls" ><i class='bx bx-file'></i>Excel</a></li>
+              <li><a class="dropdown-item csv" href="" value="csv" id="csv"><i class='bx bxs-file'></i>CSV</a></li>
+              <li><a class="dropdown-item pdf" href="" value="pdf" id="pdf">
+                <i class='bx bxs-file-pdf'></i>PDF</a></li>
+                
+           
+          </ul>
+        </div>
+      </div>
+    <script>
+    $(document).ready(function() {
+      $.ajax({
+          url: "{% url 'get_company_investors' %}",
+          type: "GET",
+          success: function(data) {
+              $.each(data.projects, function(index, project) {
+                  $('#id_investor_name_down').append('<option value="' + project.invs_name + '">' + project.invs_name + '</option>');
+              });
+          },
+          error: function(xhr, status, error) {
+              console.log(xhr.responseText);
+          }
+      });
+    });
+    $(document).ready(function() {
+      $('#id_investor_name_down').on('change', function(e) {
+          e.preventDefault(); 
+          var investor_name = $('#id_investor_name_down').val();
+          var excel = $('#excel');
+          var csv = $('#csv');
+          var pdf = $('#pdf');
+          excel.attr('href', "/download-data/" + investor_name + "/"+excel.attr('value')+"/");
+          csv.attr('href', "/download-data/" + investor_name + "/"+csv.attr('value')+"/");
+          pdf.attr('href', "/download-data/" + investor_name + "/"+pdf.attr('value')+"/");
+
+      });
+  });
+  $(document).ready(function() {
+    $('#excel, #csv, #pdf').on('click', function(e) {
+        setTimeout(function() {
+            location.reload();
+        }, 1000); 
+    });
+});
+
+  
+  
+    </script>
+    </div>
+    
+
+    <div class="col-md-3 mt-3">
+      {% if staff %}
+         {% if proj_inv_per.add %}
+      <button
+        type="button"
+        class="btn btn-primary wallet_open_form"
+        data-url="{% url 'add_money_wallet' %}"
+      >
+      <i class='bx bx-customize'></i>
+        Add Wallet 
+      </button>
+      {% endif %}
+      {% else %} 
+
+      <button
+      type="button"
+      class="btn btn-primary wallet_open_form"
+      data-url="{% url 'add_money_wallet' %}"
+    >
+    <i class='bx bx-customize'></i>
+    Add Wallet 
+
+    </button>
+      {% endif %}
+
+    </div>
+  </div>
+  
+
+    
+  <div class="table-responsive text-nowrap">
+    <table class="table table-hover" id="project-table">
+      <thead>
+        <tr>
+          <th>S.no</th>
+          <th>Investor Name</th>
+          <th>Account Balance</th>
+          <th>Approval Status</th>
+          <th>Status</th>
+          <th class="text-center">Actions</th>
+
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        {% if my_model_instances %}
+
+        {% for instance in my_model_instances %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+
+          <td>
+            {{ instance.investor_name }} 
+        
+
+          </td>
+          
+
+          <td>
+            
+            {{ instance.total_amount }}
+            {% if not instance.Second_Approved_by  %}
+
+            <i class='bx bx-time-five bx-spin' style='color:#e41115'  ></i>
+            {% else %}
+            <i class='bx bxs-wallet-alt' style='color:#5c2f21'  ></i>
+            {% endif %} 
+          
+          
+          </td>
+          <td>
+            {% if instance.First_Approved_by   %}
+                {% if not instance.Second_Approved_by  %}
+              <i class='bx bx-check'  style="color: green;"></i>
+              {% endif %}
+              
+                {% else %}
+                <i class='bx bx-error-circle' style='color:#c10c0f'  ></i>Pending
+                
+                
+                  
+              {% endif %}
+              
+              {% if instance.Second_Approved_by  %}
+              <i class='bx bx-check'  style="color: green;"></i>
+              <i class='bx bx-check'  style="color: green;"></i>
+
+                  
+                {% endif %}
+              </td>
+            
+          <td>
+            {% if instance.status == True %}
+            <i class='bx bxs-badge-check' style="color: green;"></i>Active
+            
+              {% else %}
+              <i class='bx bx-error-circle' style='color:#c10c0f'  ></i>In Active
+            
+            {% endif %}</td>
+          
+          <td>
+            <div class="row">
+              <div class="col-md-4">
+
+                {% if staff %}
+                {% if proj_inv_per.view %}
+                <a
+                type="button"
+                class="btn btn-sm project_inves_view_js "
+                data-url="{% url 'view_investor_wallet'  instance.pk  %}"
+              >
+              <i class='bx bx-show' style='color:#11e3f3'  ></i>
+              </a>
+
+              {% endif %}
+               {% else %} 
+               <a
+               type="button"
+               class="btn btn-sm project_inves_view_js "
+               data-url="{% url 'view_investor_wallet'  instance.pk  %}"
+             >
+             <i class='bx bx-show' style='color:#11e3f3'  ></i>
+             </a>
+               {% endif %}
+
+              </div>
+              <div class="col-md-4">
+                {% if staff %}
+                {% if proj_inv_per.edit %}
+                <button
+                type="button"
+                class="btn  btn-sm investors_wallet_permission"
+                data-url="{% url 'investors_wallet_permission'  instance.pk  %}"
+              >
+              <i class='bx bx-download bx-rotate-180' style='color:#2bdc19'  ></i>
+            </button>
+            {% endif %}
+            {% else %} 
+            <button title="Approvel Investor"
+            type="button"
+            class="btn  btn-sm investors_wallet_permission"
+            data-url="{% url 'investors_wallet_permission'  instance.pk  %}"
+          >
+          <i class='bx bx-download bx-rotate-180' style='color:#2bdc19'  ></i>
+        </button>
+
+            {% endif %}
+
+              </div>
+              <div class="col-md-4">
+                {% if staff %}
+                {% if proj_inv_per.can_delete %}
+                <form>
+                  {% csrf_token %}
+                 <button
+                 type="button"
+                 class="btn  btn-sm js-delete-data_wallet"
+                 data-id="{{  instance.pk  }}">
+                 <i class='bx bx-trash' style='color:#ce0d11'  ></i>
+                </button>
+              </form>
+              {% endif %}
+              {% else %} 
+              <form>
+                {% csrf_token %}
+               <button
+               type="button"
+               class="btn  btn-sm js-delete-data_wallet"
+               data-id="{{  instance.pk  }}">
+               <i class='bx bx-trash' style='color:#ce0d11'  ></i>
+              </button>
+              {% endif %}
+
+
+            </div>
+          </div>
+
+              </td>
+          
+        </tr>
+        {% endfor %}
+      </tbody>
+      
+
+      {% endif %}
+    </table>
+  
+
+  </div>
+</div>
+<div class="modal fade" id="modal-project">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <p id="error-div"></p>
+    </div>
+  </div>
+  
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  
+  <script>
+
+    $(document).ready(function() {
+      $('#project-table').DataTable({
+          responsive: true,
+          
+          language: {
+            search: "",
+            searchPlaceholder: "Search...",
+          },
+          
+      });
+      $('#project-table_filter input[type="search"]').addClass('form-control');
+      $('#project-table_filter input[type="search"]').attr('placeholder', 'Search...');
+      $('#project-table_filter input[type="search"]').attr('aria-label', 'Search...')
+
+    });
+    $(function () {
+      var loadForm = function () {
+        var btn = $(this);
+        $.ajax({
+          url: btn.attr("data-url"),
+          type: "get",
+          dataType: "json",
+          beforeSend: function () {
+            $("#modal-project").modal("show");
+          },
+          success: function (data) {
+            $("#modal-project .modal-content").html(data.html_form);
+          },
+        });
+      };
+
+      var saveForm = function () {
+        var form = $(this);
+        $.ajax({
+          url: form.attr("action"),
+          data: form.serialize(),
+          type: form.attr("method"),
+          dataType: "json",
+          success: function (data) {
+            if (data.form_is_valid) {
+
+                if (data.add){
+                  Swal.fire(
+                    'Added!',
+                    'Your Details Have Been Added.',
+                    'success'
+                  ).then(() => {
+                    $("#modal-project").modal("hide");
+                    location.reload(); 
+                  });
+                }
+                if (data.update1){
+                  Swal.fire(
+                    'Approved!',
+                    'Your First Approval Has Been Approved.',
+                    'success'
+                  ).then(() => {
+                    $("#modal-project").modal("hide");
+                    location.reload(); 
+                  });
+                }
+                if (data.update2){
+                  Swal.fire(
+                    'Approved!',
+                    'Your Second Approval Has Been Approved.',
+                    'success'
+                  ).then(() => {
+                    $("#modal-project").modal("hide");
+                    location.reload(); 
+                  });
+                }
+                if (data.pending) {
+                  Swal.fire(
+                    'Wait!',
+                    'This Account Approval is Pending.',
+                    'info'
+                  ).then(() => {
+                    $('#project-table_filter input[type="search"]').val(data.name);
+                    $("#modal-project").modal("hide");
+                  });
+                }
+            }
+            
+            else{
+              $("#modal-project .modal-content").html(data.html_form);
+            }
+          },
+          error: function(xhr, status, error) {
+            var response = JSON.parse(xhr.responseText);
+            $("#modal-project").modal("hide");
+            swal.fire({
+                title: 'Error!',
+                text: response.error,
+                icon: 'error',
+                showConfirmButton: false,
+            });
+            
+        }
+        });
+        return false;
+      };
+
+    
+        $(document).on('click', '.js-delete-data_wallet', function() {
+          var id = $(this).data('id');
+          var csrf_token = $('input[name="csrfmiddlewaretoken"]').val(); 
+      
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this data!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              $.ajax({
+                url: '/detele_investors_wallet/' + id + '/',
+                type: 'DELETE',
+                headers: { 'X-CSRFToken': csrf_token }, // Add the CSRF token to the request headers
+                success: function() {
+                  Swal.fire(
+                    'Deleted!',
+                    'The data has been deleted.',
+                    'success'
+                  ).then(() => {
+                    location.reload(); // Reload the page after successful deletion
+                  });
+                },
+                error: function(xhr, status, error) {
+                  var response = JSON.parse(xhr.responseText);
+                  $("#modal-project").modal("hide");
+                  swal.fire({
+                      title: 'Error!',
+                      text: response.error,
+                      icon: 'error'
+                  });
+                }
+              });
+            }
+          });
+        });
+      
+      
+
+      $(".wallet_open_form").click(loadForm);
+      $("#modal-project").on("submit", ".project-form-reg", saveForm);
+      $("#project-table").on("click", ".project_inves_view_js", loadForm);
+        
+      $("#project-table").on("click", ".investors_wallet_permission", loadForm);
+      $("#modal-project").on("submit", ".project_up_form", saveForm);
+
+     
+    });
+  </script>
+
+</div>
+
+{% endblock content %}

@@ -1,0 +1,384 @@
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+{% block title %}
+Settlements | {{name}}
+{% endblock title %}
+
+{% block content %}
+<style>
+  .excel:hover{
+    background-color: #4CAF50;
+    color: black;
+  }
+  .csv:hover{
+    background-color: yellow;
+    color: black;
+  }
+  .pdf:hover{
+    background-color: #ce0d11;
+    color: black;
+  }
+  .sub_title{
+    color: #64768A;
+  }
+.sub_title:hover{
+  color: #696CFF;
+}
+.dataTables_length{
+  padding-left: 20px;
+
+}
+.dataTables_info{
+  padding: 20px;
+}
+.dataTables_filter{
+  margin-right:80px;
+}
+.dataTables_paginate {
+  padding-right: 30px;
+}
+</style>
+  <div class="card m-3">
+    <div class="row">
+      <div class="col-md-9">
+        <strong>
+          <h4 class="card-header">
+            <b>
+              Settlement
+            </b>
+            <br>
+            <span class="" style="font-size: 16px" > <a href="{% url 'base' %}" class="sub_title" title="Dashboard"> Dashboard</a>/Settlements</span>
+          </h4>
+        </strong>
+      </div>
+
+     
+     
+      <div class="col-md-3 mt-3">
+        {% if staff %}
+        {% if proj_inv_per.add %}
+        <button
+          type="button"
+          class="btn btn-primary project_open_form"
+          data-url="{% url 'project_settlement_create' %}"
+        >
+      <i class='bx bx-customize'></i>
+          Add New 
+        </button>
+        {% endif %}
+      {% else %} 
+      <button
+      type="button"
+      class="btn btn-primary project_open_form"
+      data-url="{% url 'project_settlement_create' %}"
+    >
+    <i class='bx bx-customize'></i>
+    Add New 
+    </button>
+    {% endif %}
+
+      </div>
+    </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-hover"  id="project-table">
+      <thead>
+        <tr>
+            <th>S.No</th>
+            <th>project Name</th>
+            <th>UNIT</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Approval Status</th>
+
+            <th class="text-center">Actions</th>
+
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        {% if my_model_instances %}
+
+        {% for instance in my_model_instances %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ instance.investor_name }}</td>
+          <td>{{ instance.project_name }}</td>
+          <td>{{ instance.amount }}</td>
+          <td>{{ instance.settlement_date|date:"d-m-Y" }}</td>
+
+          <td>
+          {% if instance.First_Approved_by   %}
+              {% if not instance.Second_Approved_by  %}
+            <i class='bx bx-check'  style="color: green;"></i>
+            {% endif %}
+            
+              {% else %}
+              <i class='bx bx-error-circle' style='color:#c10c0f'  ></i>Pending
+                
+            {% endif %}
+            
+            {% if instance.Second_Approved_by  %}
+            <i class='bx bx-check'  style="color: green;"></i>
+            <i class='bx bx-check'  style="color: green;"></i>
+                
+              {% endif %}
+            </td>
+            
+          <td>
+            <div class="row">
+               <div class="col-md-4">
+                {% if staff %}
+                {% if proj_inv_per.view %}
+                <a
+                type="button"
+                class="btn btn-sm project_exp_view_js "
+                data-url="{% url 'view_project_settlement'  instance.pk  %}"
+              >
+              <i class='bx bx-show' style='color:#11e3f3'  ></i>
+              </a>
+              {% endif %}
+              {% else %} 
+              <a
+                type="button"
+                class="btn btn-sm project_exp_view_js "
+                data-url="{% url 'view_project_settlement'  instance.pk  %}"
+              >
+              <i class='bx bx-show' style='color:#11e3f3'  ></i>
+              </a>
+              {% endif %}
+
+              </div>
+              <div class="col-md-4">
+                {% if staff %}
+                {% if proj_inv_per.edit %}
+                <button
+                type="button"
+                class="btn btn-sm project_edit_js"
+                data-url="{% url 'project_settlement_update'  instance.pk  %}"
+              >
+              <i   class='bx bx-upload' style='color:#2bdc19'  ></i>
+
+
+              </button>
+               {% endif %}
+              {% else %} 
+              <button
+              type="button"
+              class="btn btn-sm project_edit_js"
+              data-url="{% url 'project_settlement_update'  instance.pk  %}"
+            >
+            <i   class='bx bx-upload' style='color:#2bdc19'  ></i>
+
+
+            </button>
+
+              {% endif %}
+
+              </div>
+
+              <div class="col-md-4">
+                {% if staff %}
+                {% if proj_inv_per.can_delete %}
+                <form>
+                  {% csrf_token %}
+                 <button
+                 type="button"
+                 class="btn btn-sm js-delete-data"
+                 data-id="{{  instance.pk  }}">
+                 <i class='bx bx-trash' style='color:#ce0d11'  ></i>
+                </button>
+              </form>
+              {% endif %}
+              {% else %} 
+              <form>
+                {% csrf_token %}
+               <button
+               type="button"
+               class="btn btn-sm js-delete-data"
+               data-id="{{  instance.pk  }}">
+               <i class='bx bx-trash' style='color:#ce0d11'  ></i>
+              </button>
+            </form>
+              {% endif %}
+
+              </div>
+              </div>
+          </td>
+        </tr>
+        
+
+        {% endfor %}
+
+      </tbody>
+       {% endif %}
+       
+
+
+
+    </table>
+  
+</div>
+</div>
+<div id="snackbar"></div>
+
+<div class="modal fade" id="modal-project">
+  <div class="modal-dialog modal-lg ">
+    <div class="modal-content"></div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  
+  <script>
+
+    $(document).ready(function() {
+      $('#project-table').DataTable({
+          responsive: true,
+          
+          language: {
+            search: "",
+            searchPlaceholder: "Search...",
+          },
+          
+      });
+      $('#project-table_filter input[type="search"]').addClass('form-control');
+      $('#project-table_filter input[type="search"]').attr('placeholder', 'Search...');
+      $('#project-table_filter input[type="search"]').attr('aria-label', 'Search...')
+
+    });
+   
+   
+    $(function () {
+      var loadForm = function () {
+        var btn = $(this);
+        $.ajax({
+          url: btn.attr("data-url"),
+          type: "get",
+          dataType: "json",
+          beforeSend: function () {
+            $("#modal-project").modal("show");
+          },
+          success: function (data) {
+            $("#modal-project .modal-content").html(data.html_form);
+          },
+        });
+      };
+
+      var saveForm = function () {
+        var form = $(this);
+        $.ajax({
+          url: form.attr("action"),
+          data: form.serialize(),
+          type: form.attr("method"),
+          dataType: "json",
+          success: function (data) {
+            if (data.pending) {
+              Swal.fire(
+                'Wait!',
+                'Kindly Complete Last Approval..',
+                'info'
+              ).then(() => {
+                $("#modal-project").modal("hide");
+                $('#project-table_filter input[type="search"]').val('Pending');
+              });
+            }
+            if (data.form_is_valid) {
+              if (data.add){
+                Swal.fire(
+                  'Added!',
+                  'Settlement Has Been Added.',
+                  'success'
+                ).then(() => {
+                  $("#modal-project").modal("hide");
+                  location.reload(); 
+                });
+              }
+              if (data.update1){
+                Swal.fire(
+                  'Approved!',
+                  'First Approval Has Been Provided.',
+                  'success'
+                ).then(() => {
+                  $("#modal-project").modal("hide");
+                  location.reload(); 
+                });
+              }
+              if (data.update2){
+                Swal.fire(
+                  'Approved!',
+                  'Second Approval Has Been Provided.',
+                  'success'
+                ).then(() => {
+                  $("#modal-project").modal("hide");
+                  location.reload(); 
+                });
+              }
+              
+             
+            } else {
+              $("#modal-project .modal-content").html(data.html_form);
+            }
+          },
+        });
+        return false;
+      };
+
+    
+        $(document).on('click', '.js-delete-data', function() {
+          var id = $(this).data('id');
+          var csrf_token = $('input[name="csrfmiddlewaretoken"]').val(); 
+      
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this data!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              $.ajax({
+                url: '/delete_project_settlement/' + id + '/',
+                type: 'DELETE',
+                headers: { 'X-CSRFToken': csrf_token }, // Add the CSRF token to the request headers
+                success: function() {
+                  Swal.fire(
+                    'Deleted!',
+                    'The data has been deleted.',
+                    'success'
+                  ).then(() => {
+                    location.reload(); // Reload the page after successful deletion
+                  });
+                },
+                error: function() {
+                  Swal.fire(
+                    'Error!',
+                    'An error occurred while deleting the data.',
+                    'error'
+                  );
+                }
+              });
+            }
+          });
+        });
+      
+       
+        
+
+      $(".project_open_form").click(loadForm);
+      $("#modal-project").on("submit", ".project-form-reg", saveForm);
+      $("#project-table").on("click", ".project_exp_view_js", loadForm);
+
+      $("#project-table").on("click", ".project_edit_js", loadForm);
+      $("#modal-project").on("submit", ".project_up_form", saveForm);
+
+     
+    });
+  </script>
+
+</div>
+
+    {% endblock content %}
+  

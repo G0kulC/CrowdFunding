@@ -1,0 +1,108 @@
+<div class="modal-header">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </button>
+ </div>
+ <div class="modal-body">
+ <div class="row">
+       <div class="col-md-6">
+          <h4>
+             {{my_model_instances.project_name }}
+          </h4>
+       </div>
+       
+      
+   </div>
+    <hr>
+ <div class="row">
+   <div class="col-md-6">
+    <table class="table table-hover">
+      <tr>
+        <td><b>Project Name</b></td>
+        <td>{{my_model_instances.project_name }}</td>
+      </tr>
+      <tr>
+        <td><b>Project Location</b></td>
+        <td>{{my_model_instances.Project_location }}</td>
+      </tr>
+      <tr>
+        <td><b>Latitude</b></td>
+        <td>{{my_model_instances.Latitude }}</td>
+      </tr>
+      <tr>
+        <td><b>Longitude</b></td>
+        <td>{{my_model_instances.Longitude }}</td>
+      </tr>
+      <tr>
+        <td><b>Project value</b></td>
+        <td>{{my_model_instances.Project_value }}</td>
+      </tr>
+      <tr>
+        <td><b>Kickoff date</b></td>
+        <td>{{my_model_instances.Kickoff_date }}</td>
+      </tr>
+      <tr>
+        <td><b>Returns projection type</b></td>
+        <td>{{my_model_instances.Returns_projection_type }}</td>
+      </tr>
+      <tr>
+        <td><b>Returns projection value</b></td>
+        <td>{{my_model_instances.Returns_projection_value }}</td>
+      </tr>
+   </table>
+</div>
+
+
+   <div class="col-md-6">
+
+   <table class="table table-hover">
+
+      
+      <tr>
+        <td><b>Other Expense</b></td>
+        <td>{{my_model_instances.Other_expense }}</td>
+      </tr>
+      <tr>
+        <td><b>Total Share</b></td>
+        <td>{{my_model_instances.Total_share }}</td>
+      </tr>
+      <tr>
+        <td><b>Per Share Value</b></td>
+        <td>{{my_model_instances.Per_share_value }}</td>
+      </tr>
+      <tr>
+        <td><b>Share Count</b></td>
+        <td>{{my_model_instances.share_count }}</td>
+      </tr>
+
+
+      <tr>
+        <td><b>Expected Return Date</b></td>
+        <td>{{my_model_instances.Expected_return_date }}</td>
+      </tr>
+      <tr>
+        <td><b>Created Date</b></td>
+        <td>{{my_model_instances.Created_datetime|date:'d-m-Y' }}</td>
+      </tr>
+    </table>
+   </div>
+
+<center>
+   
+   <td>
+     {% if my_model_instances.status == True %}
+       <i class='bx bxs-badge-check' style="color: green;"></i>Active
+     {% else %}
+       <i class='bx bx-error-circle' style='color:#c10c0f'  ></i>In Active
+     {% endif %}
+   </td>
+</center>
+        
+</div>
+
+
+
+
+
+ <div class="modal-footer">
+    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Close</button>
+ </div>

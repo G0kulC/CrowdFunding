@@ -1,0 +1,226 @@
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+{% block title %}
+Project Logs | {{name}}
+{% endblock title %}
+
+{% block content %}
+<style>
+  .sub_title{
+    color: #64768A;
+  }
+.sub_title:hover{
+  color: #696CFF;
+}
+  #id_company-datax{
+    height:1px;
+    overflow-y:auto;
+      width:50px;
+  }
+.dataTables_length{
+    padding: 20px;
+
+}
+.dataTables_info{
+    padding: 20px;
+}
+.dataTables_filter{
+    margin-right: 35px;
+  }
+
+  .disabled-row {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  
+</style>
+<div class="card m-3">
+  <div class="row">
+    <div class="col-md-4">
+      <strong>
+        <h4 class="card-header">
+          <b>
+            Logs
+          </b>
+          <br>
+          <span class="" style="font-size: 16px" > <a href="{% url 'base' %}" class="sub_title" title="Dashboard"> Dashboard</a>/Project</span>
+        </h4>
+      </strong>
+    </div>
+    <div class="col-md-8 mt-4">
+
+      <!-- Form for search -->
+
+</div>
+ 
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table  id="user-logs-table" class="table table-hover">
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Company</th>
+                <th>Project</th>
+                <th>Action</th>
+                <th>IP Address</th>
+                <th>Date</th>
+                <th>View</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for user_log in proj_logs %}
+            <tr  class=" {% if user_log.perment_delete == True %} disabled-row{% endif %}"
+            >
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user_log.user }}</td>
+                <td>
+                 
+      
+                
+                {{ user_log.project_name }}
+                
+                </td>
+                <td>
+                  <a
+                  type="button"
+                  class="btn project_view_js "
+                  data-url="{% url 'view_project_log'  user_log.pk  %}"
+                  title="Click to view"
+                >
+                  
+                  {% if user_log.action == 'Created' %}
+                    <span class="badge bg-label-success">{{ user_log.action }}</span>
+                  {% endif %}
+                  {% if user_log.action == 'Updated' %}
+                    <span class="badge bg-label-warning">{{ user_log.action }}</span>
+                  {% endif %}
+                  {% if user_log.action == 'Deleted' %}
+                  <span class="badge bg-label-danger">{{ user_log.action }}</span>
+                   {% endif %}
+                   {% if user_log.action == 'Recoverd' %}
+                   <span class="badge bg-label-primary">{{ user_log.action }}</span>
+                    {% endif %}
+                  
+              </a>
+                 
+
+                 
+                </td>
+                <td>{{ user_log.ip_address}}</td>
+                <td>{{ user_log.timestamp|date:"d-m-Y" }}</td>
+                <td>
+                  <a
+                  type="button"
+                  class="btn project_view_js "
+                  data-url="{% url 'view_project_log'  user_log.pk  %}"
+                  title="Click to view"
+                ><i class='bx bxs-show'></i>
+                </a>
+                    
+
+                </td>
+
+            </tr>
+            
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+    
+    
+    
+   
+</div>
+</div>
+
+<div class="modal fade" id="modal-project">
+  <div class="modal-dialog  modal-lg">
+    <div class="modal-content"></div>
+  </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+
+
+<script>
+    $(document).ready(function() {
+        $('#user-logs-table').DataTable({
+            responsive: true,
+        });
+    });
+    $(document).on('click', '.js-delete-data', function() {
+        var id = $(this).data('id');
+        var csrf_token = $('input[name="csrfmiddlewaretoken"]').val(); 
+    
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'You will recover this data!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, recover it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: '/recover_project/' + id + '/',
+              type: 'DELETE',
+              headers: { 'X-CSRFToken': csrf_token }, // Add the CSRF token to the request headers
+              success: function(data) {
+                if (data.ok == true) {
+                    Swal.fire(
+                        'Success!',
+                        'The data has been Recovered.',
+                        'success'
+                      ).then(() => {
+                        location.reload(); // Reload the page after successful deletion
+                      });  
+                }
+                if (data.ok == false) {
+                    Swal.fire(
+                      'Error!',
+                      'No Data found.',
+                      'error'
+                    );
+                  }
+                
+              },
+              error: function() {
+                Swal.fire(
+                  'Error!',
+                  'An error occurred while recover the data.',
+                  'error'
+                );
+              }
+            });
+          }
+        });
+      });
+
+      $(function () {
+        var loadForm = function () {
+          var btn = $(this);
+          $.ajax({
+            url: btn.attr("data-url"),
+            type: "get",
+            dataType: "json",
+            beforeSend: function () {
+              $("#modal-project").modal("show");
+            },
+            success: function (data) {
+              $("#modal-project .modal-content").html(data.html_form);
+            },
+          });
+        };
+        $(".project_view_js").on("click", loadForm);
+      });
+    </script>
+        
+    {% endblock content %}
+    

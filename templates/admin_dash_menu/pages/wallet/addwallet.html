@@ -1,0 +1,227 @@
+
+
+<style>
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+  }
+
+  #snackbar {
+    visibility: hidden; /* Hidden by default. Visible on click */
+    min-width: 250px; /* Set a default minimum width */
+    margin-left: -125px; /* Divide value of min-width by 2 */
+    background-color: #da5050; /* Black background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Centered text */
+    border-radius: 2px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: 99999999; /* Add a z-index if needed */
+    left: 50%; /* Center the snackbar */
+    bottom: 30px; /* 30px from the bottom */
+  }
+  
+  /* Show the snackbar when clicking on a button (class added with JavaScript) */
+  #snackbar.show {
+    visibility: visible; /* Show the snackbar */
+    /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+    However, delay the fade out process for 2.5 seconds */
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  
+  /* Animations to fade the snackbar in and out */
+  @-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+    </style>
+<form method="post" action="{% url 'add_money_wallet'  %}"  class="project-form-reg" id="insestor_table">
+  {% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+  <h5 class="text-center modal-title text-uppercase mb-2 " id="exampleModalLabel1">Investor Wallet</h5> 
+
+    <div id="snackbar"></div>
+
+    <div class="row">
+      <div class="col-md-6">
+
+        <label for="investor_name">Investor Id:<span style="color: red;">*</span>(<span style="color: green; font-size: 12px;">Active Investors </span>)</label>
+          <select class="form-control" type="text" name="investor_name" maxlength="100"  id="id_investor_name" onfocus='this.size=4;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+          <option value="">-- Select a Investor --</option>
+        </select>
+        
+        <script>
+        $(document).ready(function() {
+          $.ajax({
+              url: "{% url 'get_company_investors_wallet' %}",
+              type: "GET",
+              success: function(data) {
+                  $.each(data.projects, function(index, project) {
+                      $('#id_investor_name').append('<option value="' + project.invs_name + '">' + project.invs_name + '</option>');
+                  });
+              },
+              error: function(xhr, status, error) {
+                  console.log(xhr.responseText);
+              }
+          });
+        });
+        </script>
+      </div>
+      <div class="col-md-6">
+          <label for="amount">Amount<span style="color: red;">*</span></label>
+          <input type="number" name="amount" id="amount" class="form-control">
+      </div>
+      </div>
+        
+          <div class="row">
+            <div class="col-md-6">
+          <label for="mode_of_payment">Mode of Payment<span style="color: red;">*</span></label>
+          <select name="mode_of_payment" id="id_Mode_of_payment" class="form-control">
+            <option value="unknown" selected="" class="text-center">---Mode of payment---</option>
+            <option value="upi">UPI</option>
+            <option value="cash">Cash</option>
+            <option value="banking">Banking</option>
+          </select> 
+        </div>
+
+      <div class="col-md-6">
+        
+        <label id="payment_id_lab"></label><span style='color: red;'>*</span>
+        <input type="text" name="payment_id" id="payment_id" class="form-control">
+        
+        <script>
+          $(document).ready(function() {
+            $('#id_Mode_of_payment').on('change', function(e) {
+              var Mode_of_payment = $("#id_Mode_of_payment").val();
+        
+              if (Mode_of_payment == "cash") {
+                $("#payment_id_lab").text("Voucher Number");
+              } else if (Mode_of_payment == "upi") {
+                $("#payment_id_lab").text("UPI ID");
+              } else if (Mode_of_payment == "banking") {
+                $("#payment_id_lab").text("Transaction ID");
+              }
+            });
+          });
+        </script>
+      </div>
+      </div>
+        
+          <div class="row">
+            <div class="col-md-6">
+          <label for="payment_given_by">Payment Given By<span style="color: red;">*</span></label>
+          <select type="text" name="payment_given_by" id="payment_given_by" class="form-control">
+            <option value=""  id="payment_given_by_opt" selected=""></option>
+            </select>
+        <script>
+          $(document).ready(function() {
+            $('#id_investor_name').on('change', function(e) {
+              var id_investor_name = $("#id_investor_name").val();
+              $("#payment_given_by_opt").val(id_investor_name);
+              $("#payment_given_by_opt").html(id_investor_name);
+
+            });
+          });
+        </script>
+      </div>
+      </div>
+      <button type="button" class="btn btn-primary w-100 mt-4"  id="add_money_btn">Add to Wallet</button>
+    </form>
+
+    <script>
+
+      function snackbar_show() {
+        // Get the snackbar DIV
+        var x = document.getElementById("snackbar");
+      
+        // Add the "show" class to DIV
+        x.className = "show";
+      
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+      }
+      $(document).ready(function() {
+        // Function to validate the form
+        function validateForm() {
+          var investorName = $("#id_investor_name").val();
+          var amount = $("#amount").val();
+          var modeOfPayment = $("#id_Mode_of_payment").val();
+          var paymentId = $("#payment_id").val();
+          var paymentReceiverName = $("#payment_receiver_name").val();
+          var x = document.getElementById("snackbar");
+
+      
+          // Perform validation checks
+          if (investorName === "") {
+            snackbar_show();
+            x.innerHTML = "Please enter the Investor Name.";
+
+            return false;
+          }
+          if (amount === ""  ) {
+            snackbar_show();
+            x.innerHTML = "Please enter the Amount.";
+            return false;
+          }
+          if (amount < 0 ) {
+            snackbar_show();
+            x.innerHTML = "Please enter the Amount.";
+            return false;
+          }
+          if (modeOfPayment === "unknown") {
+            snackbar_show();
+            x.innerHTML = "Please select a Mode of Payment.";
+            return false;
+          }
+          if (paymentId === "") {
+            snackbar_show();
+            x.innerHTML = "Please enter the Payment ID.";
+            return false;
+          }
+          
+      
+          // All validations passed
+          return true;
+        }
+      
+        // Attach form submission event handler
+        $("#add_money_btn").on("click", function(e) {
+          if (!validateForm()) {
+            e.preventDefault(); 
+          }
+          if (validateForm()) {
+            console.log("True");
+            var btn = document.getElementById("add_money_btn");
+            btn.type = "submit";
+          }
+          
+        });
+      });
+      
+    </script>
+    </div>
+  </div>
+
+  

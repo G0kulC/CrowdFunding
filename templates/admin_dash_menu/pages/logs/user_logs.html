@@ -1,0 +1,109 @@
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+{% block title %}
+User  Logs 
+{% endblock title %}
+
+{% block content %}
+<style>
+  .sub_title{
+    color: #64768A;
+  }
+.sub_title:hover{
+  color: #696CFF;
+}
+  #id_company-datax{
+    height:1px;
+    overflow-y:auto;
+      width:50px;
+  }
+  .dataTables_length{
+    padding: 0 20px 0 20px;
+
+}
+.dataTables_info{
+    padding: 20px;
+}
+#user-logs-table_filter{
+    margin-right: 35px;
+}
+</style>
+<div class="card m-3">
+  <div class="row">
+    <div class="col-md-3">
+      <strong>
+        <h4 class="card-header">
+          <b>
+            Logs
+          </b>
+          <br>
+          <span class="" style="font-size: 16px" > <a href="{% url 'base' %}" class="sub_title" title="Dashboard"> Dashboard</a>/Users</span>
+        </h4>
+      </strong>
+    </div>
+   
+ 
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table  id="user-logs-table" class="table table-hover">
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>User</th>
+                <th>Login Date</th>
+                <th>Logout Date</th>
+                <th>IP Address</th>
+                <th>Activity Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user_log in user_logs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user_log.user }}</td>
+                <td>{{ user_log.login_time|date:"d-m-Y" }}</td>
+                <td>{{ user_log.logout_time|date:"d-m-Y" }}</td>
+                <td>{{ user_log.ip_address }}</td>
+                <td>{{ user_log.active_time }}</td>
+
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    
+    
+   
+</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+
+
+<script>
+
+    $(document).ready(function() {
+      $('#user-logs-table').DataTable({
+          responsive: true,
+          
+          language: {
+            search: "",
+            searchPlaceholder: "Search...",
+          },
+          
+      });
+      $('#user-logs-table_filter input[type="search"]').addClass('form-control');
+      $('#user-logs-table_filter input[type="search"]').attr('placeholder', 'Search...');
+      $('#user-logs-table_filter input[type="search"]').attr('aria-label', 'Search...')
+
+    });
+ 
+
+    </script>
+        
+    {% endblock content %}
+    

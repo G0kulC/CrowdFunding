@@ -1,0 +1,219 @@
+<style>
+  
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+  }
+ 
+    #snackbar {
+      visibility: hidden; 
+      min-width: 250px; /* Set a default minimum width */
+      margin-left: -125px; /* Divide value of min-width by 2 */
+      background-color: rgb(236, 87, 87); /* Black background color */
+      color: #fff; /* White text color */
+      text-align: center; /* Centered text */
+      border-radius: 2px; /* Rounded borders */
+      padding: 16px; /* Padding */
+      position: fixed; /* Sit on top of the screen */
+      z-index: 99999999; /* Add a z-index if needed */
+      left: 50%; /* Center the snackbar */
+      bottom: 30px; /* 30px from the bottom */
+    }
+
+    /* Show the snackbar when clicking on a button (class added with JavaScript) */
+    #snackbar.show {
+      visibility: visible; /* Show the snackbar */
+      /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+      However, delay the fade out process for 2.5 seconds */
+      -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    /* Animations to fade the snackbar in and out */
+    @-webkit-keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+    }
+
+    @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+    }
+
+    @-webkit-keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
+
+    @keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
+</style>
+<h5 class="text-center modal-title text-uppercase mb-2 " id="exampleModalLabel1">Add Expencse</h5>
+
+<div class="row">
+  <div class="col-md-12">
+    <label for="id_project_name">Project name:(<span style="color: green; font-size: 12px;">Active Project  </span>)</label>
+    <select class="form-control text-center" type="text" name="project" maxlength="100"  id="id_project" onfocus='this.size=4;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+  {% if request.user.is_authenticated %}
+      <option value="">-- Select a project --</option>
+  {% endif %}
+  </select>
+  
+  <script>
+  $(document).ready(function() {
+      $.ajax({
+          url: "{% url 'get_company_projects_expences' %}",
+          type: "GET",
+          success: function(data) {
+              $.each(data.projects, function(index, project) {
+                  $('#id_project').append('<option value="' + project.name + '">'+ project.name + '</option>');
+              });
+          },
+          error: function(xhr, status, error) {
+              console.log(xhr.responseText);
+          }
+      });
+  });
+  </script>
+</div>
+  
+</div>
+<div class="row">
+<div class="col-md-12">
+    <label for="id_amount">Amount:</label>
+    <input class="form-control" type="number" name="amount" min="1"  id="id_amount">
+</div>
+  <div class="col-md-12">
+    <label for="id_Mode_of_payment">Mode of payment:</label>
+    <select name="Mode_of_payment" id="id_Mode_of_payment"   class="form-control">
+      <option value="unknown" selected="" class="text-center">---Mode of payment---</option>
+    
+      <option value="upi">UPI</option>
+      <option value="cash">cash</option>
+      <option value="banking">Banking</option>
+    </select>
+
+  </div>
+    
+    
+    
+  <div class="col-md-12">
+        
+    <label id="payment_id_lab"></label><span style='color: red;'>*</span>
+    <input type="text" name="payment_id" id="payment_id" class="form-control">
+    
+    <script>
+      $(document).ready(function() {
+        $('#id_Mode_of_payment').on('change', function(e) {
+          var Mode_of_payment = $("#id_Mode_of_payment").val();
+    
+          if (Mode_of_payment == "cash") {
+            $("#payment_id_lab").text("Voucher Number");
+          } else if (Mode_of_payment == "upi") {
+            $("#payment_id_lab").text("UPI ID");
+          } else if (Mode_of_payment == "banking") {
+            $("#payment_id_lab").text("Transaction ID");
+          }
+        });
+      });
+    </script>
+  </div>
+  </div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+    Close
+  </button>
+  <button type="button" class="btn btn-primary" id="expences_create_btn">Submit</button>
+</div>
+</form>
+</div>
+
+
+
+<script>
+
+
+
+
+
+
+
+
+
+  function snackbar_show() {
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar");
+  
+    // Add the "show" class to DIV
+    x.className = "show";
+  
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
+
+  $(document).ready(function() {
+    // Function to validate the form
+    function validateForm() {
+      // Change const to var
+      var project = $("#id_project").val();
+      var amount = $("#id_amount").val();
+      var modeOfPayment = $("#id_Mode_of_payment").val();
+      var paymentId = $("#payment_id").val();
+      
+      var x = document.getElementById("snackbar");
+      if (project === "") {
+        snackbar_show();
+        x.innerHTML = "Please Select a Project.";
+        return false;
+      }
+      
+      if (amount === "") {
+        snackbar_show();
+        x.innerHTML = "Please Enter the Amount.";
+        return false;
+      } else if (!Number(amount)) {
+        snackbar_show();
+        x.innerHTML = "Amount must be a number.";
+        return false;
+      }
+
+      if (modeOfPayment === "") {
+        snackbar_show();
+        x.innerHTML = "Please Select a Mode of Payment.";
+        return false;
+      } 
+
+      if (paymentId === "") {
+        snackbar_show();
+        x.innerHTML = "Please Enter the Payment ID.";
+        return false;
+      } 
+      
+
+      
+
+      return true;
+    }
+  
+    // Attach form submission event handler
+    $("#expences_create_btn").on("click", function(e) {
+      if (!validateForm()) {
+        e.preventDefault(); 
+      }
+      if (validateForm()) {
+        console.log("True");
+        var btn = document.getElementById("expences_create_btn");
+        btn.type = "submit";
+      }
+      
+    });
+  });
+
+
+
+
+  </script>

@@ -1,0 +1,376 @@
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+{% block title %}
+Investors | {{name}}
+{% endblock title %}
+
+{% block content %}
+<style>
+  .sub_title{
+    color: #64768A;
+  }
+.sub_title:hover{
+  color: #696CFF;
+}
+.dataTables_paginate {
+  padding-right: 30px;
+}
+.dataTables_length{
+  padding-top: 20px;
+  padding-left: 20px;
+
+}
+.dataTables_info{
+  padding: 20px;
+}
+.dataTables_filter{
+  margin-right:80px;
+}
+
+.disabled-row {
+  opacity: 0.5;
+  pointer-events: none;
+}
+</style>
+<div class="card m-3">
+  <div class="row">
+    <div class="col-md-9">
+      <strong>
+        <h4 class="card-header">
+          <b>
+            Investors
+          </b>
+          <br>
+          <span class="" style="font-size: 16px" > <a href="{% url 'base' %}" class="sub_title" title="Dashboard"> Dashboard</a>/Investors</span>
+        </h4>
+      </strong>
+    </div>
+    
+
+    <div class="col-md-3 mt-3">
+      {% if staff %}
+      {% if investor_per.add %}
+      <button
+        type="button"
+        class="btn btn-primary investors_open_form"
+        data-url="{% url 'investors_create' %}"
+      >
+        <i class="bx bx-user-plus"></i>
+        Add Investor
+      </button>
+      {% endif %}
+      {% else %}
+      <button
+      type="button"
+      class="btn btn-primary investors_open_form"
+      data-url="{% url 'investors_create' %}"
+    >
+      <i class="bx bx-user-plus"></i>
+      Add Investor
+    </button>
+      {% endif %}
+
+    </div>
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-hover" id="investors-table">
+      <thead>
+        <tr>
+          <th>S.no</th>
+          <th>First Name</th>
+          <th>Email</th>
+          <th>Mobile Number</th>
+
+          <th>Status</th>
+
+          <th  class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        {% if my_model_instances %}
+
+        {% for instance in my_model_instances %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ instance.first_name }}</td>
+          <td>{{ instance.email_id }}</td>
+          <td>{{ instance.mobile_number }}</td>
+
+          <td>
+
+          {% if instance.status == True %}
+          <i class='bx bxs-badge-check' style="color: green;"></i>Active
+          
+            {% else %}
+            <i class='bx bx-error-circle' style='color:#c10c0f'  ></i>Not Active
+          
+          {% endif %}
+          
+          </td>
+        
+
+          <td>
+            <div class="row">
+              <div class="col-md-4">
+                {% if staff %}
+                  {% if investor_per.view %}
+                <a
+                type="button"
+                class="btn btn-sm investor_view_js "
+                data-url="{% url 'view_investor'  instance.pk  %}"
+              >
+              <i class='bx bx-show' style='color:#11e3f3'  title="View Investor" ></i>
+              </a>
+              {% endif %}
+              {% else %}
+              <a
+              type="button"
+              class="btn btn-sm investor_view_js "
+              data-url="{% url 'view_investor'  instance.pk  %}"
+            >
+            <i class='bx bx-show' style='color:#11e3f3'  title="View Investor" ></i>
+            </a>
+              {% endif %}
+
+
+              </div>
+              <div class="col-md-4">
+                {% if staff %}
+                     {% if investor_per.edit %}
+                <button
+                type="button"
+                class="btn btn-sm investors_edit_js"
+                data-url="{% url 'investors_update'  instance.pk  %}"
+              >
+              <i 
+              class='bx bx-edit'
+               style='color:#2bdc19'  title="Edit Investor" ></i>
+
+              </button>
+              {% endif %}
+               {% else %}
+               <button
+               type="button"
+               class="btn btn-sm investors_edit_js"
+               data-url="{% url 'investors_update'  instance.pk  %}"
+             >
+             <i 
+             class='bx bx-edit'
+              style='color:#2bdc19'  title="Edit Investor" ></i>
+
+             </button>
+             {% endif %}
+
+              </div>
+              <div class="col-md-4">
+                {% if staff %}
+                      {% if investor_per.can_delete %}
+                <form>
+                  {% csrf_token %}
+                 <button
+                 type="button"
+                 class="btn btn-sm js-delete-data"
+                 data-id="{{  instance.pk  }}">
+                 <i class='bx bx-trash' style='color:#ce0d11'  title="Delete Investor" ></i>
+
+                </button>
+              </form>
+              {% endif %}
+               {% else %}
+               <form>
+                {% csrf_token %}
+               <button
+               type="button"
+               class="btn btn-sm js-delete-data"
+               data-id="{{  instance.pk  }}">
+               <i class='bx bx-trash' style='color:#ce0d11'  title="Delete Investor" ></i>
+
+              </button>
+            </form>
+              {% endif %}
+              </div>
+          </td>
+
+        
+      
+        </tr>
+        {% endfor %}
+      </tbody>
+     
+        
+
+
+      {% endif %}
+    </table>
+   
+
+  </div>
+</div>
+<div id="snackbar"></div>
+
+<div class="modal fade" id="modal-investors">
+  <div class="modal-dialog modal-lg">
+    <div id="modal-error-message"></div>
+    <div class="modal-content"></div>
+  </div>
+  
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  
+
+
+  <script>
+
+    $(document).ready(function() {
+      $('#investors-table').DataTable({
+          responsive: true,
+          
+          language: {
+            search: "",
+            searchPlaceholder: "Search...",
+          },
+          
+      });
+      $('#investors-table_filter input[type="search"]').addClass('form-control');
+      $('#investors-table_filter input[type="search"]').attr('placeholder', 'Search...');
+      $('#investors-table_filter input[type="search"]').attr('aria-label', 'Search...')
+
+    });
+
+   
+    $(function () {
+      var loadForm = function () {
+        var btn = $(this);
+        $.ajax({
+          url: btn.attr("data-url"),
+          type: "get",
+          dataType: "json",
+          beforeSend: function () {
+            $("#modal-investors").modal("show");
+          },
+          success: function (data) {
+            $("#modal-investors .modal-content").html(data.html_form);
+          },
+        });
+      };
+
+      var saveForm = function () {
+        var form = $(this);
+        $.ajax({
+          url: form.attr("action"),
+          data: form.serialize(),
+          type: form.attr("method"),
+          dataType: "json",
+          success: function (data) {
+            if (data.form_is_valid) {
+              if (data.update){
+                Swal.fire(
+                  'Updated!',
+                  'Your Details Have Been Updated.',
+                  'success'
+                ).then(() => {
+                  $("#modal-investors").modal("hide");
+                  location.reload(); 
+    
+                });
+               
+              }
+              if (data.add){
+                Swal.fire(
+                  'Added!',
+                  'Your Details Have Been Added.',
+                  'success'
+                ).then(() => {
+                  $("#modal-investors").modal("hide");
+                  location.reload(); 
+
+                });
+              }
+             
+             
+            } else {
+              $("#modal-investors .modal-content").html(data.html_form);
+             }
+             
+          },
+          error: function(xhr, status, error) {
+            var response = JSON.parse(xhr.responseText);
+            $("#modal-investors").modal("hide");
+            swal.fire({
+                title: 'Error!',
+                text: response.error,
+                icon: 'error'
+            });
+            
+            
+        }
+        });
+        return false;
+      };
+
+    
+        $(document).on('click', '.js-delete-data', function() {
+          var id = $(this).data('id');
+          var csrf_token = $('input[name="csrfmiddlewaretoken"]').val(); 
+      
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this data!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              $.ajax({
+                url: '/detele_investors/' + id + '/',
+                type: 'DELETE',
+                headers: { 'X-CSRFToken': csrf_token }, // Add the CSRF token to the request headers
+                success: function() {
+                  Swal.fire(
+                    'Deleted!',
+                    'The data has been deleted.',
+                    'success'
+                  ).then(() => {
+                    location.reload(); // Reload the page after successful deletion
+                  });
+                },
+                error: function(xhr, status, error) {
+                  var response = JSON.parse(xhr.responseText);
+                  $("#modal-investors").modal("hide");
+                  swal.fire({
+                      title: 'Error!',
+                      text: response.error,
+                      icon: 'error'
+                  });
+                }
+              });
+            }
+          });
+        });
+       
+        
+      
+      
+
+      $(".investors_open_form").click(loadForm);
+      $("#modal-investors").on("submit", ".investors-form-reg", saveForm);
+      $("#investors-table").on("click", ".investor_view_js", loadForm);
+
+      $("#investors-table").on("click", ".investor_add_wallet_js", loadForm);
+
+      $("#investors-table").on("click", ".investors_edit_js", loadForm);
+      $("#modal-investors").on("submit", ".investors_up_form", saveForm);
+      $("#modal-investors").on("submit", ".investors_add_wallet_form", saveForm);
+
+
+     
+    });
+
+  </script>
+
+</div>
+
+{% endblock content %}

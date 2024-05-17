@@ -1,0 +1,485 @@
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+{% block title %}
+Company
+{% endblock title %}
+
+{% block content %}
+<style>
+  .sub_title{
+    color: #64768A;
+  }
+.sub_title:hover{
+  color: #696CFF;
+}
+.dataTables_paginate {
+  padding-right: 30px;
+}
+  #id_company-datax{
+    height:1px;
+    overflow-y:auto;
+      width:50px;
+  }
+  option{
+    overflow-y:scroll;
+  } 
+  .excel:hover{
+    background-color: #4CAF50;
+    color: black;
+  }
+  .csv:hover{
+    background-color: yellow;
+    color: black;
+  }
+  .pdf:hover{
+    background-color: #ce0d11;
+    color: black;
+  }
+  .all_data:hover{
+    background-color: #696CFF;
+    color: black;
+  }
+  #snackbar {
+    visibility: hidden; /* Hidden by default. Visible on click */
+    min-width: 250px; /* Set a default minimum width */
+    margin-left: -125px; /* Divide value of min-width by 2 */
+    background-color: #be1d1d; /* Black background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Centered text */
+    border-radius: 2px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: 99999999; /* Add a z-index if needed */
+    left: 50%; /* Center the snackbar */
+    bottom: 30px; /* 30px from the bottom */
+  }
+  
+  /* Show the snackbar when clicking on a button (class added with JavaScript) */
+  #snackbar.show {
+    visibility: visible; /* Show the snackbar */
+    /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+    However, delay the fade out process for 2.5 seconds */
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  
+  /* Animations to fade the snackbar in and out */
+  @-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  .dataTables_length{
+    padding: 0 20px 0 20px;
+
+}
+.dataTables_info{
+    padding: 20px;
+}
+.dataTables_filter{
+  margin-right: 35px;
+}
+</style>
+<div class="card m-3">
+  <div class="row">
+    <div class="col-md-6">
+      <strong>
+        <h4 class="card-header">
+          <b>
+            Company
+          </b>
+          <br>
+          <span class="" style="font-size: 16px" > <a href="{% url 'base' %}" class="sub_title" title="Dashboard"> Dashboard</a>/Company</span>
+        </h4>
+      </strong>
+    </div>
+
+    <div class="col-md-3 mt-3">
+      <div class="input-group">
+
+        <select class="form-control none_data" type="text" name="company" maxlength="100"  id="id_company-data"  onfocus='this.size=1;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+          {% if request.user.is_authenticated %}  
+          <option value="">-- Select a Name --</option>
+          <option value="all" style="background-color: #696CFF; color: white;">All Data</option>
+
+          {% endif %}
+        </select>
+        <div class="btn-group">
+          <button type="button"  class="btn btn-outline-success dropdown-toggle input-group-append input-group-text" data-bs-toggle="dropdown" aria-expanded="true">
+            <i class='bx bxs-download' style='color:#000000' ></i>
+          </button>
+          <ul class="dropdown-menu " data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-40px, 41px);">
+            <li><a class="dropdown-item excel" href="" id="excel" value="xls" ><i class='bx bx-file'></i>Excel</a></li>
+              <li><a class="dropdown-item csv" href="" value="csv" id="csv"><i class='bx bxs-file'></i>CSV</a></li>
+              <li><a class="dropdown-item pdf" href="" value="pdf" id="pdf">
+                <i class='bx bxs-file-pdf'></i>PDF</a></li>
+                
+           
+          </ul>
+        </div>
+      </div>
+      
+    <script>
+    $(document).ready(function() {
+      $.ajax({
+          url: "{% url 'get_company_superadmin' %}",
+          type: "GET",
+          success: function(data) {
+              $.each(data.projects, function(index, project) {
+                  $('#id_company-data').append('<option value="' + project.name + '">' + project.name + '</option>');
+              });
+          },
+          error: function(xhr, status, error) {
+              console.log(xhr.responseText);
+          }
+      });
+    });
+    $(document).ready(function() {
+      $('#id_company-data').on('change', function(e) {
+          e.preventDefault();  // Prevent default form submission
+          var company = $('#id_company-data').val();
+          var excel = $('#excel');
+          var csv = $('#csv');
+          var pdf = $('#pdf');
+          excel.attr('href', "/download-data-company/" + company + "/"+excel.attr('value')+"/");
+          csv.attr('href', "/download-data-company/" + company + "/"+csv.attr('value')+"/");
+          pdf.attr('href', "/download-data-company/" + company + "/"+pdf.attr('value')+"/");
+
+      });
+  });
+  $(document).ready(function() {
+    $('#excel, #csv, #pdf').on('click', function(e) {
+        setTimeout(function() {
+            location.reload();
+        }, 1000); 
+    });
+});
+
+  
+  
+    </script>
+  </div>
+      
+    <div class="col-md-3 mt-3">
+      <button
+        type="button"
+        class="btn btn-primary company_open_form"
+        data-url="{% url 'company_create' %}"
+      >
+      <i class='bx bx-plus-circle'></i>
+        Add Company
+      </button>
+    </div>
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-hover"  id="Comapny-table">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Company name</th>
+          <th>Email id</th>
+          <th>Contact Number</th>
+          <th>Status</th>
+          <th class="text-center">Action</th>
+        
+
+
+
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0" >
+        
+        {% if my_model_instances %}
+          
+          
+        {% for instance in my_model_instances %}
+        <tr>
+           <td>{{ forloop.counter }}</td>
+
+
+          <td>{{ instance.company_name }}</td>
+          <td>{{ instance.email_id }}</td>
+          <td>{{ instance.contact_number }}</td>
+          
+          <td>
+            {% if instance.status == True %}
+            <i class='bx bxs-badge-check' style="color: green;"></i>Active
+            
+              {% else %}
+              <i class='bx bx-error-circle' style='color:#c10c0f'  ></i>Not Active
+            
+            {% endif %}
+            
+                      </td>
+                      <td>
+                        <div class="row">
+                        <div class="col-md-4">
+                          <a
+                          type="button"
+                          class="btn btn-sm company_view_js "
+                          data-url="{% url 'view_company'  instance.pk  %}"
+                          title="View"
+                        >
+
+                        <i class='bx bx-show' style='color:#11e3f3'  ></i>
+                        </a>
+                        </div>
+                          <div class="col-md-4">
+                            <button
+                            type="button"
+                            class="btn btn-sm company_edit_js"
+                            data-url="{% url 'company_update'  instance.pk  %}"
+                          title="Edit"
+
+                          >
+                          <i class='bx bx-edit' style='color:#2bdc19'  ></i>
+                          </button>
+                          </div>
+                          <div class="col-md-4">
+                            <form>
+                              {% csrf_token %}
+                             <button
+                                type="button"
+                                class="btn btn-sm  js-delete-data"
+                                data-id="{{  instance.pk  }}"
+                          title="Delete"
+                                
+                                >
+                                
+                             <i class='bx bx-trash' style='color:#ce0d11'  ></i>
+                            </button>
+                          </form>
+                          </div>
+                          
+                      </td>
+         
+
+        </tr>
+        {% endfor %}
+      </tbody>
+
+      {% endif %}
+
+    </table>
+   
+   
+</div>
+</div>
+
+
+<!-- The actual snackbar -->
+<div id="snackbar"></div>
+<div class="modal fade" id="modal-company">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+    </div>
+  </div>
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  
+ 
+ 
+  <script>
+   
+    $(document).ready(function() {
+      $('#Comapny-table').DataTable({
+          responsive: true,
+          
+          language: {
+            search: "",
+            searchPlaceholder: "Search...",
+          },
+          
+      });
+      $('#Company-table_filter input[type="search"]').addClass('form-control');
+      $('#Company-table_filter input[type="search"]').attr('placeholder', 'Search...');
+      $('#Company-table_filter input[type="search"]').attr('aria-label', 'Search...')
+
+    });
+ 
+
+    $(function () {
+      var loadForm = function () {
+        var btn = $(this);
+        $.ajax({
+          url: btn.attr("data-url"),
+          type: "get",
+          dataType: "json",
+          beforeSend: function () {
+            $("#modal-company").modal("show");
+          },
+          success: function (data) {
+            $("#modal-company .modal-content").html(data.html_form);
+
+          },
+        });
+      };
+
+      var saveForm = function () {
+        var form = $(this);
+        $.ajax({
+          url: form.attr("action"),
+          data: form.serialize(),
+          type: form.attr("method"),
+          dataType: "json",
+          success: function (data) {
+            if (data.form_is_valid === true) {
+              if (data.update){
+                Swal.fire(
+                  'Updated!',
+                  'Your Details Have Been Updated.',
+                  'success'
+                ).then(() => {
+                  $("#modal-company").modal("hide");
+                  location.reload(); 
+                });
+               
+              }
+              if (data.add === true){
+                Swal.fire(
+                  'Added!',
+                  'Your Details Have Been Added.',
+                  'success'
+                ).then(() => {
+                  $("#modal-company").modal("hide");
+                  location.reload(); 
+                });
+              }
+            }
+            if (data.errors) {
+              console.log(data.errors);
+              if (data.errors == "Company_table with this Company name already exists."){
+                myFunction()
+              $("#snackbar").html("Name already exists");
+
+              }
+              else if (data.errors == "Company_table with this Contact number already exists."){
+                myFunction()
+              $("#snackbar").html("Contact number already exists");
+
+              }
+              else if (data.errors == "Company_table with this Email id already exists."){
+                myFunction()
+              $("#snackbar").html("Email already exists");
+
+              }
+              else if (data.errors == "Enter a valid email address."){
+                myFunction()
+              $("#snackbar").html("Enter a valid email address.");
+
+              }
+              else if (data.errors == "Company_table with this Company pan already exists."){
+                myFunction()
+              $("#snackbar").html("Pan already exists");
+
+              }
+             else if (data.errors == "Company_table with this Gstin already exists."){
+                myFunction()
+                $("#snackbar").html("GST already exists");
+
+              }
+          }
+          },
+        });
+        return false;
+      };
+
+    
+        $(document).on('click', '.js-delete-data', function() {
+          var id = $(this).data('id');
+          var csrf_token = $('input[name="csrfmiddlewaretoken"]').val(); 
+      
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this data!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              $.ajax({
+                url: '/detele_comapany/' + id + '/',
+                type: 'DELETE',
+                headers: { 'X-CSRFToken': csrf_token }, // Add the CSRF token to the request headers
+                success: function(data) {
+                  if (data.delete){
+                  Swal.fire(
+                    'Deleted!',
+                    'The data has been deleted.',
+                    'success'
+                  ).then(() => {
+                    location.reload(); // Reload the page after successful deletion
+                  });
+                }
+                if (data.data_found){
+                  Swal.fire(
+                    'Error!',
+                    'Company Has Data, So Cannot Be Deleted.',
+                    'error'
+                  ).then(() => {
+                    location.reload(); // Reload the page after successful deletion
+                  });
+
+                }
+                },
+                error: function() {
+                  Swal.fire(
+                    'Error!',
+                    'An error occurred while deleting the data.',
+                    'error'
+                  );
+                }
+              });
+            }
+          });
+        });
+      
+     
+        
+
+      
+
+      $(".company_open_form").click(loadForm);
+      $("#modal-company").on("submit", ".Company-form-reg", saveForm);
+
+      $("#Comapny-table").on("click", ".company_view_js", loadForm);
+      $("#Comapny-table").on("click", ".company_edit_js", loadForm);
+      $("#modal-company").on("submit", ".Company_details_update", saveForm);
+
+     
+    });
+   
+    function myFunction() {
+      // Get the snackbar DIV
+      var x = document.getElementById("snackbar");
+    
+      // Add the "show" class to DIV
+      x.className = "show";
+    
+      // After 3 seconds, remove the show class from DIV
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+    }
+  </script>
+
+
+
+    {% endblock content %}
+    

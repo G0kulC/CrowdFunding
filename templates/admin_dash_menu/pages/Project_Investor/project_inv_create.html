@@ -1,0 +1,444 @@
+
+<style>
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.checkbox-apple {
+  position: relative;
+  width: 50px;
+  height: 25px;
+  margin: 20px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.checkbox-apple label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 25px;
+  border-radius: 50px;
+  background: linear-gradient(to bottom, #b3b3b3, #e6e6e6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.checkbox-apple label:after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.checkbox-apple input[type="checkbox"]:checked + label {
+  background: linear-gradient(to bottom, #4cd964, #5de24e);
+}
+
+.checkbox-apple input[type="checkbox"]:checked + label:after {
+  transform: translateX(25px);
+}
+
+.checkbox-apple label:hover {
+  background: linear-gradient(to bottom, #b3b3b3, #e6e6e6);
+}
+
+.checkbox-apple label:hover:after {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #da5050; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 99999999; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+.yep {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 25px;
+}
+  </style>
+  <h5 class="text-center modal-title text-uppercase mb-2 " id="exampleModalLabel1">Add Investment</h5>
+
+
+<div class="row">
+<div class="col-md-6">
+    <label for="id_project">Project:<span style="color: red;">*</span>(<span style="color: green; font-size: 12px;">Active Project  </span>)</label>
+  <select class="form-control" type="text" name="project" maxlength="100"  id="id_project" onfocus='this.size=4;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+    {% if request.user.is_authenticated %}
+        <option value="">-- Select a project --</option>
+    {% endif %}
+    </select>
+    
+    <script>
+    $(document).ready(function() {
+        $.ajax({
+            url: "{% url 'get_company_projects' %}",
+            type: "GET",
+            success: function(data) {
+                $.each(data.projects, function(index, project) {
+                    $('#id_project').append('<option value="' + project.name + '">'+ project.name + '</option>');
+                });
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText);
+            }
+        });
+    });
+    </script>
+  </div>
+    
+<div class="col-md-6">
+  <label for="id_investor_name">Investor:<span style="color: red;">*</span>(<span style="color: green; font-size: 12px;">Active Investors </span>)</label>
+  <select class="form-control" type="text" name="investor_name" maxlength="100"  id="id_investor_name" onfocus='this.size=4;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+  {% if request.user.is_authenticated %}
+  <option value="">-- Select a Investor --</option>
+{% endif %}
+</select>
+
+<script>
+$(document).ready(function() {
+  $.ajax({
+      url: "{% url 'get_company_investors' %}",
+      type: "GET",
+      success: function(data) {
+          $.each(data.projects, function(index, project) {
+              $('#id_investor_name').append('<option value="' + project.invs_name + '">' + project.invs_name + '</option>');
+          });
+      },
+      error: function(xhr, status, error) {
+          console.log(xhr.responseText);
+      }
+  });
+});
+</script>
+</div>
+</div>
+
+<div class="row" >
+<div class="col-md-12">
+  <label for="id_amount">Account Balance</label>
+  <div class="input-group">
+  <select class="form-control" type="text" disabled  id="blance_get_slect">
+    <option value="" id="blance_get"></option>
+  </select>
+  <span class="input-group-append input-group-text"> INR
+  </span>
+</div>
+  <script>
+    $(document).ready(function() {
+      $('#id_investor_name').on('change', function(e) {
+        var investor_name=document.getElementById("id_investor_name").value;
+        $.ajax({
+          url: "/get_investor_wallet_blance/"+investor_name+"/",
+          type: "GET",
+          success: function(data) {
+            if(data.total_insesment_invstor && data.not_found == false){
+              document.getElementById("blance_get_slect").style="border: green 1px solid; background-color: lightgreen; color: black;"
+              document.getElementById("blance_get").value = data.total_insesment_invstor;
+              document.getElementById("blance_get").innerHTML = data.total_insesment_invstor;
+
+              document.getElementById("submit_btn").disabled = false;
+
+            }
+            if(data.not_found){
+              var x = document.getElementById("snackbar");
+              snackbar_show();
+              x.innerHTML = "Investor Wallet not found.";
+              document.getElementById("blance_get_slect").style="border: red 1px solid; background-color: pink; color: black;"
+
+              document.getElementById("blance_get").value = 0;
+              document.getElementById("blance_get").innerHTML = 0;
+              document.getElementById("submit_btn").disabled = true;
+
+            }
+          },
+        });
+        
+      });
+    });
+  </script>
+</div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <label for="share_value">Per Share Value<span style="color: red;">*</span></label>
+    <select class="form-control" type="number" id="slect_per_share" name="project_share_value">
+      <option value="" id="share_value" selected ></option>
+    </select>
+  </div>
+  <div class="col-md-6">
+    <label>Available Shares<span style="color: red;">*</span></label>
+    <select class="form-control" type="number"  id="slect_share">
+      <option value="" id="ava_share" selected></option>
+    </select>
+  </div>
+  </div>
+<div class="row">
+  <div class="col-md-6">
+    <label for="share_count">Quantity <span style="color: red;">*</span></label>
+    <div class="input-group mb-3">
+      <a class="input-group-prepend btn btn-outline-danger" id="decrement_btn" onclick="decrement()">
+          <i class='bx bx-minus'></i>
+      </a>
+      <input class="form-control" type="number" name="investor_share_count" min=1  value="0" id="share_count">
+      <a class="input-group-append input-group-text btn btn-outline-success" onclick="increment()" id="increment_btn" >
+          <i class='bx bx-plus'></i>
+      </a>
+    </div>
+  </div>
+  <script>
+   
+    function increment() {
+      document.getElementById('share_count').stepUp();
+   }
+   function decrement() {
+      document.getElementById('share_count').stepDown();
+   }
+    $(document).ready(function() {
+      $('#id_project').on('change', function(e) {
+        var project_name = document.getElementById("id_project").value;
+        var share_count = document.getElementById("share_count").value
+        $.ajax({
+          url: "/get_project_per_share_value/"+project_name+"/",
+          type: "GET",
+          success: function(data) {
+            if (data.share_count == 0 || data.share_count < 0) {
+              document.getElementById("slect_per_share").style ="border: red 1px solid; background-color: pink; color: black;"
+              document.getElementById("slect_share").style ="border: red 1px solid; background-color: pink; color: black;"
+              document.getElementById("ava_share").innerHTML = data.share_count;
+              document.getElementById("ava_share").value = data.share_count;
+              document.getElementById("share_value").value = data.share_value;
+              document.getElementById("share_value").innerHTML = data.share_value;
+              document.getElementById("share_count").max = data.share_count;
+              document.getElementById("submit_btn").disabled = true;
+
+              
+            }
+            else if (data.share_count >0) {
+              
+            document.getElementById("share_value").style ="border: green 1px solid;"
+            document.getElementById("share_value").value = data.share_value;
+            document.getElementById("share_value").innerHTML = data.share_value;
+            document.getElementById("share_count").max = data.share_count;
+            document.getElementById("slect_share").style ="border: green 1px solid; background-color: lightgreen; color: black;"
+            document.getElementById("slect_per_share").style ="border: green 1px solid; background-color: lightgreen; color: black;"
+            document.getElementById("ava_share").innerHTML = data.share_count;
+            document.getElementById("ava_share").value = data.share_count;
+            document.getElementById("submit_btn").disabled = false;
+
+          }
+
+          },
+        });
+        
+      });
+    });
+  </script>
+  </div>
+<div class="row">
+<div class="col-md-6">
+  <label for="id_total_value">Investment<span style="color: red;">*</span></label>
+  <div class="input-group">
+    <select class="form-control" type="number" name="amount" >
+      <option value="" id="id_total_value"></option>
+    </select>
+    <span class="input-group-append input-group-text"> INR
+    </span>
+  </div>
+  <script>
+   
+    $(document).ready(function() {
+      $('#increment_btn, #decrement_btn').on('click', function(e) {
+        var shareValue = document.getElementById("share_value").value;
+        var Shar_count = document.getElementById("slect_share").value;
+        var max_account=document.getElementById("share_count").value;
+        var account_blc=document.getElementById("blance_get").value;
+        var tot= max_account*shareValue
+        if(tot < account_blc || tot == account_blc){
+          document.getElementById("id_total_value").value = tot ;
+          document.getElementById("id_total_value").innerHTML = tot ;
+          document.getElementById("submit_btn").disabled = false;
+        }
+        if (tot > account_blc) {
+          var x = document.getElementById("snackbar");
+          snackbar_show();
+          x.innerHTML = "Insufficient Balance.";
+          document.getElementById("id_total_value").value = 0 ;
+          document.getElementById("id_total_value").innerHTML = 0 ;
+          document.getElementById("submit_btn").disabled = true;
+        }
+      });
+    });
+    $(document).ready(function() {
+      $('#share_count').on('keyup', function(e) {
+        var shareValue = document.getElementById("share_value").value;
+        var Shar_count = document.getElementById("slect_share").value;
+        var max_account=document.getElementById("share_count").value;
+        var account_blc=document.getElementById("blance_get").value;
+        var tot= max_account*shareValue
+        if(tot < account_blc || tot == account_blc){
+          document.getElementById("id_total_value").value = tot ;
+          document.getElementById("id_total_value").innerHTML = tot ;
+          document.getElementById("submit_btn").disabled = false;
+        }
+        if (tot > account_blc) {
+          var x = document.getElementById("snackbar");
+          snackbar_show();
+          x.innerHTML = "Insufficient Balance.";
+          document.getElementById("id_total_value").value = 0 ;
+          document.getElementById("id_total_value").innerHTML = 0 ;
+          document.getElementById("submit_btn").disabled = true;
+        }
+      });
+    });
+    
+   
+  </script>
+</div>
+<div class="col-md-6">
+  <label for="id_Payment_revceiver_name">Received by<span style="color: red;">*</span></label>
+  <select class="form-control" type="text" name="Payment_revceiver_name"  id="id_Payment_revceiver_name">
+  <option value="{{request.user}}" selected>{{request.user}}</option>
+</select>
+</div>
+</div>
+
+<div class="modal-footer">
+      <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+        Close
+      </button>
+      <button type="button" class="btn btn-primary" id="submit_btn">Save changes</button>
+    </div>
+    </form>
+
+</div>
+
+<script>
+  function snackbar_show() {
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar");
+  
+    // Add the "show" class to DIV
+    x.className = "show";
+  
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
+  $(document).ready(function() {
+    // Function to validate the form
+    function validateForm() {
+      var project = $("#id_project").val();
+      var investor_name = $("#id_investor_name").val();
+      var account_balance = $("#blance_get").val();
+      var share_value = $("#share_value").val();
+      var quantity = $("#share_count").val();
+      var amount = $("#id_total_value").val();
+          
+      var x = document.getElementById("snackbar");
+      // Perform validation checks
+      if (project === "") {
+        snackbar_show();
+        x.innerHTML = "Please Select the Project.";
+        return false;
+      }
+      if (investor_name === "") {
+        snackbar_show();
+        x.innerHTML = "Please Select the Investor Name.";
+        return false;
+      }
+     
+      if (amount === "" ) {
+        snackbar_show();
+        x.innerHTML = "Please enter the Amount.";
+        return false;
+      }
+      if (amount < 1 ) {
+        snackbar_show();
+        x.innerHTML = "Please enter the Amount.";
+        return false;
+      }
+     
+      if (quantity === "") {
+        snackbar_show();
+        x.innerHTML = "Please enter the Quantity.";
+        return false;
+        
+      }
+
+      
+      // All validations passed
+      return true;
+    }
+  
+    // Attach form submission event handler
+    $("#submit_btn").on("click", function(e) {
+      if (!validateForm()) {
+        e.preventDefault(); 
+      }
+      if (validateForm()) {
+        console.log("True");
+        var btn = document.getElementById("submit_btn");
+        btn.type = "submit";
+      }
+      
+    });
+  });
+  
+
+  
+  </script>
+  
+  

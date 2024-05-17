@@ -1,0 +1,176 @@
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+
+ {% block content %}
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+<div class="card m-3">
+  <div class="row">
+    <div class="col-md-6">
+        <h4 class="card-header">User Data</h4>
+    </div>
+    <div class="col-md-3 mt-3"> 
+      <div class="input-group input-group-merge">
+        <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
+        <input type="text" id="search-input" class="form-control" placeholder="Search..." aria-label="Search..." aria-describedby="basic-addon-search31">
+      </div>
+    </div>
+    <div class="col-md-3 mt-3">
+      <button
+        type="button"
+        class="btn btn-primary js-create-book"
+        data-url="{% url 'user_create' %}"
+      >
+        <i class="bx bx-user-plus"></i>
+        Add user
+      </button>
+    </div>
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-hover" id="book-table">
+      <thead>
+        <tr>
+          <th>S.NO</th>
+
+          <th>User Name</th>
+          <th>Password</th>
+          <th>Super Admin</th>
+          <th>Staff</th>
+          <th>Active</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        {% for instance in my_model_instances %}
+        <tr>
+          <td>{{ instance.pk }}</td>                                                                                                                                                                                              
+          <td>{{ instance.username }}</td>
+          <td>******</td>
+          <td>{{ instance.is_superuser }}</td>
+          <td>{{ instance.is_staff }}</td>
+          <td>{{ instance.is_active }}</td>
+
+    
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="13" class="text-center bg-warning">No Data</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-book">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    $(document).ready(function() {
+      // search functionality
+      $('#search-input').on('keyup', function() {
+        var value = $(this).val().toLowerCase();
+        $('#book-table tbody tr').filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+    $(function () {
+      var loadForm = function () {
+        var btn = $(this);
+        $.ajax({
+          url: btn.attr("data-url"),
+          type: "get",
+          dataType: "json",
+          beforeSend: function () {
+            $("#modal-book").modal("show");
+          },
+          success: function (data) {
+            $("#modal-book .modal-content").html(data.html_form);
+          },
+        });
+      };
+
+      var saveForm = function () {
+        var form = $(this);
+        $.ajax({
+          url: form.attr("action"),
+          data: form.serialize(),
+          type: form.attr("method"),
+          dataType: "json",
+          success: function (data) {
+            if (data.form_is_valid) {
+              $("#modal-book").modal("hide");
+              location.reload();
+            } else {
+              $("#modal-book .modal-content").html(data.html_form);
+            }
+          },
+        });
+        return false;
+      };
+
+    
+        $(document).on('click', '.js-delete-data', function() {
+          var user_id = $('input[name=user_id]').val();
+      
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this data!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                
+              $.ajax({
+                type: 'POST',
+                url: '{% url "delete_main_user" %}',
+                data: {
+                  'user_id': user_id,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+                 },
+                 // Add the CSRF token to the request headers
+                success: function() {
+                  Swal.fire(
+                    'Deleted!',
+                    'The data has been deleted.',
+                    'success'
+                  ).then(() => {
+                    location.reload(); // Reload the page after successful deletion
+                  });
+                },
+                error: function() {
+                  Swal.fire(
+                    'Error!',
+                    'An error occurred while deleting the data.',
+                    'error'
+                  );
+                }
+              });
+            }
+          });
+        });
+      
+      
+
+      $(".js-create-book").click(loadForm);
+      $("#modal-book").on("submit", ".Userdetailsregform", saveForm);
+
+      // Update book
+      $("#book-table").on("click", ".js-update-book", loadForm);
+      $("#modal-book").on("submit", ".Userdetails_up_form", saveForm);
+
+     
+    });
+  </script>
+
+  {% endblock content %}
+</div>

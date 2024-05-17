@@ -1,0 +1,971 @@
+
+<style>
+    .checkbox-apple {
+        position: relative;
+        width: 50px;
+        height: 25px;
+        margin: 20px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      
+      .checkbox-apple label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50px;
+        height: 25px;
+        border-radius: 50px;
+        background: linear-gradient(to bottom, #b3b3b3, #e6e6e6);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .checkbox-apple label:after {
+        content: '';
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: 23px;
+        height: 23px;
+        border-radius: 50%;
+        background-color: #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+      
+      .checkbox-apple input[type="checkbox"]:checked + label {
+        background: linear-gradient(to bottom, #4cd964, #5de24e);
+      }
+      
+      .checkbox-apple input[type="checkbox"]:checked + label:after {
+        transform: translateX(25px);
+      }
+      
+      .checkbox-apple label:hover {
+        background: linear-gradient(to bottom, #b3b3b3, #e6e6e6);
+      }
+      
+      .checkbox-apple label:hover:after {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+      
+      .yep {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50px;
+        height: 25px;
+      }
+</style>                     
+<form method="post" action="{% url 'add_permisions_staff' mymodel.pk %}" class="staff_up_form">
+    {% csrf_token %}
+    <div class="modal-header ">
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+          <div class="card-body">
+        <div class="row">
+
+            <div class="col-md-4">
+                <label for="id_project">
+                    <h5>
+                    Staff:
+                    </h5>
+
+                    </label>
+            </div>
+
+            <div class="col-md-4">
+                (<span style="color: green; font-size: 12px; ">Active Staff</span>)
+              <select class="form-control" type="text" name="staff_name" maxlength="20" required="" id="id_project">
+                {% if request.user.is_authenticated %}
+                    <option value="{{mymodel.username}}">{{mymodel.username}}</option>
+                {% endif %}
+                </select>
+                
+               
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-3">
+                <label for="pro_exp_id_satus" >Dashboard </label>
+            </div>
+            
+            <div class="col-md-3">
+              <input type="checkbox" class="form-check-input ml-3"
+              
+              {% if dashbord_permissions.view == True %}
+               checked
+               value=True
+            
+               {% endif %}
+                  value=True
+            
+              name="dash_view" id="dash_view_id">-View
+            </div>
+            <div class="col-md-3">
+              <label for="pro_exp_id_satus" >Report </label>
+          </div>
+          
+          <div class="col-md-3">
+            <input type="checkbox" class="form-check-input ml-3"
+            
+            {% if Reports_permissions.view == True %}
+             checked
+             value=True
+          
+             {% endif %}
+                value=True
+          
+            name="report_view" id="report_id">-View
+          </div>
+            
+          </div>
+            <div class="row mt-3">
+                <div class="col-md-2">
+                  <label for="project_id_satus">Project </label>
+              </div>
+       
+
+              <div class="col-md-2">
+                <input type="checkbox" class="form-check-input ml-3"
+
+                {% if project_permissions.view == True %}
+                     {% if project_permissions.add == True %}
+                        {% if project_permissions.edit == True %}
+                            {% if project_permissions.can_delete == True %}
+                                checked
+                                value=True
+                            {% else %}
+                            {% endif %}
+                         {% endif %}
+                     {% endif %}
+                 {% endif %}
+                 value=True
+
+
+                  name="project_all" id="project_id_all">-All
+            </div>
+            <div class="col-md-2">
+                <input type="checkbox" class="form-check-input ml-3"
+                
+                {% if project_permissions.view == True %}
+                 checked
+                 value=True
+
+                 {% endif %}
+                    value=True
+                name="project_view" id="project_id_view">-View
+            </div>
+            <div class="col-md-2">
+                <input type="checkbox" class="form-check-input ml-3"
+                {% if project_permissions.add == True %}
+                    checked
+                    value=True
+
+                {% endif %}
+                value=True
+
+                 name="project_add" id="project_id_add">-Add
+            </div>
+            <div class="col-md-2">
+                <input type="checkbox" class="form-check-input ml-3"
+                {% if project_permissions.edit == True %}
+                 checked
+                 value=True
+
+                 {% endif %}
+                 value=True
+
+                  name="project_edit" id="project_id_edit">-Edit
+            </div>
+            <div class="col-md-2">
+                <input type="checkbox" class="form-check-input ml-3" 
+                {% if project_permissions.can_delete == True %}
+                 checked
+                 value=True
+
+                 {% endif %}
+                 value=True
+
+                 name="project_delete" id="project_id_delete">-Delete
+            </div>
+        </div>        
+
+        <div class="row mt-3">
+          <div class="col-md-2">
+            <label for="investor_id_satus">Investor </label>
+        </div>
+        <div class="col-md-2">
+          <input type="checkbox" class="form-check-input ml-3"
+
+          {% if investor_permissions.view == True %}
+               {% if investor_permissions.add == True %}
+                  {% if investor_permissions.edit == True %}
+                      {% if investor_permissions.can_delete == True %}
+                          checked
+                          value=True
+                      {% else %}
+                      {% endif %}
+                   {% endif %}
+               {% endif %}
+           {% endif %}
+           value=True
+
+
+            name="investor_all" id="investor_id_all">-All
+      </div>
+      <div class="col-md-2">
+          <input type="checkbox" class="form-check-input ml-3"
+          
+          {% if investor_permissions.view == True %}
+           checked
+           value=True
+
+           {% endif %}
+              value=True
+          name="investor_view" id="investor_id_view">-View
+      </div>
+      <div class="col-md-2">
+          <input type="checkbox" class="form-check-input ml-3"
+          {% if investor_permissions.add == True %}
+              checked
+              value=True
+
+          {% endif %}
+          value=True
+
+           name="investor_add" id="investor_id_add">-Add
+      </div>
+      <div class="col-md-2">
+          <input type="checkbox" class="form-check-input ml-3"
+          {% if investor_permissions.edit == True %}
+           checked
+           value=True
+
+           {% endif %}
+           value=True
+
+            name="investor_edit" id="investor_id_edit">-Edit
+      </div>
+      <div class="col-md-2">
+          <input type="checkbox" class="form-check-input ml-3" 
+          {% if investor_permissions.can_delete == True %}
+           checked
+           value=True
+
+           {% endif %}
+           value=True
+
+           name="investor_delete" id="investor_id_delete">-Delete
+      </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-md-2">
+      <label for="investor_id_satus" >Wallet </label>
+  </div>
+  <div class="col-md-2">
+    <input type="checkbox" class="form-check-input ml-3"
+
+    {% if wallet_permissions.view == True %}
+         {% if wallet_permissions.add == True %}
+            {% if wallet_permissions.edit == True %}
+                {% if wallet_permissions.can_delete == True %}
+                    checked
+                    value=True
+                {% else %}
+                {% endif %}
+             {% endif %}
+         {% endif %}
+     {% endif %}
+     value=True
+
+
+      name="wallet_all" id="wallet_id_all">-All
+</div>
+<div class="col-md-2">
+    <input type="checkbox" class="form-check-input ml-3"
+    
+    {% if wallet_permissions.view == True %}
+     checked
+     value=True
+
+     {% endif %}
+        value=True
+    name="wallet_view" id="wallet_id_view">-View
+</div>
+<div class="col-md-2">
+    <input type="checkbox" class="form-check-input ml-3"
+    {% if wallet_permissions.add == True %}
+        checked
+        value=True
+
+    {% endif %}
+    value=True
+
+     name="wallet_add" id="wallet_id_add">-Add
+</div>
+<div class="col-md-2">
+    <input type="checkbox" class="form-check-input ml-3"
+    {% if wallet_permissions.edit == True %}
+     checked
+     value=True
+
+     {% endif %}
+     value=True
+
+      name="wallet_edit" id="wallet_id_edit">-Edit
+</div>
+<div class="col-md-2">
+    <input type="checkbox" class="form-check-input ml-3" 
+    {% if wallet_permissions.can_delete == True %}
+     checked
+     value=True
+
+     {% endif %}
+     value=True
+
+     name="wallet_delete" id="wallet_id_delete">-Delete
+</div>
+</div>
+  <div class="row mt-3">
+    <div class="col-md-2">
+      <label for="pro_inv_id_satus" >Investment </label>
+  </div>
+  <div class="col-md-2">
+    <input type="checkbox" class="form-check-input ml-3"
+
+    {% if pro_inv_permissions.view == True %}
+         {% if pro_inv_permissions.add == True %}
+            {% if pro_inv_permissions.edit == True %}
+                {% if pro_inv_permissions.can_delete == True %}
+                    checked
+                    value=True
+                {% else %}
+                {% endif %}
+             {% endif %}
+         {% endif %}
+     {% endif %}
+     value=True
+
+
+      name="pro_inv_all" id="pro_inv_id_all">-All
+</div>
+<div class="col-md-2">
+    <input type="checkbox" class="form-check-input ml-3"
+    
+    {% if pro_inv_permissions.view == True %}
+     checked
+     value=True
+
+     {% endif %}
+        value=True
+    name="pro_inv_view" id="pro_inv_id_view">-View
+</div>
+<div class="col-md-2">
+    <input type="checkbox" class="form-check-input ml-3"
+    {% if pro_inv_permissions.add == True %}
+        checked
+        value=True
+
+    {% endif %}
+    value=True
+
+     name="pro_inv_add" id="pro_inv_id_add">-Add
+</div>
+<div class="col-md-2">
+    <input type="checkbox" class="form-check-input ml-3"
+    {% if pro_inv_permissions.edit == True %}
+     checked
+     value=True
+
+     {% endif %}
+     value=True
+
+      name="pro_inv_edit" id="pro_inv_id_edit">-Edit
+</div>
+<div class="col-md-2">
+    <input type="checkbox" class="form-check-input ml-3" 
+    {% if pro_inv_permissions.can_delete == True %}
+     checked
+     value=True
+
+     {% endif %}
+     value=True
+
+     name="pro_inv_delete" id="pro_inv_id_delete">-Delete
+</div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-2">
+    <label for="pro_exp_id_satus" >Expense </label>
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+
+  {% if pro_exp_permissions.view == True %}
+       {% if pro_exp_permissions.add == True %}
+          {% if pro_exp_permissions.edit == True %}
+              {% if pro_exp_permissions.can_delete == True %}
+                  checked
+                  value=True
+              {% else %}
+              {% endif %}
+           {% endif %}
+       {% endif %}
+   {% endif %}
+   value=True
+
+
+    name="pro_exp_all" id="pro_exp_id_all">-All
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  
+  {% if pro_exp_permissions.view == True %}
+   checked
+   value=True
+
+   {% endif %}
+      value=True
+  name="pro_exp_view" id="pro_exp_id_view">-View
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if pro_exp_permissions.add == True %}
+      checked
+      value=True
+
+  {% endif %}
+  value=True
+
+   name="pro_exp_add" id="pro_exp_id_add">-Add
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if pro_exp_permissions.edit == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+
+    name="pro_exp_edit" id="pro_exp_id_edit">-Edit
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3" 
+  {% if pro_exp_permissions.can_delete == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+
+   name="pro_exp_delete" id="pro_exp_id_delete">-Delete
+</div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-2">
+    <label for="pro_exp_id_satus">Sales</label>
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+
+  {% if pro_profit_permissions.view == True %}
+       {% if pro_profit_permissions.add == True %}
+          {% if pro_profit_permissions.edit == True %}
+              {% if pro_profit_permissions.can_delete == True %}
+                  checked
+                  value=True
+              {% else %}
+              {% endif %}
+           {% endif %}
+       {% endif %}
+   {% endif %}
+   value=True
+
+
+    name="pro_profit_all" id="pro_profit_id_all">-All
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  
+  {% if pro_profit_permissions.view == True %}
+   checked
+   value=True
+
+   {% endif %}
+      value=True
+  name="pro_profit_view" id="pro_profit_id_view">-View
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if pro_profit_permissions.add == True %}
+      checked
+      value=True
+
+  {% endif %}
+  value=True
+
+   name="pro_profit_add" id="pro_profit_id_add">-Add
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if pro_profit_permissions.edit == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+
+    name="pro_profit_edit" id="pro_profit_id_edit">-Edit
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3" 
+  {% if pro_profit_permissions.can_delete == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+
+   name="pro_profit_delete" id="pro_profit_id_delete">-Delete
+</div>
+</div>
+
+
+
+
+<div class="row mt-3">
+  <div class="col-md-2">
+    <label for="pro_exp_id_satus">Settlement</label>
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+
+  {% if settlement_permissions.view == True %}
+       {% if settlement_permissions.add == True %}
+          {% if settlement_permissions.edit == True %}
+              {% if settlement_permissions.can_delete == True %}
+                  checked
+                  value=True
+              {% else %}
+              {% endif %}
+           {% endif %}
+       {% endif %}
+   {% endif %}
+   value=True
+   
+
+
+    name="settlement_all" id="settlement_id_all">-All
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  
+  {% if settlement_permissions.view == True %}
+   checked
+   value=True
+
+   {% endif %}
+      value=True
+    
+
+  name="settlement_view" id="settlement_id_view">-View
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if settlement_permissions.add == True %}
+      checked
+      value=True
+
+  {% endif %}
+  value=True
+  
+
+   name="settlement_add" id="settlement_id_add">-Add
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if settlement_permissions.edit == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+   
+
+    name="settlement_edit" id="settlement_id_edit">-Edit
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3" 
+  {% if settlement_permissions.can_delete == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+   
+
+   name="settlement_delete" id="settlement_id_delete">-Delete
+</div>
+</div>
+
+     
+            
+                    <div class="row mt-5">
+                        <div class="col-md-4">
+                          <label for="id_satus">Permission Status:</label>
+                      </div>
+                        <div class="col-md-2 " style="position: relative; top: -20px;">
+                            <div class="checkbox-apple">
+                                <input class="yep" id="check-apple" 
+                                {% if project_permissions.status == True %}
+                                    checked
+                                value=True
+                                {% endif %}
+                                   value=True
+                                 type="checkbox" name="per_satus">
+                                <label for="check-apple"></label>
+                              </div>
+                        
+                        </div>
+                      </div>
+                    </div>
+
+
+      
+      
+
+      
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</div>
+  </form>
+
+<script>
+
+    
+
+  const settlement_id_allCheckbox = document.getElementById("settlement_id_all");
+  const settlement_id_viewCheckbox = document.getElementById("settlement_id_view");
+  const settlement_id_addCheckbox = document.getElementById("settlement_id_add");
+  const settlement_id_editCheckbox = document.getElementById("settlement_id_edit");
+  const settlement_id_deleteCheckbox = document.getElementById("settlement_id_delete");
+
+
+
+  // Check if all checkboxes are checked
+  function checkAll_settlement() {
+    if (settlement_id_allCheckbox.checked) {
+      settlement_id_viewCheckbox.checked = true;
+      settlement_id_addCheckbox.checked = true;
+      settlement_id_editCheckbox.checked = true;
+      settlement_id_deleteCheckbox.checked = true;
+    } else {
+      settlement_id_viewCheckbox.checked = false;
+      settlement_id_addCheckbox.checked = false;
+      settlement_id_editCheckbox.checked = false;
+      settlement_id_deleteCheckbox.checked = false;
+    }
+  }
+
+  // Check if any checkbox is checked
+  function checkAny_settlement() {
+    if (settlement_id_viewCheckbox.checked && settlement_id_addCheckbox.checked && settlement_id_editCheckbox.checked && settlement_id_deleteCheckbox.checked) {
+      settlement_id_allCheckbox.checked = true;
+    } else {
+      settlement_id_allCheckbox.checked = false;
+    }
+  }
+
+  // Clear all checkboxes
+  function clearAll() {
+    settlement_id_allCheckbox.checked = false;
+    settlement_id_viewCheckbox.checked = false;
+    settlement_id_addCheckbox.checked = false;
+    settlement_id_editCheckbox.checked = false;
+    settlement_id_deleteCheckbox.checked = false;
+  }
+
+  // Add event listeners to the checkboxes
+  settlement_id_allCheckbox.addEventListener("click", checkAll_settlement);
+  settlement_id_viewCheckbox.addEventListener("click", checkAny_settlement);
+  settlement_id_addCheckbox.addEventListener("click", checkAny_settlement);
+  settlement_id_editCheckbox.addEventListener("click", checkAny_settlement);
+  settlement_id_deleteCheckbox.addEventListener("click", checkAny_settlement);
+
+
+
+  const allCheckbox = document.getElementById("project_id_all");
+  const viewCheckbox = document.getElementById("project_id_view");
+  const addCheckbox = document.getElementById("project_id_add");
+  const editCheckbox = document.getElementById("project_id_edit");
+  const deleteCheckbox = document.getElementById("project_id_delete");
+  
+  
+  // Check if all checkboxes are checked
+  function checkAll_project() {
+    if (allCheckbox.checked) {
+      viewCheckbox.checked = true;
+      addCheckbox.checked = true;
+      editCheckbox.checked = true;
+      deleteCheckbox.checked = true;
+    } else {
+      viewCheckbox.checked = false;
+      addCheckbox.checked = false;
+      editCheckbox.checked = false;
+      deleteCheckbox.checked = false;
+    }
+  }
+  
+  // Check if any checkbox is checked
+  function checkAny_project() {
+    if (viewCheckbox.checked && addCheckbox.checked && editCheckbox.checked && deleteCheckbox.checked) {
+      allCheckbox.checked = true;
+    } else {
+      allCheckbox.checked = false;
+    }
+  }
+  
+  
+  // Add event listeners to the checkboxes
+  allCheckbox.addEventListener("click", checkAll_project);
+  viewCheckbox.addEventListener("click", checkAny_project);
+  addCheckbox.addEventListener("click", checkAny_project);
+  editCheckbox.addEventListener("click", checkAny_project);
+  deleteCheckbox.addEventListener("click", checkAny_project);
+  
+
+
+
+
+
+const pro_profit_id_allCheckbox = document.getElementById("pro_profit_id_all");
+const pro_profit_id_viewCheckbox = document.getElementById("pro_profit_id_view");
+const pro_profit_id_addCheckbox = document.getElementById("pro_profit_id_add");
+const pro_profit_id_editCheckbox = document.getElementById("pro_profit_id_edit");
+const pro_profit_id_deleteCheckbox = document.getElementById("pro_profit_id_delete");
+
+
+
+// Check if all checkboxes are checked
+function checkAll_pro_profit() {
+  if (pro_profit_id_allCheckbox.checked) {
+    pro_profit_id_viewCheckbox.checked = true;
+    pro_profit_id_addCheckbox.checked = true;
+    pro_profit_id_editCheckbox.checked = true;
+    pro_profit_id_deleteCheckbox.checked = true;
+  } else {
+    pro_profit_id_viewCheckbox.checked = false;
+    pro_profit_id_addCheckbox.checked = false;
+    pro_profit_id_editCheckbox.checked = false;
+    pro_profit_id_deleteCheckbox.checked = false;
+  }
+}
+
+// Check if any checkbox is checked
+function checkAny_pro_profit() {
+  if (pro_profit_id_viewCheckbox.checked && pro_profit_id_addCheckbox.checked && pro_profit_id_editCheckbox.checked && pro_profit_id_deleteCheckbox.checked) {
+    pro_profit_id_allCheckbox.checked = true;
+  } else {
+    pro_profit_id_allCheckbox.checked = false;
+  }
+}
+
+// Clear all checkboxes
+function clearAll() {
+  pro_profit_id_allCheckbox.checked = false;
+  pro_profit_id_viewCheckbox.checked = false;
+  pro_profit_id_addCheckbox.checked = false;
+  pro_profit_id_editCheckbox.checked = false;
+  pro_profit_id_deleteCheckbox.checked = false;
+}
+
+// Add event listeners to the checkboxes
+pro_profit_id_allCheckbox.addEventListener("click", checkAll_pro_profit);
+pro_profit_id_viewCheckbox.addEventListener("click", checkAny_pro_profit);
+pro_profit_id_addCheckbox.addEventListener("click", checkAny_pro_profit);
+pro_profit_id_editCheckbox.addEventListener("click", checkAny_pro_profit);
+pro_profit_id_deleteCheckbox.addEventListener("click", checkAny_pro_profit);
+
+
+
+const wallet_allCheckbox = document.getElementById("wallet_id_all");
+const wallet_viewCheckbox = document.getElementById("wallet_id_view");
+const wallet_addCheckbox = document.getElementById("wallet_id_add");
+const wallet_editCheckbox = document.getElementById("wallet_id_edit");
+const wallet_deleteCheckbox = document.getElementById("wallet_id_delete");
+
+// Check if all checkboxes are checked
+function checkAllwallet() {
+  if (wallet_allCheckbox.checked) {
+    wallet_viewCheckbox.checked = true;
+    wallet_addCheckbox.checked = true;
+    wallet_editCheckbox.checked = true;
+    wallet_deleteCheckbox.checked = true;
+  } else {
+    wallet_viewCheckbox.checked = false;
+    wallet_addCheckbox.checked = false;
+    wallet_editCheckbox.checked = false;
+    wallet_deleteCheckbox.checked = false;
+  }
+}
+
+// Check if any checkbox is checked
+function checkAnywallet() {
+  if (wallet_viewCheckbox.checked && wallet_addCheckbox.checked && wallet_editCheckbox.checked && wallet_deleteCheckbox.checked) {
+    wallet_allCheckbox.checked = true;
+  } else {
+    wallet_allCheckbox.checked = false;
+  }
+}
+
+
+
+// Add event listeners to the checkboxes
+wallet_allCheckbox.addEventListener("click", checkAllwallet);
+wallet_viewCheckbox.addEventListener("click", checkAnywallet);
+wallet_addCheckbox.addEventListener("click", checkAnywallet);
+wallet_editCheckbox.addEventListener("click", checkAnywallet);
+wallet_deleteCheckbox.addEventListener("click", checkAnywallet);
+
+
+
+const investor_allCheckbox = document.getElementById("investor_id_all");
+const investor_viewCheckbox = document.getElementById("investor_id_view");
+const investor_addCheckbox = document.getElementById("investor_id_add");
+const investor_editCheckbox = document.getElementById("investor_id_edit");
+const investor_deleteCheckbox = document.getElementById("investor_id_delete");
+
+
+
+
+// Check if all checkboxes are checked
+function checkAllinvestor() {
+  if (investor_allCheckbox.checked) {
+    investor_viewCheckbox.checked = true;
+    investor_addCheckbox.checked = true;
+    investor_editCheckbox.checked = true;
+    investor_deleteCheckbox.checked = true;
+  } else {
+    investor_viewCheckbox.checked = false;
+    investor_addCheckbox.checked = false;
+    investor_editCheckbox.checked = false;
+    investor_deleteCheckbox.checked = false;
+  }
+}
+
+// Check if any checkbox is checked
+function checkAnyinvestor() {
+  if (investor_viewCheckbox.checked && investor_addCheckbox.checked && investor_editCheckbox.checked && investor_deleteCheckbox.checked) {
+    investor_allCheckbox.checked = true;
+  } else {
+    investor_allCheckbox.checked = false;
+  }
+}
+
+// Clear all checkboxes
+
+
+// Add event listeners to the checkboxes
+investor_allCheckbox.addEventListener("click", checkAllinvestor);
+investor_viewCheckbox.addEventListener("click", checkAnyinvestor);
+investor_addCheckbox.addEventListener("click", checkAnyinvestor);
+investor_editCheckbox.addEventListener("click", checkAnyinvestor);
+investor_deleteCheckbox.addEventListener("click", checkAnyinvestor);
+
+
+
+const pro_inv_id_allCheckbox = document.getElementById("pro_inv_id_all");
+const pro_inv_id_viewCheckbox = document.getElementById("pro_inv_id_view");
+const pro_inv_id_addCheckbox = document.getElementById("pro_inv_id_add");
+const pro_inv_id_editCheckbox = document.getElementById("pro_inv_id_edit");
+const pro_inv_id_deleteCheckbox = document.getElementById("pro_inv_id_delete");
+
+
+
+// Check if all checkboxes are checked
+function checkAllpro_inv() {
+  if (pro_inv_id_allCheckbox.checked) {
+    pro_inv_id_viewCheckbox.checked = true;
+    pro_inv_id_addCheckbox.checked = true;
+    pro_inv_id_editCheckbox.checked = true;
+    pro_inv_id_deleteCheckbox.checked = true;
+  } else {
+    pro_inv_id_viewCheckbox.checked = false;
+    pro_inv_id_addCheckbox.checked = false;
+    pro_inv_id_editCheckbox.checked = false;
+    pro_inv_id_deleteCheckbox.checked = false;
+  }
+}
+
+// Check if any checkbox is checked
+function checkAnypro_inv() {
+  if (pro_inv_id_viewCheckbox.checked && pro_inv_id_addCheckbox.checked && pro_inv_id_editCheckbox.checked && pro_inv_id_deleteCheckbox.checked) {
+    pro_inv_id_allCheckbox.checked = true;
+  } else {
+    pro_inv_id_allCheckbox.checked = false;
+  }
+}
+
+
+
+// Add event listeners to the checkboxes
+pro_inv_id_allCheckbox.addEventListener("click", checkAllpro_inv);
+pro_inv_id_viewCheckbox.addEventListener("click", checkAnypro_inv);
+pro_inv_id_addCheckbox.addEventListener("click", checkAnypro_inv);
+pro_inv_id_editCheckbox.addEventListener("click", checkAnypro_inv);
+pro_inv_id_deleteCheckbox.addEventListener("click", checkAnypro_inv);
+
+
+const pro_exp_id_allCheckbox = document.getElementById("pro_exp_id_all");
+const pro_exp_id_viewCheckbox = document.getElementById("pro_exp_id_view");
+const pro_exp_id_addCheckbox = document.getElementById("pro_exp_id_add");
+const pro_exp_id_editCheckbox = document.getElementById("pro_exp_id_edit");
+const pro_exp_id_deleteCheckbox = document.getElementById("pro_exp_id_delete");
+
+
+
+// Check if all checkboxes are checked
+function checkAllpro_exp() {
+  if (pro_exp_id_allCheckbox.checked) {
+    pro_exp_id_viewCheckbox.checked = true;
+    pro_exp_id_addCheckbox.checked = true;
+    pro_exp_id_editCheckbox.checked = true;
+    pro_exp_id_deleteCheckbox.checked = true;
+  } else {
+    pro_exp_id_viewCheckbox.checked = false;
+    pro_exp_id_addCheckbox.checked = false;
+    pro_exp_id_editCheckbox.checked = false;
+    pro_exp_id_deleteCheckbox.checked = false;
+  }
+}
+
+// Check if any checkbox is checked
+function checkAnypro_exp() {
+  if (pro_exp_id_viewCheckbox.checked && pro_exp_id_addCheckbox.checked && pro_exp_id_editCheckbox.checked && pro_exp_id_deleteCheckbox.checked) {
+    pro_exp_id_allCheckbox.checked = true;
+  } else {
+    pro_exp_id_allCheckbox.checked = false;
+  }
+}
+
+
+
+// Add event listeners to the checkboxes
+pro_exp_id_allCheckbox.addEventListener("click", checkAllpro_exp);
+pro_exp_id_viewCheckbox.addEventListener("click", checkAnypro_exp);
+pro_exp_id_addCheckbox.addEventListener("click", checkAnypro_exp);
+pro_exp_id_editCheckbox.addEventListener("click", checkAnypro_exp);
+pro_exp_id_deleteCheckbox.addEventListener("click", checkAnypro_exp);
+
+
+
+</script>

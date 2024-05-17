@@ -1,0 +1,192 @@
+<style>
+   
+
+  input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+  </style>
+  
+  <form method="post" action="{% url 'investors_wallet_permission' form.instance.pk %}" class="project_up_form">
+    {% csrf_token %}
+    <div class="modal-header">
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  
+      </button>
+    </div>
+    <div class="modal-body">
+     
+  <h5 class="text-center modal-title text-uppercase mb-2 " id="exampleModalLabel1">Wallet Approval</h5>
+
+        
+  <div class="card-body">
+
+    <div class="row">
+      <div class="col-md-6">
+        <label for="id_project">Investor Name:(<span style="color: green; font-size: 12px;">Active Investors  </span>)</label>
+      <select class="form-control" type="text" disabled name="project" maxlength="100" required="" id="id_project">
+        {% if request.user.is_authenticated %}
+            <option value="{{form.instance.project}}">{{form.instance.investor_name}}</option>
+        {% endif %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="id_amount">Amount:</label>
+        <input value="{{form.instance.amount}}" disabled class="form-control" type="number" name="amount"  id="id_amount">
+      </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="id_Mode_of_payment">Mode of payment:</label>
+        <input value="{{form.instance.mode_of_payment}}" disabled class="form-control" type="text" name="mode_of_payment" maxlength="100" required="" id="id_Mode_of_payment">
+      </div>
+      <div class="col-md-6">
+        <label for="payment_id">Payment ID:</label>
+        <input value="{{form.instance.payment_id}}" disabled class="form-control" type="text" name="payment_id" maxlength="100" required="" id="id_Mode_of_payment">
+      </div>
+      </div>
+      
+      <div class="row">
+      <div class="col-md-4">
+        <label for="id_Payment_given_by">Payment given by:</label>
+        <input value="{{form.instance.payment_given_by}}" disabled class="form-control" type="text" name="payment_given_by" maxlength="200" required="" id="id_Payment_given_by">
+      </div>
+      <div class="col-md-4">
+        <label for="id_payment_receiver_name">Recived By:</label>
+        <input value="{{form.instance.payment_receiver_name}}" disabled class="form-control" type="text" name="payment_receiver_name" maxlength="200" required="" id="id_payment_receiver_name">
+      </div>
+      
+      <div class="col-md-4">
+        <label for="id_Paid_date">Paid date:</label>
+        <input value="{{ form.instance.paid_date|date:'Y-m-d' }}" disabled class="form-control" type="date" name="paid_date" required="" id="id_Paid_date">
+
+      </div>
+      </div>
+{% if form.instance.First_Approved_by != Null  %}
+      
+      <div class="row">
+      <div class="col-md-6">
+        <label for="id_First_Approved_by">First Approved by:</label>
+        <select class="form-control" type="text" name="First_Approved_by_view"   disabled 
+    maxlength="200"id="id_First_Approved_by">
+    <option value="{{form.instance.First_Approved_by}}" 
+
+
+    >{{form.instance.First_Approved_by}}</option>
+    
+  </select>
+      </div>
+      
+<div class="col-md-6">
+  <label for="id_Second_Approved_date">First Approved date:</label>
+  <input class="form-control" type="date" name="First_Approved_date_view" 
+  disabled
+  value="{{form.instance.First_Approved_date|date:'Y-m-d'}}"
+ id="id_Second_Approved_date">
+</div>    
+</div> 
+{% else %}
+<div class="row">
+  <div class="col-md-12">
+      <label for="id_First_Approved_by">First Approved by:</label>
+      <select class="form-control" type="text" name="First_Approved_by" 
+       maxlength="200"id="id_First_Approved_by_add_view">
+       <option value="{{request.user}}">{{request.user}}</option>
+
+      </select>
+     
+  </div>
+  <div class="col-md-6 visually-hidden">
+    <label for="id_Second_Approved_date">First Approved date:</label>
+    <input class="form-control" type="date" name="First_Approved_date_add" 
+           value="" id="id_Second_Approved_date">
+  
+  <script>
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+    var day = ("0" + currentDate.getDate()).slice(-2);
+    var formattedDate = year + "-" + month + "-" + day;
+    document.getElementById("id_Second_Approved_date").value = formattedDate;
+  </script>
+  
+</div>
+
+
+
+
+</div>  
+{% endif %}
+  {% if form.instance.Second_Approved_by != Null  %}
+<div class="row">
+  <div class="col-md-6">
+      <label for="id_Second_Approved_by">Second Approved by:</label>
+       <select class="form-control" type="text" name="Second_Approved_by"  disabled maxlength="200"id="id_Second_Approved_by_add">
+       <option value="{{form.instance.Second_Approved_by}}">{{form.instance.Second_Approved_by}}</option>
+      </select>
+  </div>
+  <div class="col-md-6">
+    <label for="id_Second_Approved_date">Second Approved Date:</label>
+    <input class="form-control" type="date" name="Second_Approved_date" 
+    disabled value="{{form.instance.Second_Approved_date|date:'Y-m-d'}}" id="">
+  </div>
+</div>
+{% else %}
+{% if form.instance.First_Approved_by != Null  %}
+{% if form.instance.Second_Approved_by == Null  %}
+{% if not hidden_field %}
+  
+  
+<div class="row">
+  <div class="col-md-12">
+    <label for="id_Second_Approved_by">Second Approved by:</label>
+    <select class="form-control" type="text" name="Second_Approved_by" 
+    maxlength="200"id="id_Second_Approved_by_add">
+    <option value="{{request.user}}">{{request.user}}</option>
+    
+  </select>
+  
+  </div>    
+  <div class="col-md-6 visually-hidden">
+    <label for="id_Second_Approved_date">Second Approved Date:</label>
+    <input class="form-control" type="date" name="Second_Approved_date_add" 
+           value="" id="id_Second_Approved_date_add">
+  </div>
+  <script>
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+    var day = ("0" + currentDate.getDate()).slice(-2);
+    var formattedDate = year + "-" + month + "-" + day;
+    document.getElementById("id_Second_Approved_date_add").value = formattedDate;
+  </script>
+  
+</div>
+{% endif %}
+{% endif %}
+
+{% endif %}
+{% endif %}
+
+
+
+
+
+    
+      
+    
+    <div class="modal-footer">
+      {% if form.instance.Second_Approved_by != Null %}
+
+      <button type="submit" class="btn btn-primary" disabled>Approval</button>
+      {% else %}
+{% if not hidden_field %}
+
+      <button type="submit" class="btn btn-primary" >Approval</button>
+
+      {% endif %}
+      {% endif %}
+</div>
+  </form>

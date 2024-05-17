@@ -1,0 +1,198 @@
+<style>
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #da5050; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 99999999; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+
+</style>
+  <div class="divider">
+    <div class="divider-text text-success">
+      <b>
+        Add Staff
+
+      </b>
+    </div>
+  </div>
+
+</div>
+
+  <div class="row">
+    <div class="col-md-2">
+      <label for="id_username">Username<span style="color: red;">*</span></label>
+    </div>
+    <div class="col-md-10">
+    <input type="text" name="username" maxlength="20"
+    class="form-control"
+     id="id_username">
+    </div>
+  </div>
+    
+    
+  <div class="row mt-3">
+    <div class="col-md-2">
+      
+    <label for="id_password">Password<span style="color: red;">*</span></label>
+    </div>
+    <div class="col-md-10">
+    <div class="input-group input-group-merge">
+      <input
+      type="password" name="password" maxlength="20"
+        
+      class="form-control"
+      id="id_password"
+        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+        aria-describedby="password"
+      />
+      <span class="input-group-text cursor-pointer"  onclick="viewpass()"><i class="bx bx-hide"></i></span>
+    </div>
+  </div>
+  <div class="row mt-3">
+   
+    <div class="col-md-2">
+      <label for="id_satus">Status<span style="color: red;">*</span></label>
+  </div>
+
+    <div class="col-md-10">
+      <input type="checkbox" class="form-check-input ml-3" name="satus" id="id_satus" checked="">
+    </div>
+  </div>
+ 
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+    Close
+  </button>
+  <button type="button" class="btn btn-primary" id="staff_add_btn">Save changes</button>
+<script>
+
+  function snackbar_show() {
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar");
+  
+    // Add the "show" class to DIV
+    x.className = "show";
+  
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
+
+  $(document).ready(function() {
+    // Function to validate the form
+    function validateForm() {
+      var user_name = $("#id_username").val();
+      var password = $("#id_password").val();
+    
+      var x = document.getElementById("snackbar");
+
+      if (user_name === "") {
+        snackbar_show();
+        x.innerHTML = "Please Enter the Username.";
+        return false;
+      }
+      if (user_name.includes(' ')) {
+        snackbar_show();
+        x.innerHTML = "Username cannot contain space.";
+        return false;
+      }
+
+      if (password === "") {
+        snackbar_show();
+        x.innerHTML = "Please Enter the Password.";
+        return false;
+      }
+      if (user_name === password) {
+        snackbar_show();
+        x.innerHTML = "Username and Password cannot be same.";
+        return false;
+      }
+      if (password === '12345678') {
+        snackbar_show();
+        x.innerHTML = "Password cannot be 12345678.";
+        return false;
+      }
+     if (password.includes(' ')) {
+        snackbar_show();
+        x.innerHTML = "Password cannot contain space.";
+        return false;
+      }
+      if (password.length < 8) {
+        snackbar_show();
+        x.innerHTML = "Password must be at least 8 characters.";
+        return false;
+      }
+      return true;
+    }
+  
+    // Attach form submission event handler
+    $("#staff_add_btn").on("click", function(e) {
+      if (!validateForm()) {
+        e.preventDefault(); 
+      }
+      if (validateForm()) {
+        console.log("True");
+        var btn = document.getElementById("staff_add_btn");
+        btn.type = "submit";
+      }
+      
+    });
+  });
+
+  function viewpass() {
+    var x = document.getElementById("id_password");
+    if (x.type === "password") {
+      x.type = "text";
+    } else {
+      x.type = "password";
+    }
+  }
+
+
+  </script>

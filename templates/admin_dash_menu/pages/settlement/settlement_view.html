@@ -1,0 +1,78 @@
+   <div class="modal-header">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </button>
+ </div>
+ <div class="modal-body">
+      <div class="row">
+         <div class="col-md-9">
+             <h4 class="text-uppercase">{{my_model_instances.project_name }}</h4>
+         </div>
+        <div class="col-md-3 fw-bold">
+             {% if my_model_instances.Second_Approved_by != Null %}
+             <i class='bx bxs-badge-check' style="color: green; font-size: 20px;"></i>Approved
+             {% else %}
+             <i class='bx bx-error-circle' style='color:#c10c0f; font-size: 20px;'  ></i>Not Approved
+             {% endif %}
+       </div>
+   </div>
+
+<hr>
+<div class="row ">
+  <div class="col-md-6">
+<table  class="table table-hover">
+  <tr>
+    <td><b>Company Name</b>:</td>
+    <td>{{my_model_instances.company_name }}</td>
+  </tr>
+  <tr>
+    <td><b>Investor Name</b>:</td>
+    <td class="">{{my_model_instances.investor_name }}</td>
+  </tr>
+  <tr>
+    <td><b>Invested Project</b>:</td>
+    <td>{{my_model_instances.project_name }}</td>
+  </tr>
+  <tr>
+    <td><b>Settled Amount</b>:</td>
+    <td>{{my_model_instances.amount}}</td>
+  </tr>
+  <tr>
+    <td><b>Balance Amount</b>:</td>
+    <td>{{my_model_instances.blance_amount}}</td>
+  </tr>
+
+</table>
+</div>
+
+<div class="col-md-6">
+<table  class="table table-hover">
+
+  
+  <tr>
+    <td><b>First Approved by</b>:</td>
+    <td>{{my_model_instances.First_Approved_by }}</td>
+  </tr>
+  <tr>
+    <td><b>First Approved date</b>:</td>
+    <td>{{my_model_instances.First_Approved_date }}</td>
+  </tr>
+  <tr>
+    <td><b>Second Approved by</b>:</td>
+    <td>{{my_model_instances.Second_Approved_by}}</td>
+  </tr>
+  <tr>
+    <td><b>Second Approved date</b>:</td>
+    <td>{{my_model_instances.Second_Approved_date }}</td>
+  </tr>
+  <tr>
+    <td><b>Settled date</b>:</td>
+    <td>{{my_model_instances.settlement_date|date:"d-m-Y" }}</td>
+  </tr>
+</table>
+</div>
+
+
+    
+ <div class="modal-footer">
+    <button type="button" class="btn btn-primary " data-bs-dismiss="modal" >Close</button>
+ </div>

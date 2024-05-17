@@ -1,0 +1,66 @@
+<style>
+  form {
+  margin: 0 auto;
+  max-width: 500px;
+  padding: 20px;
+ 
+}
+
+form p {
+  margin: 0;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+form label {
+  display: inline-block;
+  width: 150px;
+  font-weight: bold;
+}
+
+form input[type="text"], form input[type="email"], form textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background: #eee;
+  margin-bottom: 20px;
+}
+
+form input[type="submit"] {
+  background: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+</style>
+
+<form method="post" action="{% url 'user_update' form.instance.pk %}" class="Userdetails_up_form">
+  {% csrf_token %}
+  <div class="modal-header">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+    </button>
+  </div>
+  <div class="modal-body">
+   
+<h5 class="mb-0">Update User Details</h5>
+      
+<div class="card-body">
+  {{ form.as_p }}
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+      Close
+    </button>
+    <button type="submit" class="btn btn-primary">Update</button>
+  </div>
+</form>

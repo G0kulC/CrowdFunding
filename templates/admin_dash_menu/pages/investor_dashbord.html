@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="../assets/" data-template="vertical-menu-template-free"> {% load static %} <head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+		<title> {% block title %} Dashboard {% endblock title %} </title>
+		<link rel="icon" href="{% static 'admin/favicon.ico' %}">
+		<meta name="description" content="" />
+		
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<link
+		rel="stylesheet"
+		href="{% static 'admin/assets/vendor/fonts/boxicons.css' %}"
+	  />
+	  <link
+		rel="stylesheet"
+		href="{% static 'admin/assets/vendor/css/core.css' %}"
+		class="template-customizer-core-css"
+	  />
+	  <link
+		rel="stylesheet"
+		href="{% static 'admin/assets/vendor/css/theme-default.css' %}"
+		class="template-customizer-theme-css"
+	  />
+	  <link rel="stylesheet" href="{% static 'admin/assets/css/main.css' %}" />
+	  <link
+		rel="stylesheet"
+		href="{% static 'admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}"
+	  />
+	  <link
+		rel="stylesheet"
+		href="{% static 'admin/assets/vendor/libs/apex-charts/apex-charts.css' %}"
+	  />
+  
+	  <script src="{% static 'admin/assets/vendor/js/helpers.js' %}"></script>
+	  <script src="{% static 'admin/assets/js/config.js' %}"></script>
+
+	</head>
+<body>
+		  <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar" >
+			<div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+			  <div class="navbar-nav me-auto ">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					
+					<li class="nav-item bx-flashing" id="open-modal-button_lis">
+						<a class="nav-link cursor-pointer text-primary fw-bold " id="open-modal-button"  href="javascript:void(0)" >Select Company</a>
+					</li>
+				</ul>	
+				</div>
+			  
+			
+				<ul class="navbar-nav flex-row align-items-center ms-auto">
+					<li class="nav-item navbar-dropdown dropdown-user dropdown">
+					<a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"  title="Profile">
+						<div class="avatar avatar-online">
+						<img src="https://ui-avatars.com/api/?name={{name}}&background=696CFF&color=ffff&length=1&bold=true/" alt class="w-px-40 h-auto rounded-circle" />
+						</div>
+					</a>
+
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li>
+						<a class="dropdown-item" href="#">
+							<div class="d-flex">
+							<div class="flex-shrink-0 me-3">
+								<div class="avatar avatar-online">
+								<img src="https://ui-avatars.com/api/?name={{name}}&background=696CFF&color=ffff&length=1&bold=true/" alt class="w-px-40 h-auto rounded-circle" />
+				
+								</div>
+							</div>
+							<div class="flex-grow-1">
+								
+								{% if name and satus  %}
+								<span class="fw-semibold d-block">{{name}}</span>
+				
+								<small class="text-muted">{{satus}}</small>
+								{% endif %}
+				
+							</div>
+							</div>
+						</a>
+						</li>
+								
+						<li>
+						<div class="dropdown-divider"></div>
+						</li>
+						<li>
+						<a class="dropdown-item" href="#" title="Logout" id="logout_btn_nav">
+							<i class="bx bx-power-off me-2"></i>
+							<span class="align-middle">Log Out</span>
+						</a>
+						</li>
+						<script>
+							const logoutBtn_nav = document.getElementById('logout_btn_nav');
+							logoutBtn_nav.addEventListener('click', () => {
+							  Swal.fire({
+								title: 'Are you sure you want to logout?',
+								icon: 'warning',
+								showCancelButton: true,
+								confirmButtonColor: '#3085d6',
+								cancelButtonColor: '#d33',
+								confirmButtonText: 'Yes, logout!'
+							  }).then((result) => {
+								if (result.isConfirmed) {
+								  window.location.href = "{% url 'admin_logout' %}";
+								}
+							  });
+							});
+						  
+						  </script>
+					</ul>
+					</li>
+				</ul>
+		  </nav>
+						
+				<!-- Modal -->
+				<div class="modal fade" id="company-modal" tabindex="-1" aria-labelledby="company-modal-label" aria-hidden="true">
+					<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+						<h5 class="modal-title" id="company-modal-label">Select a Company</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+								<select id="id_company" class="form-select text-center w-100"  name='company_name'>
+								  <option value="none">Select</option>
+								  </select>
+						</div>
+					</div>
+					</div>
+				</div>
+				
+		<div class="layout-container layout-wrapper layout-content-navbar animated-content" style="position: relative; display: inline-block;">
+	  
+		  <div class="content-wrapper">
+			<!-- Content -->
+			<div class="container-xxl flex-grow-1 container-p-y">
+			  <div class="content-wrapper"> 
+	  
+				  
+				  
+				</div>
+				
+				
+<div class="content-wrapper"> 
+	{% if investor_is_active  %} 
+  
+	  
+	  
+	</div>
+	
+	
+	  <div class="row" id="main_data">
+	  <div class="col-lg-8 mb-4 order-0">
+		<div class="card">
+		<div class="d-flex align-items-end row">
+		  <div class="col-sm-7">
+		  <div class="card-body">
+			
+			<h5 class="card-title text-primary">Congratulations {% if name and satus  %} {{name}} {% endif %} 🎉</h5>
+			<p class="mb-4"> You have done <span class="fw-bold text-success">
+			</span> more profit today. Check your new profit in your profit. </p>
+		  </div>
+		  </div>
+		  <div class="col-sm-5 text-center text-sm-left">
+		  <div class="card-body pb-0 px-0 px-md-4">
+			<img src="{% static 'admin/assets/laptop.png' %}" height="140" alt="View Badge User" />
+		  </div>
+		  </div>
+		</div>
+		</div>
+	  </div>
+	  <div class="col-lg-4 col-md-4 order-1">
+		<div class="row">
+		<div class="col-lg-6 col-md-12 col-6 mb-4"  title="Your Profit">
+		  <div class="card">
+		  <div class="card-body">
+			<div class="card-title d-flex align-items-start justify-content-between">
+			<div class="avatar flex-shrink-0">
+			  <span class="badge bg-label-success">
+			  <i class='bx bx-line-chart rounded '></i>
+			  </span>
+			</div>
+			</div>
+			<span class="fw-semibold d-block mb-1" id="get_profit_or_loss"></span>
+			<span id="get_profit_ajax" value=""></span>
+			</h4>
+		  </div>
+		  </div>
+		</div>
+		<div class="col-lg-6 col-md-12 col-6 mb-4"  title="Your Investment">
+		  <div class="card">
+		  <div class="card-body">
+			<div class="card-title d-flex align-items-start justify-content-between">
+			<div class="avatar flex-shrink-0">
+			  <span class="badge bg-label-warning">
+			  <i class='bx bxs-left-top-arrow-circle'></i>
+			  </span>
+			</div>
+			</div>
+			<span class="fw-semibold">Investment</span>
+			<br>
+			 <span id="total_invesment"></span>
+			</h4>
+		  </div>
+		  </div>
+		</div>
+		</div>
+	  </div>
+	  <!-- Total Revenue -->
+	  <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
+		<div class="card">
+		<div class="row row-bordered g-0">
+		  <div class="card h-100">
+		  <div class="card-header d-flex align-items-center justify-content-between pb-0">
+			<div class="card-title mb-0 w-100">
+				<div class="row">
+					<div class="col-md-6">
+						<h5 class="m-0 me-2 text-primary">
+							<i class='bx bxs-bar-chart-alt-2 bx-flip-horizontal '></i> Statistics
+							</h5>
+					</div>
+					<div class="col-md-4">
+
+				<select class="form-select text-center w-100" type="text" name="project" maxlength="100"  id="id_project_name">
+			  {% if request.user.is_authenticated %}
+				  <option value="none">-- Select a project --</option>
+			  {% endif %}
+			  </select>
+			  
+			</div>
+		</div>
+			 
+			</div>
+		  </div>
+		  <div class="card-body">
+			<div class="d-flex justify-content-between align-items-center mb-3">
+			</div> <table class="table table-borderless text-black" id="project_table_dash">
+			<thead>
+			  <tr>
+			  <th>project name</th>
+			  <th>project Investment</th>
+			  <th>Date</th>
+			  <th>Status</th>
+			  </tr>
+			</thead>
+			<tbody id="investor-table-body">
+			</tbody>
+			</table>
+			
+		  </div>
+		  </div>
+		</div>
+		</div>
+	  </div>
+	  
+	  <!--/ Total Revenue -->
+	  <div class="col-12 col-md-8 col-lg-4 order-3 order-md-2">
+		<div class="row">
+		<div class="col-6 mb-4">
+		  <div class="card" title="No.of Project ">
+		  <div class="card-body">
+			<div class="card-title d-flex align-items-start justify-content-between">
+			<span class="badge bg-label-info">
+			  <i class='bx bxs-bank'></i>
+			</span>
+			</div><span class="fw-semibold d-block mb-1">Project Count</span>
+			<i class='bx bx-archive text-primary'>
+			</i>
+			<span id="total_project_count"></span>
+			</h4>
+		  </div>
+		  </div>
+		</div>
+		<div class="col-6 mb-4">
+		  <div class="card"  title="Your Wallet" >
+		  <div class="card-body">
+			<div class="card-title d-flex align-items-start justify-content-between">
+			<div class="avatar flex-shrink-0">
+			  <span class="badge bg-label-primary">
+			  <i class='bx bxs-pie-chart-alt-2'></i>
+			  </span>
+			</div>
+			</div>
+			<span class="fw-semibold d-block mb-1">Total Wallet</span>
+			<span id="total_wallet"></span>
+			</h4>
+		  </div>
+		  </div>
+		</div>
+		</div>
+		<div class="row w">
+		<div class="col-12 mb-4">
+		  <div class="card" >
+		  <div class="card-body" >
+			
+			  <div class="card-title text-center">
+			  <h5 class="text-nowrap mb-2">Account Details</h5>
+			  <img src="https://ui-avatars.com/api/?name={{name}}&background=696CFF&color=ffff&length=1&bold=true/" alt class="w-px-40 mt-2 h-auto rounded-circle" />
+
+			</div>
+			 
+			  <table class="table table-borderless">
+				
+				<tr>
+				  <td>First Name</td>
+				  <td>{{ mymodel_intences.first_name }}</td>
+				</tr>
+				<tr>
+				  <td>Username</td>
+				  <td>{{ mymodel_intences.email_id }}</td>
+				</tr>
+				
+				<tr>
+				  <td>Mobile Number</td>
+				  <td>{{ mymodel_intences.mobile_number }}</td>
+				</tr>
+				<tr>
+				  <td>PAN Number</td>
+				  <td>{{ mymodel_intences.Pan_number }}</td>
+				</tr>
+				<tr>
+				  <td>Aadhar Card Number</td>
+				  <td>{{ mymodel_intences.Aadhar_card_no }}</td>
+				</tr>
+				
+				<tr>
+				  <td>Pincode</td>
+				  <td>{{ mymodel_intences.pincode }}</td>
+				</tr>
+			  </table>
+
+
+
+			</div>
+		  </div>
+		</div>
+		</div>
+	  </div>
+	  </div>
+	  <!--/ Expense Overview -->
+	</div>
+	</div> {% endif %}
+				  
+				  <!--/ Expense Overview -->
+				</div>
+			  </div>
+			  <!-- Footer -->
+			  <footer class="content-footer footer bg-footer-theme">
+				<div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+				  <div class="mb-2 mb-md-0"> © <span id="fotter_year"></span> , Website Design by <a href="https://blazon.in/" target="_blank" class="footer-link fw-bolder text-warning">Blazon.</a>
+				  </div>
+				  <div></div>
+				</div>
+			  </footer>
+			</div>
+		  </div>
+	  
+		</div>
+	  </div>
+	  </div>
+	  </div>
+	  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+	  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+	  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+	  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+	  <style>
+		#project_table_dash_length{
+			display: none;
+		}
+	  </style>
+
+	<script>
+
+		
+
+		var currentYear = new Date().getFullYear();
+		document.getElementById("fotter_year").innerHTML = currentYear;
+
+
+
+		$(document).ready(function() {
+			document.getElementById("get_profit_or_loss").innerHTML = "Profit";
+
+			$.ajax({
+				url: "{% url 'get_investors_loged_company' %}",
+				type: "GET",
+				success: function(data) {
+					$.each(data.projects, function(index, project) {
+						$('#id_company').append('<option value="' + project.id + '">'+ project.name + '</option>');
+					});
+					
+				},
+				error: function(xhr, status, error) {
+				}
+			});
+		});
+		
+
+		$(document).ready(function() {
+			$('#id_company').on("change",function(event) {
+				var company_id = $('#id_company').val();
+				if (company_id !=='none') {
+					$.ajax({
+						url: `/get_invested_project_name/${company_id}/`,
+						type: 'GET',
+						success: function(data) {
+							var addedProjectNames = [];
+				
+							$.each(data.projects, function(index, project) {
+								if (!addedProjectNames.includes(project.name)) {
+									$('#id_project_name').append('<option value="' + project.id + '">'+ project.name + '</option>');
+									addedProjectNames.push(project.name);
+								}
+							});
+							$('#total_project_count').text(addedProjectNames.length);
+							var company_id = $('#id_company').val();
+							var proj_profit_amount=0;
+							var total_profit=0;
+							$('#id_project_name option').each(function() {
+								var selectedOption = $(this);
+								var project_id =selectedOption.val();
+								if (project_id !=='none') {
+								$.ajax({
+									url: `/get_project_data/${project_id}/${company_id}/`,
+									type: 'GET',
+									success: function(data) {
+										proj_profit_amount+= data.profit_amount;
+										total_profit=proj_profit_amount
+										if (total_profit > 0) {
+											let formattedtotal_profit;
+											if (total_profit >= 10000000) {
+											formattedtotal_profit = "₹ " + (total_profit / 10000000).toFixed(2) + " Crore";
+											} else if (total_profit >= 100000) {
+											formattedtotal_profit = "₹ " + (total_profit / 100000).toFixed(2) + " Lakh";
+											} else {
+											formattedtotal_profit = total_profit.toLocaleString("en-IN", {
+											style: "currency",
+											currency: "INR"
+											});
+											}
+											document.getElementById("get_profit_or_loss").innerHTML = "Profit";
+											document.getElementById("get_profit_ajax").innerHTML = formattedtotal_profit;
+										}
+										if (total_profit <= 0) {
+											var loss=total_profit
+											let loss_profit;
+											if (loss >= 10000000) {
+											loss_profit = "₹ " + (loss / 10000000).toFixed(2) + " Crore";
+											} else if (loss >= 100000) {
+											loss_profit = "₹ " + (loss / 100000).toFixed(2) + " Lakh";
+											} else {
+											loss_profit = loss.toLocaleString("en-IN", {
+											style: "currency",
+											currency: "INR"
+											});
+											}
+											document.getElementById("get_profit_or_loss").innerHTML = "Loss";
+											document.getElementById("get_profit_ajax").innerHTML = loss_profit;
+										}
+									}
+								});
+							}
+							});
+						},
+
+						error: function(xhr, status, error) {
+						}
+					});
+				}
+			});
+		});
+		$(document).ready(function() {
+			$('#id_project_name').on("change",function(event) {
+				var company_id = $('#id_company').val();
+				var project_id = $('#id_project_name').val();
+				var proj_inner=$('#id_project_name')
+				
+				if (company_id !=='none') {
+					if (project_id !=='none') {
+						var table = $('#project_table_dash').DataTable();
+						table.search(proj_inner.find(':selected').text()).draw();
+						$.ajax({
+							url: `/get_project_data/${project_id}/${company_id}/`,
+							type: 'GET',
+							success: function(data) {
+								var proj_total_investment = data.get_invested_amount;
+								var project_profit_amount = data.profit_amount;
+
+								if (proj_total_investment > 0) {
+									let formattedproj_total_investment;
+									if (proj_total_investment >= 10000000) {
+									formattedproj_total_investment = "₹ " + (proj_total_investment / 10000000).toFixed(2) + " Crore";
+									} else if (proj_total_investment >= 100000) {
+									formattedproj_total_investment = "₹ " + (proj_total_investment / 100000).toFixed(2) + " Lakh";
+									} else {
+									formattedproj_total_investment = proj_total_investment.toLocaleString("en-IN", {
+									style: "currency",
+									currency: "INR"
+									});
+									}
+									document.getElementById("total_invesment").innerHTML = formattedproj_total_investment;
+								}
+								else{
+									document.getElementById("total_invesment").innerHTML = "₹ 0";
+								}
+
+								if (project_profit_amount > 0) {
+									let formattedproject_profit_amount;
+									if (project_profit_amount >= 10000000) {
+									formattedproject_profit_amount = "₹ " + (project_profit_amount / 10000000).toFixed(2) + " Crore";
+									} else if (project_profit_amount >= 100000) {
+									formattedproject_profit_amount = "₹ " + (project_profit_amount / 100000).toFixed(2) + " Lakh";
+									} else {
+									formattedproject_profit_amount = project_profit_amount.toLocaleString("en-IN", {
+									style: "currency",
+									currency: "INR"
+									});
+									}
+									document.getElementById("get_profit_or_loss").innerHTML = "Profit";
+
+									document.getElementById("get_profit_ajax").innerHTML = formattedproject_profit_amount;
+								}
+								if (project_profit_amount <= 0) {
+									var loss=project_profit_amount
+									let loss_profit;
+									if (loss >= 10000000) {
+									loss_profit = "₹ " + (loss / 10000000).toFixed(2) + " Crore";
+									} else if (loss >= 100000) {
+									loss_profit = "₹ " + (loss / 100000).toFixed(2) + " Lakh";
+									} else {
+									loss_profit = loss.toLocaleString("en-IN", {
+									style: "currency",
+									currency: "INR"
+									});
+									}
+									document.getElementById("get_profit_or_loss").innerHTML = "Loss";
+									document.getElementById("get_profit_ajax").innerHTML = loss_profit;
+								}
+							}
+								
+						})
+					}
+				}
+			});
+		});
+
+			$(document).ready(function() {
+				$('#id_company').on("change",function(event) {
+					var company_id = $('#id_company').val();
+					if (company_id !=='none') {
+						$.ajax({
+							url: `/get_data_company/${company_id}/`,
+							type: 'GET',
+							success: function(data) {
+									$('#company-modal').modal('hide');
+									var tot_profit_inv = data.tot_profit_inv;
+									var current_company =  data.company_name;
+									var wallet_amount= data.check_wallet_amount;
+									var invesment_data= data.total_insesment_invstor;
+									var table = document.getElementById("project_table_dash");
+									var tableBody = document.getElementById("investor-table-body");
+									tableBody.innerHTML = "";
+									$(document).ready(function() {
+										$('#project_table_dash').DataTable({
+										responsive: true,
+										language: {
+										search: "",
+										searchPlaceholder: "Search...",
+										},
+										});
+										$('#project_table_dash_filter input[type="search"]').addClass('form-control');
+										$('#project_table_dash_filter input[type="search"]').attr('placeholder', 'Search...');
+										$('#project_table_dash_filter input[type="search"]').attr('aria-label', 'Search...')
+										});
+							
+									data.investor_value_list.forEach(function(item) {
+									var row = document.createElement("tr");
+
+									var projectNameCell = document.createElement("td");
+									projectNameCell.textContent = item.project;
+
+									var projectValueCell = document.createElement("td");
+									projectValueCell.textContent = item.amount;
+
+									var approvalCell = document.createElement("td");
+									var formattedDate = moment(item.Createdatetime).format('DD-MM-YYYY');
+									approvalCell.textContent = formattedDate;
+									
+									var statusCell = document.createElement("td");
+									if (!item.status){
+										statusCell.innerHTML = "<i class='bx bx-error-circle' style='color:#c10c0f'></i>Pending";
+									}
+									if (item.status){
+										statusCell.innerHTML = "<i class='bx bxs-badge-check' style='color: green;'></i>Active";
+									}
+
+									row.appendChild(projectNameCell);
+									row.appendChild(projectValueCell);
+									row.appendChild(approvalCell);
+									row.appendChild(statusCell);
+
+									tableBody.appendChild(row);
+									})
+
+									if (current_company != undefined) {
+										document.getElementById("open-modal-button").innerHTML = current_company ;
+										document.getElementById("open-modal-button_lis").classList.remove("bx-flashing");
+
+									}
+									else{
+										document.getElementById("open-modal-button_lis").classList.add("bx-flashing");
+									}
+
+									if (wallet_amount > 0) {
+										let formattedwallet_amount;
+										if (wallet_amount >= 10000000) {
+										formattedwallet_amount = "₹ " + (wallet_amount / 10000000).toFixed(2) + " Crore";
+										} else if (wallet_amount >= 100000) {
+										formattedwallet_amount = "₹ " + (wallet_amount / 100000).toFixed(2) + " Lakh";
+										} else {
+										formattedwallet_amount = wallet_amount.toLocaleString("en-IN", {
+										style: "currency",
+										currency: "INR"
+										});
+										}
+										document.getElementById("total_wallet").innerHTML = formattedwallet_amount;
+
+									}
+									else{
+										document.getElementById("total_wallet").innerHTML = "₹ 0";
+									}
+
+									if (invesment_data > 0) {
+										let formattedinvesment_data;
+										if (invesment_data >= 10000000) {
+										formattedinvesment_data = "₹ " + (invesment_data / 10000000).toFixed(2) + " Crore";
+										} else if (invesment_data >= 100000) {
+										formattedinvesment_data = "₹ " + (invesment_data / 100000).toFixed(2) + " Lakh";
+										} else {
+										formattedinvesment_data = invesment_data.toLocaleString("en-IN", {
+										style: "currency",
+										currency: "INR"
+										});
+										}
+										document.getElementById("total_invesment").innerHTML = formattedinvesment_data;
+									}
+									else{
+										document.getElementById("total_invesment").innerHTML = "₹ 0";
+									}
+									
+									
+
+
+									
+									
+									
+									var current_Year = new Date().getFullYear();
+									document.getElementById("profit_year").innerHTML = current_Year;
+									var get_profit_percentage_inves = data.get_profit_percentage_inves;
+									document.getElementById("get_profit_percentage_inves").innerHTML ="<i class='bx bx-line-chart bx-flashing' style='color:#1dde1a'  ></i>"+ get_profit_percentage_inves;
+
+									
+									
+									
+									
+									
+									
+									
+
+
+
+									
+
+
+							},
+							error: function(xhr, errmsg, err) {
+								// Handle the error here
+							}
+						});
+					}
+					});
+				});
+									
+		$(document).ready(function() {
+		  $('#open-modal-button').click(function() {
+			// Open the modal
+			$('#company-modal').modal('show');
+		  });
+	
+		  // Handle company selection
+		  $('.company-item').click(function() {
+			var companyId = $(this).data('company-id');
+	
+			// Close the modal
+			$('#company-modal').modal('hide');
+	
+			// Make AJAX request to load company data
+			$.ajax({
+			  url: '/load_company_data/',
+			  type: 'GET',
+			  data: {
+				company_id: companyId
+			  },
+			  success: function(response) {
+				$('#company-name').text(response.name);
+				$('#company-description').text(response.description);
+			  },
+			  error: function(xhr, status, error) {
+			  }
+			});
+		  });
+		});
+
+			
+	  </script>
+
+	
+	<script src="{% static 'admin/assets/vendor/js/bootstrap.js' %}"></script>
+	<script src="{% static 'admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+	<script src="{% static 'admin/assets/vendor/js/menu.js' %}"></script>
+	<script src="{% static 'admin/assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+	<script src="{% static 'admin/assets/js/main.js' %}"></script>
+	<script src="{% static 'admin/assets/js/dashboards-analytics.js' %}"></script>
+</body>
+	
+</html>

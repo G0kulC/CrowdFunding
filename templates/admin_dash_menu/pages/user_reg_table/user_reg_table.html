@@ -1,0 +1,208 @@
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+
+ {% block content %}
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+<div class="card m-3">
+  <div class="row">
+    <div class="col-md-6">
+        <h4 class="card-header">User Registration</h4>
+    </div>
+    <div class="col-md-3 mt-3"> 
+      <div class="input-group input-group-merge">
+        <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
+        <input type="text" id="search-input" class="form-control" placeholder="Search..." aria-label="Search..." aria-describedby="basic-addon-search31">
+      </div>
+    </div>
+    <div class="col-md-3 mt-3">
+      <button
+        type="button"
+        class="btn btn-primary js-create-book"
+        data-url="{% url 'user_create' %}"
+      >
+        <i class="bx bx-user-plus"></i>
+        Add user
+      </button>
+    </div>
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-hover" id="book-table">
+      <thead>
+        <tr>
+          <th>S.NO</th>
+
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Display Name</th>
+          <th>User Name</th>
+          <th>Password</th>
+
+          <th>Mobile Number</th>
+          <th>Email</th>
+          <th>PAN Number</th>
+          <th>Aadhar Card Number</th>
+          <th>Contact Address</th>
+          <th>City</th>
+          <th>State</th>
+          <th>Pincode</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        {% for instance in my_model_instances %}
+        <tr>
+          <td>{{ instance.pk }}</td>
+          <td>{{ instance.first_name }}</td>
+          <td>{{ instance.last_name }}</td>
+          <td>{{ instance.Display_name }}</td>
+          <td>{{ instance.user_name }}</td>
+          <td>{{ instance.password }}</td>
+          <td>{{ instance.mobile_number }}</td>
+          <td>{{ instance.email_id }}</td>
+          <td>{{ instance.Pan_number }}</td>
+          <td>{{ instance.Aadhar_card_no }}</td>
+          <td>{{ instance.contact_address }}</td>
+          <td>{{ instance.City }}</td>
+          <td>{{ instance.State }}</td>
+          <td>{{ instance.pincode }}</td>
+          <td>
+                <button
+                type="button"
+                class="btn btn-warning btn-sm js-update-book"
+                data-url="{% url 'user_update'  instance.pk %}"
+              >
+                <i class="bx bx-edit"></i>
+              </button>
+              </div>
+                <form>
+                  {% csrf_token %}
+                 <button
+                 type="button"
+                 class="btn btn-danger btn-sm js-delete-data"
+                 data-id="{{ instance.pk }}"><i class="bx bx-user-minus"></i>
+                </button>
+              </form>
+           
+
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="13" class="text-center bg-warning">No Data</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-book">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    $(document).ready(function() {
+      // search functionality
+      $('#search-input').on('keyup', function() {
+        var value = $(this).val().toLowerCase();
+        $('#book-table tbody tr').filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+    $(function () {
+      var loadForm = function () {
+        var btn = $(this);
+        $.ajax({
+          url: btn.attr("data-url"),
+          type: "get",
+          dataType: "json",
+          beforeSend: function () {
+            $("#modal-book").modal("show");
+          },
+          success: function (data) {
+            $("#modal-book .modal-content").html(data.html_form);
+          },
+        });
+      };
+
+      var saveForm = function () {
+        var form = $(this);
+        $.ajax({
+          url: form.attr("action"),
+          data: form.serialize(),
+          type: form.attr("method"),
+          dataType: "json",
+          success: function (data) {
+            if (data.form_is_valid) {
+              $("#modal-book").modal("hide");
+              location.reload();
+            } else {
+              $("#modal-book .modal-content").html(data.html_form);
+            }
+          },
+        });
+        return false;
+      };
+
+    
+        $(document).on('click', '.js-delete-data', function() {
+          var id = $(this).data('id');
+          var csrf_token = $('input[name="csrfmiddlewaretoken"]').val(); // Get the CSRF token from the page
+      
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this data!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              $.ajax({
+                url: '/delete/' + id + '/',
+                type: 'DELETE',
+                headers: { 'X-CSRFToken': csrf_token }, // Add the CSRF token to the request headers
+                success: function() {
+                  Swal.fire(
+                    'Deleted!',
+                    'The data has been deleted.',
+                    'success'
+                  ).then(() => {
+                    location.reload(); // Reload the page after successful deletion
+                  });
+                },
+                error: function() {
+                  Swal.fire(
+                    'Error!',
+                    'An error occurred while deleting the data.',
+                    'error'
+                  );
+                }
+              });
+            }
+          });
+        });
+      
+      
+
+      $(".js-create-book").click(loadForm);
+      $("#modal-book").on("submit", ".Userdetailsregform", saveForm);
+
+      // Update book
+      $("#book-table").on("click", ".js-update-book", loadForm);
+      $("#modal-book").on("submit", ".Userdetails_up_form", saveForm);
+
+     
+    });
+  </script>
+
+  {% endblock content %}
+</div>

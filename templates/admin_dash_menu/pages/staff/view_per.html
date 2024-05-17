@@ -1,0 +1,673 @@
+
+
+<style>
+   .checkbox-apple {
+       position: relative;
+       width: 50px;
+       height: 25px;
+       margin: 20px;
+       -webkit-user-select: none;
+       -moz-user-select: none;
+       -ms-user-select: none;
+       user-select: none;
+     }
+     
+     .checkbox-apple label {
+       position: absolute;
+       top: 0;
+       left: 0;
+       width: 50px;
+       height: 25px;
+       border-radius: 50px;
+       background: linear-gradient(to bottom, #b3b3b3, #e6e6e6);
+       cursor: pointer;
+       transition: all 0.3s ease;
+     }
+     
+     .checkbox-apple label:after {
+       content: '';
+       position: absolute;
+       top: 1px;
+       left: 1px;
+       width: 23px;
+       height: 23px;
+       border-radius: 50%;
+       background-color: #fff;
+       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+       transition: all 0.3s ease;
+     }
+     
+     .checkbox-apple input[type="checkbox"]:checked + label {
+       background: linear-gradient(to bottom, #4cd964, #5de24e);
+     }
+     
+     .checkbox-apple input[type="checkbox"]:checked + label:after {
+       transform: translateX(25px);
+     }
+     
+     .checkbox-apple label:hover {
+       background: linear-gradient(to bottom, #b3b3b3, #e6e6e6);
+     }
+     
+     .checkbox-apple label:hover:after {
+       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+     }
+     
+     .yep {
+       position: absolute;
+       top: 0;
+       left: 0;
+       width: 50px;
+       height: 25px;
+     }
+</style>
+<div class="modal-header">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </button>
+ </div>
+ <div class="modal-body">
+ <div class="row">
+   
+
+    <center>
+       <div class="col-md-6">
+          <h4  class="text-uppercase">
+             View Permissions
+          </h4>
+       </div>
+    </center>
+    <hr>
+
+    <div class="row mt-3">
+      <div class="col-md-3">
+        <label for="pro_exp_id_satus" >Dashboard </label>
+    </div>
+    
+    <div class="col-md-3">
+      <input type="checkbox" class="form-check-input ml-3"
+      
+      {% if dashbord_permissions.view == True %}
+       checked
+       value=True
+    
+       {% endif %}
+          value=True
+    disabled
+      name="dash_view" id="dash_view_id">-View
+    </div>
+    <div class="col-md-3">
+      <label for="pro_exp_id_satus" >Report </label>
+  </div>
+  
+  <div class="col-md-3">
+    <input type="checkbox" class="form-check-input ml-3"
+    
+    {% if Reports_permissions.view == True %}
+     checked
+     value=True
+  
+     {% endif %}
+    disabled
+
+        value=True
+  
+    name="report_view" id="report_id">-View
+  </div>
+    
+  </div>
+
+    
+       <div class="row mt-3">
+         <div class="col-md-2">
+           <label for="project_id_satus">Project </label>
+       </div>
+       <div class="col-md-2">
+         <input type="checkbox" 
+         
+         class="form-check-input ml-3"
+
+         {% if project_per.view == True %}
+              {% if project_per.add == True %}
+                 {% if project_per.edit == True %}
+                     {% if project_per.can_delete == True %}
+                         checked
+                         value=True
+                     {% else %}
+                     {% endif %}
+                  {% endif %}
+              {% endif %}
+          {% endif %}
+          value=True
+            disabled
+
+           name="project_all" id="project_id_all">-All
+     </div>
+     <div class="col-md-2">
+         <input type="checkbox" 
+            disabled
+         
+         class="form-check-input ml-3"
+         
+         {% if project_per.view == True %}
+          checked
+          value=True
+
+          {% endif %}
+             value=True
+         name="project_view" id="project_id_view">-View
+     </div>
+     <div class="col-md-2">
+         <input type="checkbox" 
+            disabled
+         
+         class="form-check-input ml-3"
+         {% if project_per.add == True %}
+             checked
+             value=True
+
+         {% endif %}
+         value=True
+
+          name="project_add" id="project_id_add">-Add
+     </div>
+     <div class="col-md-2">
+         <input type="checkbox" 
+            disabled
+         
+         class="form-check-input ml-3"
+         {% if project_per.edit == True %}
+          checked
+          value=True
+
+          {% endif %}
+          value=True
+
+           name="project_edit" id="project_id_edit">-Edit
+     </div>
+     <div class="col-md-2">
+         <input type="checkbox" 
+            disabled
+         
+         class="form-check-input ml-3" 
+         {% if project_per.can_delete == True %}
+          checked
+          value=True
+
+          {% endif %}
+          value=True
+
+          name="project_delete" id="project_id_delete">-Delete
+     </div>
+ </div>  
+ 
+ <div class="row mt-3">
+   <div class="col-md-2">
+     <label for="investor_id_satus">Investor </label>
+ </div>
+
+
+ <div class="col-md-2">
+   <input type="checkbox" class="form-check-input ml-3"
+
+   {% if investor_permissions.view == True %}
+        {% if investor_permissions.add == True %}
+           {% if investor_permissions.edit == True %}
+               {% if investor_permissions.can_delete == True %}
+                   checked
+                   value=True
+               {% else %}
+               {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    value=True
+    disabled
+
+     name="investor_all" id="investor_id_all">-All
+</div>
+<div class="col-md-2">
+   <input type="checkbox" disabled class="form-check-input ml-3"
+   
+   {% if investor_permissions.view == True %}
+    checked
+    value=True
+
+    {% endif %}
+       value=True
+   name="investor_view" id="investor_id_view">-View
+</div>
+<div class="col-md-2">
+   <input type="checkbox" disabled class="form-check-input ml-3"
+   {% if investor_permissions.add == True %}
+       checked
+       value=True
+
+   {% endif %}
+   value=True
+
+    name="investor_add" id="investor_id_add">-Add
+</div>
+<div class="col-md-2">
+   <input type="checkbox"  disabled class="form-check-input ml-3"
+   {% if investor_permissions.edit == True %}
+    checked
+    value=True
+
+    {% endif %}
+    value=True
+
+     name="investor_edit" id="investor_id_edit">-Edit
+</div>
+<div class="col-md-2">
+   <input type="checkbox" disabled class="form-check-input ml-3" 
+   {% if investor_permissions.can_delete == True %}
+    checked
+    value=True
+
+    {% endif %}
+    value=True
+
+    name="investor_delete" id="investor_id_delete">-Delete
+</div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-2">
+    <label for="investor_id_satus" >Wallet</label>
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+
+  {% if wallet_permissions.view == True %}
+       {% if wallet_permissions.add == True %}
+          {% if wallet_permissions.edit == True %}
+              {% if wallet_permissions.can_delete == True %}
+                  checked
+                  value=True
+              {% else %}
+              {% endif %}
+           {% endif %}
+       {% endif %}
+   {% endif %}
+   value=True
+
+   disabled
+
+    name="wallet_all" id="wallet_id_all">-All
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  disabled
+  
+  {% if wallet_permissions.view == True %}
+   checked
+   value=True
+
+   {% endif %}
+      value=True
+  name="wallet_view" id="wallet_id_view">-View
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if wallet_permissions.add == True %}
+      checked
+      value=True
+
+  {% endif %}
+  value=True
+  disabled
+
+   name="wallet_add" id="wallet_id_add">-Add
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if wallet_permissions.edit == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+   disabled
+
+    name="wallet_edit" id="wallet_id_edit">-Edit
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3" 
+  {% if wallet_permissions.can_delete == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+   disabled
+   name="wallet_delete" id="wallet_id_delete">-Delete
+</div>
+</div>
+
+<div class="row mt-3">
+   <div class="col-md-2">
+     <label for="pro_inv_id_satus">Investment</label>
+ </div>
+ <div class="col-md-2">
+   <input type="checkbox" class="form-check-input ml-3"
+
+   {% if pro_inv_permissions.view == True %}
+        {% if pro_inv_permissions.add == True %}
+           {% if pro_inv_permissions.edit == True %}
+               {% if pro_inv_permissions.can_delete == True %}
+                   checked
+                   value=True
+               {% else %}
+               {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    value=True
+    disabled
+
+
+     name="pro_inv_all" id="pro_inv_id_all">-All
+</div>
+<div class="col-md-2">
+   <input type="checkbox" class="form-check-input ml-3"
+   
+   {% if pro_inv_permissions.view == True %}
+    checked
+    value=True
+
+    {% endif %}
+       value=True
+    disabled
+
+   name="pro_inv_view" id="pro_inv_id_view">-View
+</div>
+<div class="col-md-2">
+   <input type="checkbox" class="form-check-input ml-3"
+   {% if pro_inv_permissions.add == True %}
+       checked
+       value=True
+
+   {% endif %}
+   value=True
+   disabled
+
+    name="pro_inv_add" id="pro_inv_id_add">-Add
+</div>
+<div class="col-md-2">
+   <input type="checkbox" class="form-check-input ml-3"
+   {% if pro_inv_permissions.edit == True %}
+    checked
+    value=True
+
+    {% endif %}
+    value=True
+    disabled
+
+     name="pro_inv_edit" id="pro_inv_id_edit">-Edit
+</div>
+<div class="col-md-2">
+   <input type="checkbox" class="form-check-input ml-3" 
+   {% if pro_inv_permissions.can_delete == True %}
+    checked
+    value=True
+
+    {% endif %}
+    value=True
+    disabled
+
+    name="pro_inv_delete" id="pro_inv_id_delete">-Delete
+</div>
+</div>
+
+
+<div class="row mt-3">
+   <div class="col-md-2">
+     <label for="pro_exp_id_satus">Expense </label>
+ </div>
+ <div class="col-md-2">
+   <input type="checkbox" class="form-check-input ml-3"
+ 
+   {% if pro_exp_permissions.view == True %}
+        {% if pro_exp_permissions.add == True %}
+           {% if pro_exp_permissions.edit == True %}
+               {% if pro_exp_permissions.can_delete == True %}
+                   checked
+                   value=True
+               {% else %}
+               {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    value=True
+    disabled
+ 
+     name="pro_exp_all" id="pro_exp_id_all">-All
+ </div>
+ <div class="col-md-2">
+   <input type="checkbox" class="form-check-input ml-3"
+   
+   {% if pro_exp_permissions.view == True %}
+    checked
+    value=True
+ 
+    {% endif %}
+       value=True
+       disabled
+   name="pro_exp_view" id="pro_exp_id_view">-View
+ </div>
+ <div class="col-md-2">
+   <input type="checkbox" class="form-check-input ml-3"
+   {% if pro_exp_permissions.add == True %}
+       checked
+       value=True
+ 
+   {% endif %}
+   value=True
+   disabled
+    name="pro_exp_add" id="pro_exp_id_add">-Add
+ </div>
+ <div class="col-md-2">
+   <input type="checkbox" class="form-check-input ml-3"
+   {% if pro_exp_permissions.edit == True %}
+    checked
+    value=True
+ 
+    {% endif %}
+    value=True
+    disabled
+     name="pro_exp_edit" id="pro_exp_id_edit">-Edit
+ </div>
+ <div class="col-md-2">
+   <input type="checkbox" class="form-check-input ml-3" 
+   {% if pro_exp_permissions.can_delete == True %}
+    checked
+    value=True
+ 
+    {% endif %}
+    value=True
+    disabled
+    name="pro_exp_delete" id="pro_exp_id_delete">-Delete
+ </div>
+ </div>
+ 
+
+
+ 
+<div class="row mt-3">
+  <div class="col-md-2">
+    <label for="pro_exp_id_satus">Sales </label>
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+
+  {% if pro_profit_permissions.view == True %}
+       {% if pro_profit_permissions.add == True %}
+          {% if pro_profit_permissions.edit == True %}
+              {% if pro_profit_permissions.can_delete == True %}
+                  checked
+                  value=True
+              {% else %}
+              {% endif %}
+           {% endif %}
+       {% endif %}
+   {% endif %}
+   value=True
+   disabled
+
+
+    name="pro_profit_all" id="pro_profit_id_all">-All
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  
+  {% if pro_profit_permissions.view == True %}
+   checked
+   value=True
+
+   {% endif %}
+      value=True
+    disabled
+
+  name="pro_profit_view" id="pro_profit_id_view">-View
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if pro_profit_permissions.add == True %}
+      checked
+      value=True
+
+  {% endif %}
+  value=True
+  disabled
+
+   name="pro_profit_add" id="pro_profit_id_add">-Add
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if pro_profit_permissions.edit == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+   disabled
+
+    name="pro_profit_edit" id="pro_profit_id_edit">-Edit
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3" 
+  {% if pro_profit_permissions.can_delete == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+   disabled
+
+   name="pro_profit_delete" id="pro_profit_id_delete">-Delete
+</div>
+</div>
+
+
+
+
+
+<div class="row mt-3">
+  <div class="col-md-2">
+    <label for="pro_exp_id_satus">Settlement</label>
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+
+  {% if settlement_permissions.view == True %}
+       {% if settlement_permissions.add == True %}
+          {% if settlement_permissions.edit == True %}
+              {% if settlement_permissions.can_delete == True %}
+                  checked
+                  value=True
+              {% else %}
+              {% endif %}
+           {% endif %}
+       {% endif %}
+   {% endif %}
+   value=True
+   disabled
+
+
+    name="pro_profit_all" id="pro_profit_id_all">-All
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  
+  {% if settlement_permissions.view == True %}
+   checked
+   value=True
+
+   {% endif %}
+      value=True
+    disabled
+
+  name="pro_profit_view" id="pro_profit_id_view">-View
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if settlement_permissions.add == True %}
+      checked
+      value=True
+
+  {% endif %}
+  value=True
+  disabled
+
+   name="pro_profit_add" id="pro_profit_id_add">-Add
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3"
+  {% if settlement_permissions.edit == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+   disabled
+
+    name="pro_profit_edit" id="pro_profit_id_edit">-Edit
+</div>
+<div class="col-md-2">
+  <input type="checkbox" class="form-check-input ml-3" 
+  {% if settlement_permissions.can_delete == True %}
+   checked
+   value=True
+
+   {% endif %}
+   value=True
+   disabled
+
+   name="pro_profit_delete" id="pro_profit_id_delete">-Delete
+</div>
+</div>
+
+
+
+
+             <div class="row mt-5">
+                 <div class="col-md-4">
+                   <label for="id_satus">Permission Status:</label>
+               </div>
+                 <div class="col-md-2 " style="position: relative; top: -20px;">
+                     <div class="checkbox-apple">
+                         <input class="yep" id="check-apple" 
+            disabled
+
+                         {% if project_per.status == True %}
+                             checked
+                         value=True
+                         {% endif %}
+                            value=True
+                          type="checkbox" name="per_satus">
+                         <label for="check-apple"></label>
+                       </div>
+ </div>
+ <div class="modal-footer">
+    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Close</button>
+ </div>

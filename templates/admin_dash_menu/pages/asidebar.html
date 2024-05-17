@@ -1,0 +1,498 @@
+
+
+{% block content %}
+<style>
+  .swal2-container {
+    z-index: 9999 !important; /* Set a high z-index value */
+  }
+</style>
+{% load static %}
+
+<aside
+          id="layout-menu"
+          class="layout-menu menu-vertical menu bg-menu-theme"
+        >
+          <div class="app-brand demo">
+            <a href="{% url 'base' %}" class="app-brand-link"  title="{{name}} Dashboard">
+              <span class="app-brand-logo demo">
+                <svg
+                  width="25"
+                  viewBox="0 0 25 42"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                >
+                  <defs>
+                    <path
+                      d="M13.7918663,0.358365126 L3.39788168,7.44174259 C0.566865006,9.69408886 -0.379795268,12.4788597 0.557900856,15.7960551 C0.68998853,16.2305145 1.09562888,17.7872135 3.12357076,19.2293357 C3.8146334,19.7207684 5.32369333,20.3834223 7.65075054,21.2172976 L7.59773219,21.2525164 L2.63468769,24.5493413 C0.445452254,26.3002124 0.0884951797,28.5083815 1.56381646,31.1738486 C2.83770406,32.8170431 5.20850219,33.2640127 7.09180128,32.5391577 C8.347334,32.0559211 11.4559176,30.0011079 16.4175519,26.3747182 C18.0338572,24.4997857 18.6973423,22.4544883 18.4080071,20.2388261 C17.963753,17.5346866 16.1776345,15.5799961 13.0496516,14.3747546 L10.9194936,13.4715819 L18.6192054,7.984237 L13.7918663,0.358365126 Z"
+                      id="path-1"
+                    ></path>
+                    <path
+                      d="M5.47320593,6.00457225 C4.05321814,8.216144 4.36334763,10.0722806 6.40359441,11.5729822 C8.61520715,12.571656 10.0999176,13.2171421 10.8577257,13.5094407 L15.5088241,14.433041 L18.6192054,7.984237 C15.5364148,3.11535317 13.9273018,0.573395879 13.7918663,0.358365126 C13.5790555,0.511491653 10.8061687,2.3935607 5.47320593,6.00457225 Z"
+                      id="path-3"
+                    ></path>
+                    <path
+                      d="M7.50063644,21.2294429 L12.3234468,23.3159332 C14.1688022,24.7579751 14.397098,26.4880487 13.008334,28.506154 C11.6195701,30.5242593 10.3099883,31.790241 9.07958868,32.3040991 C5.78142938,33.4346997 4.13234973,34 4.13234973,34 C4.13234973,34 2.75489982,33.0538207 2.37032616e-14,31.1614621 C-0.55822714,27.8186216 -0.55822714,26.0572515 -4.05231404e-15,25.8773518 C0.83734071,25.6075023 2.77988457,22.8248993 3.3049379,22.52991 C3.65497346,22.3332504 5.05353963,21.8997614 7.50063644,21.2294429 Z"
+                      id="path-4"
+                    ></path>
+                    <path
+                      d="M20.6,7.13333333 L25.6,13.8 C26.2627417,14.6836556 26.0836556,15.9372583 25.2,16.6 C24.8538077,16.8596443 24.4327404,17 24,17 L14,17 C12.8954305,17 12,16.1045695 12,15 C12,14.5672596 12.1403557,14.1461923 12.4,13.8 L17.4,7.13333333 C18.0627417,6.24967773 19.3163444,6.07059163 20.2,6.73333333 C20.3516113,6.84704183 20.4862915,6.981722 20.6,7.13333333 Z"
+                      id="path-5"
+                    ></path>
+                  </defs>
+                  <g
+                    id="g-app-brand"
+                    stroke="none"
+                    stroke-width="1"
+                    fill="none"
+                    fill-rule="evenodd"
+                  >
+                    <g
+                      id="Brand-Logo"
+                      transform="translate(-27.000000, -15.000000)"
+                    >
+                      <g id="Icon" transform="translate(27.000000, 15.000000)">
+                        <g id="Mask" transform="translate(0.000000, 8.000000)">
+                          <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                          </mask>
+                          <use fill="#696cff" xlink:href="#path-1"></use>
+                          <g id="Path-3" mask="url(#mask-2)">
+                            <use fill="#696cff" xlink:href="#path-3"></use>
+                            <use
+                              fill-opacity="0.2"
+                              fill="#FFFFFF"
+                              xlink:href="#path-3"
+                            ></use>
+                          </g>
+                          <g id="Path-4" mask="url(#mask-2)">
+                            <use fill="#696cff" xlink:href="#path-4"></use>
+                            <use
+                              fill-opacity="0.2"
+                              fill="#FFFFFF"
+                              xlink:href="#path-4"
+                            ></use>
+                          </g>
+                        </g>
+                        <g
+                          id="Triangle"
+                          transform="translate(19.000000, 11.000000) rotate(-300.000000) translate(-19.000000, -11.000000) "
+                        >
+                          <use fill="#696cff" xlink:href="#path-5"></use>
+                          <use
+                            fill-opacity="0.2"
+                            fill="#FFFFFF"
+                            xlink:href="#path-5"
+                          ></use>
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                </svg>
+              </span>
+              <span class="app-brand-text demo menu-text fw-bolder ms-2"
+                >FundFrenzy</span
+              >
+            </a>
+
+            <a
+              href="javascript:void(0);"
+              class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+          
+          
+          {% if request.user.is_authenticated   %}
+          
+          {% if investor_is_active %}
+          
+          <ul class="menu-inner py-1 mb-5">
+            <li class="menu-item  {% if request.path == '/dashbord' %}active{% endif %}">
+              <a href="{% url 'base' %}" class="menu-link"  title="Dashboard">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div>Dashboard</div>
+              </a>
+            </li>
+            {% endif %}
+          {% if not request.user.is_superuser and company and not staff%}
+            
+          <ul class="menu-inner py-1">
+             
+           
+        
+           <li class="menu-item {% if request.path == '/dashbord' %}active{% endif %}">
+                <a href="{% url 'base' %}" class="menu-link"   title="Dashboard">
+                  <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                  <div>Dashboard</div>
+                </a>
+              </li>
+              <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Manage</span>
+              </li>
+                                
+              
+              <li class="menu-item {% if request.path == '/project/' %}active{% endif %} ">
+                <a href="{% url 'project_list' %}" class="menu-link"  title="Project">
+                  <i class="menu-icon tf-icons bx bx-clipboard"></i>
+                  <div>Project</div>
+                </a>
+                
+              </li>
+                
+              <li class="menu-item {% if request.path == '/investors/' %}active{% endif %}  ">
+                <a href="{% url 'investors_list' %}" class="menu-link  "  title="Investors">
+                  <i class="menu-icon tf-icons bx bx-user-check"></i>
+                  <div >Investors</div>
+                </a>
+                
+              </li>
+              <li class="menu-item {% if request.path == '/investors_wallet/' %}active{% endif %} ">
+                <a href="{% url 'investors_wallet' %}" class="menu-link"  title="Investor Wallet">
+                  <i class="menu-icon tf-icons bx bx-wallet-alt"></i>
+                  <div >Investor Wallet</div>
+                </a>
+                
+              </li>
+              <li class="menu-item {% if request.path == '/project-investors/' %}active{% endif %} ">
+                <a href="{% url 'project_investors_list' %}" class="menu-link  "  title="Investments ">
+                  <i class="menu-icon tf-icons bx bx-bar-chart-alt-2"></i>
+                  <div >Investments </div>
+                </a>
+                
+              </li>
+              <li class="menu-item {% if request.path == '/project-expense/' %}active{% endif %} ">
+                <a href="{% url 'project_expense_list' %}" class="menu-link  "  title="Project Expense">
+                  <i class="menu-icon tf-icons bx bx-dollar"></i>
+                  <div>Project Expense</div>
+                </a>
+                
+              </li>
+
+              <li class="menu-item {% if request.path == '/project-sales/' %}active{% endif %} ">
+                <a href="{% url 'project_profit_list' %}" class="menu-link  "  title="Sales">
+                  <i class="menu-icon tf-icons bx bx-line-chart"></i>
+                  <div>Sales</div>
+                </a>
+                
+              </li>
+             
+              <li class="menu-item {% if request.path == '/settlements/' %}active{% endif %} ">
+                <a href="{% url 'project_settlement_list' %}" class="menu-link  "  title="Sales">
+                  <i class="menu-icon tf-icons bx bx-money"></i>
+                  <div>Settlement</div>
+                </a>
+                
+              </li>
+              
+                 <li class="menu-item {% if request.path == '/project-report/' %}active{% endif %} ">
+                <a href="{% url 'project_profit_report' %}" class="menu-link  "  title="Sales">
+                  <i class="menu-icon tf-icons bx bxs-report"></i>
+                  <div>Report</div>
+                </a>
+                
+              </li>
+                  
+                  {% if company %}
+                  <li class="menu-item {% if request.path == '/staff/' %}active{% endif %} ">
+                    <a href="{% url 'staff_list' %}" class="menu-link"  title="Staff Section">
+                      <i class='menu-icon tf-icons bx bx-user-pin'></i>
+                      <div>Staff</div>
+                    </a>
+                    
+                  </li>
+                  <li class="menu-header small text-uppercase">
+                    <span class="menu-header-text">Logs</span>
+                  </li>
+                  <li class="menu-item
+                  {% if request.path == '/project_logs/' %}active{% endif %}
+                  {% if request.path == '/investor_logs/' %}active{% endif %}
+                  {% if request.path == '/wallet_logs/' %}active{% endif %}
+                  {% if request.path == '/investment_logs/' %}active{% endif %}
+                  {% if request.path == '/expence_logs/' %}active{% endif %}
+                  {% if request.path == '/sales_logs/' %}active{% endif %}
+                  {% if request.path == '/staff_logs/' %}active{% endif %}
+                  {% if request.path == '/settlement-logs/' %}active{% endif %}
+                  ">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                      <i class="menu-icon tf-icons bx bx-notepad"></i>
+                      <div data-i18n="Logs">Logs</div>
+                    </a>
+                    <ul class="menu-sub">
+                      <li class="menu-item
+                      {% if request.path == '/project_logs/' %}active{% endif %}
+                      ">
+                        <a href="{% url 'company_logs_project' %}" class="menu-link">
+                          <div data-i18n="Users">Project</div>
+                        </a>
+                      </li>
+                      <li class="menu-item
+                      {% if request.path == '/investor_logs/' %}active{% endif %}
+                      ">
+                        <a href="{% url 'company_logs_investor' %}" class="menu-link">
+                          <div data-i18n="Users">Investors</div>
+                        </a>
+                      </li>
+                      <li class="menu-item
+                      {% if request.path == '/wallet_logs/' %}active{% endif %}
+                      ">
+                        <a href="{% url 'company_logs_wallet' %}" class="menu-link">
+                          <div data-i18n="Users">Wallet</div>
+                        </a>
+                      </li>
+                      <li class="menu-item
+                      {% if request.path == '/investment_logs/' %}active{% endif %}
+                      ">
+                        <a href="{% url 'company_logs_project_investor' %}" class="menu-link">
+                          <div data-i18n="Users">Investment</div>
+                        </a>
+                      </li>
+                      <li class="menu-item
+                      {% if request.path == '/expence_logs/' %}active{% endif %}
+                      ">
+                        <a href="{% url 'company_logs_expence' %}" class="menu-link">
+                          <div data-i18n="Users">Expense</div>
+                        </a>
+                      </li>
+                      <li class="menu-item
+                      {% if request.path == '/sales_logs/' %}active{% endif %}
+                      ">
+                        <a href="{% url 'company_logs_sales' %}" class="menu-link">
+                          <div data-i18n="Users">Sales</div>
+                        </a>
+                      </li>
+                      <li class="menu-item
+                      {% if request.path == '/settlement-logs/' %}active{% endif %}
+                      ">
+                        <a href="{% url 'company_logs_settlement' %}" class="menu-link">
+                          <div data-i18n="">Settlement</div>
+                        </a>
+                      </li>
+                      <li class="menu-item
+                      {% if request.path == '/staff_logs/' %}active{% endif %}
+                      ">
+                        <a href="{% url 'company_logs_staff' %}" class="menu-link">
+                          <div data-i18n="Users">Staff</div>
+                        </a>
+                      </li>
+                      
+                     
+                    </ul>
+                  </li>
+                  {% endif %}
+                  {% endif %}
+        
+              {% if staff %}
+            
+              <ul class="menu-inner py-1">
+                <li class="menu-item  {% if request.path == '/dashbord' %}active{% endif %}">
+                  <a href="{% url 'base' %}" class="menu-link"  title="Dashboard">
+                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                    <div>Dashboard</div>
+                  </a>
+                </li>
+               
+                  
+            
+            {% if  project_permissions.status %}
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Menu</span>
+            </li>
+            {% if project_permissions.view or project_permissions.add or project_permissions.edit or project_permissions.can_delete  %}
+                
+            <li class="menu-item {% if request.path == '/project/' %}active{% endif %} ">
+                      <a href="{% url 'project_list' %}" class="menu-link"  title="Project">
+                        <i class="menu-icon tf-icons bx bx-clipboard"></i>
+                        <div>Project</div>
+                      </a>
+                    </li>
+                  {% endif %}
+                {% endif %}
+                  
+                  {% if investor_permissions.status %}
+                    {% if investor_permissions.view or investor_permissions.add or investor_permissions.edit or investor_permissions.can_delete %}
+                      <li class="menu-item {% if request.path == '/investors/' %}active{% endif %}  ">
+                        <a href="{% url 'investors_list' %}" class="menu-link  "  title="Investors">
+                          <i class="menu-icon tf-icons bx bx-user-check"></i>
+                          <div>Investors</div>
+                        </a>
+                      </li>
+                  {% endif %}
+                {% endif %}
+
+                {% if wallet_permissions.status %}
+                    {% if wallet_permissions.view or wallet_permissions.add or wallet_permissions.edit or wallet_permissions.can_delete %}
+                    <li class="menu-item {% if request.path == '/investors_wallet/' %}active{% endif %} ">
+                      <a href="{% url 'investors_wallet' %}" class="menu-link"  title="Investor Wallet">
+                        <i class="menu-icon tf-icons bx bx-wallet-alt"></i>
+                        <div >Investor Wallet</div>
+                      </a>
+                    </li>
+                  {% endif %}
+                {% endif %}
+
+                {% if pro_inv_permissions.status %}
+                  {% if pro_inv_permissions.view or pro_inv_permissions.add or pro_inv_permissions.edit or pro_inv_permissions.can_delete %}
+                  <li class="menu-item {% if request.path == '/project-investors/' %}active{% endif %} ">
+                    <a href="{% url 'project_investors_list' %}" class="menu-link  "  title="Investments ">
+                      <i class="menu-icon tf-icons bx bx-bar-chart-alt-2"></i>
+                      <div>Investments </div>
+                    </a>
+                    
+                  </li>
+                  {% endif %}
+                {% endif %}
+
+                {% if pro_exp_permissions.status %}
+                  {% if pro_exp_permissions.view or pro_exp_permissions.add or pro_exp_permissions.edit or pro_exp_permissions.can_delete %}
+                  <li class="menu-item {% if request.path == '/project-expense/' %}active{% endif %} ">
+                    <a href="{% url 'project_expense_list' %}" class="menu-link  "  title="Project Expense">
+                      <i class="menu-icon tf-icons bx bx-dollar"></i>
+                      <div>Project Expense</div>
+                    </a>
+                  </li>
+                  {% endif %}
+              {% endif %}
+              {% if pro_profit_permissions.status %}
+              {% if pro_profit_permissions.view or pro_profit_permissions.add or pro_profit_permissions.edit or pro_profit_permissions.can_delete %}
+              <li class="menu-item {% if request.path == '/project-sales/' %}active{% endif %} ">
+                <a href="{% url 'project_profit_list' %}" class="menu-link  "  title="Sales">
+                  <i class="menu-icon tf-icons bx bx-line-chart"></i>
+                  <div>Sales</div>
+                </a>
+                
+              </li>
+              {% endif %}
+          {% endif %}
+
+
+         
+          {% if settlement_permissions.status %}
+              {% if settlement_permissions.view or settlement_permissions.add or settlement_permissions.edit or settlement_permissions.can_delete %}
+              <li class="menu-item {% if request.path == '/settlements/' %}active{% endif %} ">
+                <a href="{% url 'project_settlement_list' %}" class="menu-link  "  title="Sales">
+                  <i class="menu-icon tf-icons bx bx-money"></i>
+                  <div>Settlement</div>
+                </a>
+                
+              </li>
+              {% endif %}
+          {% endif %}
+          {% if Reports_permissions.status %}
+          {% if Reports_permissions.view %}
+          <li class="menu-item {% if request.path == '/project-report/' %}active{% endif %} ">
+            <a href="{% url 'project_profit_report' %}" class="menu-link  "  title="Sales">
+              <i class="menu-icon tf-icons bx bxs-report"></i>
+              <div>Report</div>
+            </a>
+            
+          </li>
+          {% endif %}
+      {% endif %}
+
+            {% endif %}
+     
+        
+        {% if request.user.is_superuser %}
+        <ul class="menu-inner py-1">
+          <li class="menu-item  {% if request.path == '/dashbord' %}active{% endif %}">
+            <a href="{% url 'base' %}" class="menu-link"  title="Dashboard">
+              <i class="menu-icon tf-icons bx bx-home-circle"></i>
+              <div>Dashboard</div>
+            </a>
+          </li>
+        <li class="menu-header small text-uppercase">
+          <span class="menu-header-text">Manage</span>
+        </li>
+              <li class="menu-item {% if request.path == '/company/' %}active{% endif %}">
+                <a href="{% url 'company_list' %}" class="menu-link "  title="Company">
+                  <i class="menu-icon tf-icons bx bx-buildings"></i>
+                  <div>Company</div>
+                </a>
+              </li>
+              <li class="menu-item 
+              {% if request.path == '/investor/' %}active{% endif %}
+              {% if request.path == '/Staff/' %}active{% endif %}
+              ">
+                  <a href="{% url 'admin_investors_list' %}" class="menu-link "  title="Users">
+                    <i class="menu-icon tf-icons bx bxs-user"></i>
+                    <div>Users</div>
+                  </a>
+              </li>
+              <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Logs</span>
+              </li>
+              <li class="menu-item
+              {% if request.path == '/Company_logs/' %}active{% endif %}
+              {% if request.path == '/User_logs/' %}active{% endif %}"
+              >
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <i class="menu-icon tf-icons bx bx-notepad"></i>
+                  <div data-i18n="Logs">Logs</div>
+                </a>
+                <ul class="menu-sub">
+                  <li class="menu-item
+                  {% if request.path == '/Company_logs/' %}active{% endif %}
+                  ">
+                    <a href="{% url 'company_logs_view' %}" class="menu-link">
+                      <div data-i18n="Users">Company</div>
+                    </a>
+                  </li>
+                  <li class="menu-item
+                  {% if request.path == '/User_logs/' %}active{% endif %}
+                  ">
+                    <a href="{% url 'User_logs_view' %}" class="menu-link">
+                      <div data-i18n="Users">Users</div>
+                    </a>
+                  </li>
+                 
+                </ul>
+              </li>
+          {% endif %}
+        </li>
+
+             
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Account</span>
+            </li>
+        
+            <li class="menu-item ">
+              <a type="button" class="menu-link"  title="Logout" id="logout_btn">
+                <i class="menu-icon tf-icons bx bx-log-out"></i>
+                <div>Logout</div>
+              </a>
+             
+                </li>
+              </ul>
+            </li>
+            <script>
+                const logoutBtn = document.getElementById('logout_btn');
+                logoutBtn.addEventListener('click', () => {
+                  Swal.fire({
+                    title: 'Are you sure you want to logout?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, logout!'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      window.location.href = "{% url 'admin_logout' %}";
+                    }
+                  });
+                });
+
+            </script>
+          </ul>
+        
+          {% endif %}
+        
+
+
+
+        </aside>
+
+
+  {% endblock content %}

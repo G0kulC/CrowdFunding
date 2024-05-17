@@ -1,0 +1,286 @@
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+{% block title %}
+Total Staff
+{% endblock title %}
+
+{% block content %}
+<style>
+  .sub_title{
+    color: #64768A;
+  }
+.sub_title:hover{
+  color: #696CFF;
+}
+
+.dataTables_length{
+  padding: 0 20px 0 20px;
+
+}
+.dataTables_info{
+  padding:  20px;
+}
+.dataTables_filter{
+  margin-right: 35px;
+}
+.dataTables_paginate {
+  padding-right: 30px;
+}
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+<div class="card m-3">
+  <div class="row">
+    <div class="col-md-9">
+      <strong>
+        <h4 class="card-header">
+          <b>
+           Users
+          </b>
+          <br>
+          <span class="" style="font-size: 16px" > <a href="{% url 'base' %}" class="sub_title" title="Dashboard"> Dashboard</a>/Staff</span>
+        </h4>
+      </strong>
+    </div>
+   
+    <div class="col-md-3 mt-3">
+        <a href="{% url 'admin_investors_list' %}"
+        type="button"
+        class="btn btn-primary"
+        >VIEW INVESTORS</a>  
+  
+      </div>
+      
+
+    
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-hover" id="staff_table">
+      <thead>
+        <tr>
+          <th>S.no</th>
+          <th>Staff name</th>
+          <th>Company Name</th>
+          <th>Status</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      {% if my_model_instances %}
+      <tbody class="table-border-bottom-0">
+        
+          
+          
+        {% for instance in my_model_instances %}
+
+        <tr>
+          <td>{{ forloop.counter }}</td>
+
+          <td>{{ instance.username }}</td>
+          <td>{{ instance.company_name   }}</td>
+          <td>
+          {% if instance.satus == True %}
+          <i class='bx bxs-badge-check' style="color: green;"></i>Active
+            {% else %}
+            <i class='bx bx-error-circle' style='color:#c10c0f'  ></i>Not Active
+          {% endif %}
+                    </td>
+          <td>
+            
+              <div class="row">
+                <div class="col-md-4">
+                 
+                  <a
+                  type="button"
+                  class="btn btn-sm investor_view_js "
+                  data-url="{% url 'view_staff'  instance.pk  %}"
+                >
+                <i class='bx bx-show' style='color:#11e3f3' title="View" ></i>
+                </a>
+  
+                </div>
+                <div class="col-md-4">
+                    <button
+                    type="button"
+                    class="btn  btn-sm project_edit_js"
+                    data-url="{% url 'staff_update'  instance.pk  %}"
+                  >
+                  <i 
+             class='bx bx-edit'
+              style='color:#2bdc19'  title="Edit" ></i>
+
+    
+                  </button>
+  
+                </div>
+                <div class="col-md-4">
+                  <form>
+                    {% csrf_token %}
+                   <button
+                   type="button"
+                   class="btn  btn-sm js-delete-data"
+                   data-id="{{  instance.pk  }}">
+                   <i class='bx bx-trash' style='color:#ce0d11' title="Delete" ></i>
+  
+                  </button>
+                </form>
+                </div>
+          </td>
+
+        
+      
+        </tr>
+        {% endfor %}
+      </tbody>
+     
+
+    </table>
+      {% endif %}
+
+ 
+       
+  </div>
+</div>
+
+<div class="modal fade" id="modal-project">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content"></div>
+</div>
+  <script>
+
+
+    $(document).ready(function() {
+      $('#staff_table').DataTable({
+          responsive: true,
+          
+          language: {
+            search: "",
+            searchPlaceholder: "Search...",
+          },
+          
+      });
+      $('#staff-table_filter input[type="search"]').addClass('form-control');
+      $('#staff-table_filter input[type="search"]').attr('placeholder', 'Search...');
+      $('#staff-table_filter input[type="search"]').attr('aria-label', 'Search...')
+
+    });
+ 
+
+    
+      $(function () {
+        var loadForm = function () {
+          var btn = $(this);
+          $.ajax({
+            url: btn.attr("data-url"),
+            type: "get",
+            dataType: "json",
+            beforeSend: function () {
+              $("#modal-project").modal("show");
+            },
+            success: function (data) {
+              $("#modal-project .modal-content").html(data.html_form);
+            },
+          });
+        };
+  
+        var saveForm = function () {
+          var form = $(this);
+          $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: "json",
+            success: function (data) {
+              if (data.form_is_valid) {
+                Swal.fire(
+                  'Updated!',
+                  'Your Details Have Been Updated.',
+                  'success'
+                ).then(() => {
+                  $("#modal-project").modal("hide");
+                  location.reload(); 
+    
+                });
+                
+              } else {
+                $("#modal-project .modal-content").html(data.html_form);
+              }
+            },
+            error: function(xhr, status, error) {
+              var response = JSON.parse(xhr.responseText);
+              $("#modal-project").modal("hide");
+              swal.fire({
+                  title: 'Error!',
+                  text: response.error,
+                  icon: 'error'
+              });
+              
+          }
+          });
+          return false;
+        };
+  
+      
+          $(document).on('click', '.js-delete-data', function() {
+            var id = $(this).data('id');
+            var csrf_token = $('input[name="csrfmiddlewaretoken"]').val(); 
+        
+            Swal.fire({
+              title: 'Are you sure?',
+              text: 'You will not be able to recover this data!',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                $.ajax({
+                  url: '/delete_staff/' + id + '/',
+                  type: 'DELETE',
+                  headers: { 'X-CSRFToken': csrf_token }, // Add the CSRF token to the request headers
+                  success: function() {
+                    Swal.fire(
+                      'Deleted!',
+                      'The data has been deleted.',
+                      'success'
+                    ).then(() => {
+                      location.reload(); // Reload the page after successful deletion
+                    });
+                  },
+                  error: function() {
+                    Swal.fire(
+                      'Error!',
+                      'An error occurred while deleting the data.',
+                      'error'
+                    );
+                  }
+                });
+              }
+            });
+          });
+        
+
+
+          
+
+  
+        $(".project_open_form").click(loadForm);
+
+        $("#staff_table").on("click", ".investor_view_js", loadForm);
+          
+        $("#staff_table").on("click", ".project_edit_js", loadForm);
+        $("#modal-project").on("submit", ".staff_up_form", saveForm);
+  
+    });
+
+  </script>
+
+</div>
+
+{% endblock content %}

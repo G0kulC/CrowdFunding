@@ -1,0 +1,727 @@
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+{% block title %}
+Report | {{name}}
+{% endblock title %}
+
+{% block content %}
+<style>
+  .excel:hover{
+    background-color: #4CAF50;
+    color: black;
+  }
+  .csv:hover{
+    background-color: yellow;
+    color: black;
+  }
+  .pdf:hover{
+    background-color: #ce0d11;
+    color: black;
+  }
+  .sub_title{
+    color: #64768A;
+  }
+.sub_title:hover{
+  color: #696CFF;
+}
+.dataTables_length{
+  padding-left: 20px;
+
+}
+.dataTables_info{
+  padding: 20px;
+}
+.dataTables_filter{
+  margin-right:80px;
+}
+.dataTables_paginate {
+  padding-right: 30px;
+}
+</style>
+  <div class="card m-3">
+    <div class="row">
+      <div class="col-xxl-8 col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <strong>
+          <h4 class="card-header">
+            <b>
+              Report
+            </b>
+            <br>
+            <span class="" style="font-size: 16px" > <a href="{% url 'base' %}" class="sub_title" title="Dashboard"> Dashboard</a>/Report</span>
+          </h4>
+        </strong>
+      </div>
+
+      <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3 mt-3 p-2">
+        <div class="input-group" title="Download Report">
+  
+          <select class="form-control" type="text" name="investor_name" maxlength="100"  id="id_sales_project"  onfocus='this.size=1;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+            <option value="0">-- Select a Project --</option>
+          </select>
+          <div class="btn-group">
+            <a type="button"  class="btn btn-outline-success  input-group-append input-group-text"  href="" value="pdf" id="pdf">
+              <i class='bx bxs-download' style='color:#000000' ></i>
+            </a>
+            
+          </div>
+        </div>
+
+        </div>
+      <script>
+        $(document).ready(function() {
+          $.ajax({
+              url: "{% url 'get_company_projects_sales' %}",
+              type: "GET",
+              success: function(data) {
+                  $.each(data.projects, function(index, project) {
+                      $('#id_sales_project').append('<option value="' + project.id + '">'+ project.name + '</option>');
+                  });
+              },
+              error: function(xhr, status, error) {
+                  console.log(xhr.responseText);
+              }
+          });
+      });
+      $(document).ready(function() {
+        $('#id_sales_project').on('change', function(e) {
+            e.preventDefault();
+            var project_name = $('#id_sales_project').val();
+            var excel = $('#excel');
+            var csv = $('#csv');
+            var pdf = $('#pdf');
+            excel.attr('href', "/project_report_data_download/" + project_name + "/"+excel.attr('value')+"/");
+            csv.attr('href', "/project_report_data_download/" + project_name + "/"+csv.attr('value')+"/");
+            pdf.attr('href', "/project_report_data_download/" + project_name + "/");
+  
+        });
+    });
+    $(document).ready(function() {
+      $('#excel, #csv, #pdf').on('click', function(e) {
+          setTimeout(function() {
+              location.reload();
+          }, 1000); 
+      });
+     
+    });
+   
+    
+      </script>
+
+    </div>
+</div>
+    <div class="p-3">
+      <div class="row">
+        <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 order-1 mb-4" style="height: 62vh;">
+          <div class="card h-100 w-100">
+            <div class="card-header">
+              <ul class="nav nav-pills" role="tablist">
+                <li class="nav-item">
+                  <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-tabs-line-card-income" aria-controls="navs-tabs-line-card-income" aria-selected="true">
+                    Investment
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-tabs-line-card-expenses" aria-controls="navs-tabs-line-card-expenses" aria-selected="false">
+                    Expenses
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-tabs-line-card-sales" aria-controls="navs-tabs-line-card-sales" aria-selected="false">
+                    Sales
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-tabs-line-card-profit" aria-controls="navs-tabs-line-card-profit" aria-selected="false">
+                    Profit
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div class="card-body px-0">
+              <div class="tab-content p-0">
+                <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel" style="position: relative;">
+                  <div class="d-flex p-4 pt-3">
+                    <div class="row w-100 text-black fs-5">
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Project Name</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="get_project_name"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Total Share</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_share_value"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Investment</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_investment"></span>
+                      </div>
+                      
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Investors</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_investors"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Sold Share</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_share_selled"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Available Share</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_share_available"></span>
+                      </div>
+                    </div>
+                  </div>
+                
+                    
+                </div>
+                <div class="tab-pane fade" id="navs-tabs-line-card-expenses" role="tabpanel" style="position: relative;">
+                  <div class="d-flex p-4 pt-3">
+                    <div class="row w-100 text-black fs-5">
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Project Name</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="get_project_name_exp"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Total Share</span>
+                      </div>
+
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_share_value_exp"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Estimated Expense</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="other_expense"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Actual Expense</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_expense"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Expense Count</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="expense_count"></span>
+                      </div>
+                      
+                    </div>
+                  </div>
+                
+                    
+                </div>
+                <div class="tab-pane fade" id="navs-tabs-line-card-sales" role="tabpanel" style="position: relative;">
+                  <div class="d-flex p-4 pt-3">
+                    <div class="row w-100 text-black fs-5">
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Project Name</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="get_project_name_sale"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Total Share</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_share_value_sale"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Sales</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_sale"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Sales Count</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="sale_count"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Selled Unit</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_unit_sale"></span>
+                      </div>
+                     
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="navs-tabs-line-card-profit" role="tabpanel" style="position: relative;">
+                  <div class="d-flex p-4 pt-3">
+                    <div class="row w-100 text-black fs-5" style="
+                    position: relative;
+                    top: -27px;">
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Project Name</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="get_project_name_profit"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Total Investment</span>
+                      </div>
+                     
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_investment_profit"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Actual Investment</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="Actual_investment"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Total Expense</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_expense_profit"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Company Share</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="company_expense"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Un-used Expense</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="unused_shhare"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span>Total Sales</span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_sales_profit"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span id="total_profit_name"></span>
+                      </div>
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="total_profit"></span>
+                      </div>
+                      <div class="col-md-8 col-sm-8 mt-2">
+                        <span id="profit_presentage_name">Percentage</span>
+                      </div>
+                     
+                      <div class="col-md-4 col-sm-4 mt-2">
+                        <span id="profit_presentage"></span>
+                      </div>
+                     
+                     
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 order-1 mb-4">
+          <div class="mychart mt-5">
+
+            <canvas id="ReportChart"></canvas>
+          </div>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        </div>
+      </div>
+      
+    </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  
+  <script>
+    
+    $(document).ready(function() {
+      var chart = null; // Declare chart variable outside the functions
+  
+      $('#id_sales_project').on('change', function(e) {
+          var pk = $('#id_sales_project').val();
+          const ctx = document.getElementById('ReportChart');
+  
+          if (chart) {
+              chart.destroy(); // Destroy the existing chart
+          }
+  
+          if (pk == 0) {
+              resetChart();
+          } else {
+              $.ajax({
+                  url: "/project_report_data/" + pk + "/",
+                  type: "GET",
+                  success: function(data) {
+                      updateChart(data);
+                  },
+                  error: function(xhr, status, error) {
+                      console.log(xhr.responseText);
+                  }
+              });
+          }
+      });
+  
+      function resetChart() {
+          const ctx = document.getElementById('ReportChart');
+          ctx.innerHTML = ''; // Clear the chart canvas
+  
+          // Reset the rest of the elements
+          document.getElementById("get_project_name").innerHTML = '';
+          document.getElementById("total_share_value").innerHTML = '';
+          document.getElementById("total_investment").innerHTML = '';
+          document.getElementById("total_investors").innerHTML = '';
+          document.getElementById("total_share_selled").innerHTML = '';
+          document.getElementById("total_share_available").innerHTML = '';
+  
+          document.getElementById("get_project_name_exp").innerHTML = '';
+          document.getElementById("total_share_value_exp").innerHTML = '';
+          document.getElementById("total_expense").innerHTML = '';
+          document.getElementById("other_expense").innerHTML = '';
+          document.getElementById("expense_count").innerHTML = '';
+          document.getElementById("total_expense_value").innerHTML = '';
+  
+          document.getElementById("get_project_name_sale").innerHTML = '';
+          document.getElementById("total_share_value_sale").innerHTML = '';
+          document.getElementById("total_sale").innerHTML = '';
+          document.getElementById("sale_count").innerHTML = '';
+          document.getElementById("total_unit_sale").innerHTML = '';
+
+          document.getElementById("get_project_name_profit").innerHTML = '';
+          document.getElementById("total_investment_profit").innerHTML = '';
+          document.getElementById("total_expense_profit").innerHTML = '';
+          document.getElementById("company_expense").innerHTML = '';
+          document.getElementById("total_sales_profit").innerHTML = '';
+          document.getElementById("total_profit").innerHTML = '';
+          document.getElementById("profit_presentage").innerHTML = '';
+          document.getElementById("Actual_investment").innerHTML = '';
+
+      }
+  
+      function updateChart(data) {
+          const ctx = document.getElementById('ReportChart');
+  
+          document.getElementById("get_project_name").innerHTML = data.project_name;
+          document.getElementById("total_share_value").innerHTML = "₹"+" "+ data.total_share_value + " INR";
+          document.getElementById("total_investment").innerHTML = "₹"+" "+ data.total_invesment + " INR";
+          document.getElementById("total_investors").innerHTML = data.investors_count;
+          document.getElementById("total_share_selled").innerHTML = data.total_share_selled;
+          document.getElementById("total_share_available").innerHTML = data.total_share_available;
+  
+          document.getElementById("get_project_name_exp").innerHTML = data.get_project_name_exp;
+          document.getElementById("total_share_value_exp").innerHTML ="₹"+" "+  data.total_share_value_exp + " INR";
+          document.getElementById("total_expense").innerHTML ="₹"+" "+  data.total_expense + " INR";
+          document.getElementById("other_expense").innerHTML = "₹"+" "+ data.other_expense+ " INR";
+          document.getElementById("expense_count").innerHTML = data.expense_count;
+          var total_expense_chart = data.total_expense;
+  
+          document.getElementById("get_project_name_sale").innerHTML = data.get_project_name_sale;
+          document.getElementById("total_share_value_sale").innerHTML = "₹"+" "+ data.total_share_value_sale + " INR";
+          document.getElementById("total_sale").innerHTML = "₹"+" "+ data.total_sale + " INR";
+          document.getElementById("sale_count").innerHTML = data.sale_count;
+          document.getElementById("total_unit_sale").innerHTML = data.total_unit_sale;
+          var Company_share=0;
+          var unused_shhare=0;
+          var un_exp=0;
+
+
+          if (data.total_expense > data.other_expense){
+            Company_share=(data.total_expense-data.other_expense)
+          }
+          if (data.total_expense < data.other_expense){
+            unused_shhare=(data.other_expense-data.total_expense)
+            un_exp=unused_shhare;
+          }
+          if (data.total_expense < data.other_expense){
+            Company_share=0;
+          }
+
+          var totalInvestment = data.total_invesment; 
+          if (totalInvestment == data.total_share_value ) {
+            var totalSales = data.total_sale; 
+            var totalExpenses = data.total_expense;
+            var temp_profit = totalSales - (totalInvestment);
+            var profit = temp_profit-Company_share;
+            var actul_inves=data.project_value+totalExpenses;
+           
+            if (un_exp>0){
+              document.getElementById("unused_shhare").innerHTML="₹"+" "+un_exp+ " INR";
+              temp_profit=totalSales-actul_inves;
+              profit=temp_profit;
+
+            }
+          
+            else{
+              document.getElementById("unused_shhare").innerHTML="₹"+0+ " INR";
+            }
+            var profitPercentage = (profit / totalInvestment) * 100;
+            var roundedProfitPercentage = profitPercentage.toFixed(2);
+            var correct_profit_percentage = "";
+            if (roundedProfitPercentage < 0) {
+                correct_profit_percentage = "<i class='bx bx-trending-down' style='color:#e21010'  ></i>" + roundedProfitPercentage + " %";
+            }
+            else {
+                correct_profit_percentage = "<i class='bx bx-trending-up' style='color:#2ce81b'  ></i>" + roundedProfitPercentage + " %";
+            }
+            if(profit>0){
+              document.getElementById("total_profit").innerHTML = "₹"+" "+ profit + " INR";
+              document.getElementById("total_profit_name").innerHTML = "Profit";
+            }
+            if (profit<0){
+              document.getElementById("total_profit").innerHTML = "₹"+" "+ profit + " INR";
+              document.getElementById("total_profit_name").innerHTML = "Loss";
+            }
+            document.getElementById("get_project_name_profit").innerHTML = data.get_project_name_exp;
+            document.getElementById("total_investment_profit").innerHTML = "₹"+" "+ data.total_invesment + " INR";
+            document.getElementById("Actual_investment").innerHTML = "₹"+" "+ actul_inves + " INR";;
+
+            document.getElementById("total_expense_profit").innerHTML = "₹"+" "+ totalExpenses + " INR";
+            document.getElementById("company_expense").innerHTML = "₹"+" "+ Company_share + " INR";
+            document.getElementById("total_sales_profit").innerHTML = "₹"+" "+ totalSales + " INR";
+         
+
+              document.getElementById("profit_presentage").innerHTML = correct_profit_percentage;
+
+           
+
+
+        }
+
+        if (totalInvestment+1 == data.total_share_value ) {
+          var totalSales = data.total_sale; 
+          var totalExpenses = data.total_expense;
+          var temp_profit = totalSales - (totalInvestment+1);
+          var profit = temp_profit-Company_share;
+          
+          if (un_exp>0){
+            document.getElementById("unused_shhare").innerHTML="₹"+" "+un_exp+ " INR";
+          }
+          else{
+            document.getElementById("unused_shhare").innerHTML="₹"+0+ " INR";
+          }
+          var profitPercentage = (profit / totalInvestment) * 100;
+          var roundedProfitPercentage = profitPercentage.toFixed(2);
+          var correct_profit_percentage = "";
+          if (roundedProfitPercentage < 0) {
+              correct_profit_percentage = "<i class='bx bx-trending-down' style='color:#e21010'  ></i>" + roundedProfitPercentage + " %";
+          }
+          else {
+              correct_profit_percentage = "<i class='bx bx-trending-up' style='color:#2ce81b'  ></i>" + roundedProfitPercentage + " %";
+          }
+          if(profit>0){
+            document.getElementById("total_profit").innerHTML = "₹"+" "+ profit + " INR";
+            document.getElementById("total_profit_name").innerHTML = "Profit";
+          }
+          if (profit<0){
+            document.getElementById("total_profit").innerHTML = "₹"+" "+ profit + " INR";
+            document.getElementById("total_profit_name").innerHTML = "Loss";
+          }
+          plus_one= data.total_invesment+1;
+          document.getElementById("get_project_name_profit").innerHTML = data.get_project_name_exp;
+          document.getElementById("total_investment_profit").innerHTML = "₹"+" "+ plus_one+ " INR";
+          document.getElementById("total_expense_profit").innerHTML = "₹"+" "+ totalExpenses + " INR";
+          document.getElementById("company_expense").innerHTML = "₹"+" "+ Company_share + " INR";
+          document.getElementById("total_sales_profit").innerHTML = "₹"+" "+ totalSales + " INR";
+       
+
+            document.getElementById("profit_presentage").innerHTML = correct_profit_percentage;
+      }
+       
+  
+          chart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: ['Investment', 'Expense', 'Sales', 'Profit'],
+                  datasets: [{
+                      label: '# of Project Report',
+                      data: [(data.project_value+data.total_expense), total_expense_chart, data.total_sale, profit],
+                      backgroundColor: 'rgba(231, 231, 255, 0.7)',
+                      borderColor: 'rgba(105, 108, 255, 1)',
+                      borderWidth: 2
+                  }]
+              },
+              options: {
+                  scales: {
+                      y: {
+                          beginAtZero: true
+                      }
+                  }
+              }
+          });
+      }
+  });
+  
+
+
+
+
+
+    $(document).ready(function() {
+      $('#project-table').DataTable({
+          responsive: true,
+          
+          language: {
+            search: "",
+            searchPlaceholder: "Search...",
+          },
+          
+      });
+      $('#project-table_filter input[type="search"]').addClass('form-control');
+      $('#project-table_filter input[type="search"]').attr('placeholder', 'Search...');
+      $('#project-table_filter input[type="search"]').attr('aria-label', 'Search...')
+
+    });
+   
+   
+    $(function () {
+      var loadForm = function () {
+        var btn = $(this);
+        $.ajax({
+          url: btn.attr("data-url"),
+          type: "get",
+          dataType: "json",
+          beforeSend: function () {
+            $("#modal-project").modal("show");
+          },
+          success: function (data) {
+            $("#modal-project .modal-content").html(data.html_form);
+          },
+        });
+      };
+
+      var saveForm = function () {
+        var form = $(this);
+        $.ajax({
+          url: form.attr("action"),
+          data: form.serialize(),
+          type: form.attr("method"),
+          dataType: "json",
+          success: function (data) {
+            if (data.form_is_valid) {
+              if (data.add){
+                Swal.fire(
+                  'Added!',
+                  'Sales Has Been Added.',
+                  'success'
+                ).then(() => {
+                  $("#modal-project").modal("hide");
+                  location.reload(); 
+                });
+              }
+              if (data.update1){
+                Swal.fire(
+                  'Approved!',
+                  'First Approval Has Been Provided.',
+                  'success'
+                ).then(() => {
+                  $("#modal-project").modal("hide");
+                  location.reload(); 
+                });
+              }
+              if (data.update2){
+                Swal.fire(
+                  'Approved!',
+                  'Second Approval Has Been Provided.',
+                  'success'
+                ).then(() => {
+                  $("#modal-project").modal("hide");
+                  location.reload(); 
+                });
+              }
+              if (data.Updated) {
+                Swal.fire(
+                  'Updated!',
+                  'Data Has Been Updated.',
+                  'success'
+                ).then(() => {
+                  $("#modal-project").modal("hide");
+                  location.reload(); 
+                });
+              }
+
+             
+            } else {
+              $("#modal-project .modal-content").html(data.html_form);
+            }
+          },
+        });
+        return false;
+      };
+
+    
+        $(document).on('click', '.js-delete-data', function() {
+          var id = $(this).data('id');
+          var csrf_token = $('input[name="csrfmiddlewaretoken"]').val(); 
+      
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this data!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              $.ajax({
+                url: '/delete_project_profit/' + id + '/',
+                type: 'DELETE',
+                headers: { 'X-CSRFToken': csrf_token }, // Add the CSRF token to the request headers
+                success: function() {
+                  Swal.fire(
+                    'Deleted!',
+                    'The data has been deleted.',
+                    'success'
+                  ).then(() => {
+                    location.reload(); // Reload the page after successful deletion
+                  });
+                },
+                error: function() {
+                  Swal.fire(
+                    'Error!',
+                    'An error occurred while deleting the data.',
+                    'error'
+                  );
+                }
+              });
+            }
+          });
+        });
+      
+        $(document).ready(function() {
+          $('#modal-project').on('hidden.bs.modal', function() {
+            location.reload();
+          });
+        });
+        
+
+      $(".project_open_form").click(loadForm);
+      $("#modal-project").on("submit", ".project-form-reg", saveForm);
+      $("#project-table").on("click", ".project_exp_view_js", loadForm);
+
+      $("#project-table").on("click", ".project_edit_js", loadForm);
+      $("#modal-project").on("submit", ".project_up_form", saveForm);
+
+     
+    });
+  </script>
+
+</div>
+
+    {% endblock content %}
+  

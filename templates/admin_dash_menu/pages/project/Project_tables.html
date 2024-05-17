@@ -1,0 +1,417 @@
+
+{% extends 'admin_dash_menu/pages/admin_dash.html' %}
+{% block title %}
+Project | {{name}}
+
+{% endblock title %}
+{% block content %}
+<style>
+  .disabled-row {
+    pointer-events: none;
+    opacity: 0.5; 
+  }
+  .sub_title{
+    color: #64768A;
+  }
+  .excel:hover{
+    background-color: #4CAF50;
+    color: black;
+  }
+  .csv:hover{
+    background-color: yellow;
+    color: black;
+  }
+  .pdf:hover{
+    background-color: #ce0d11;
+    color: black;
+  }
+.sub_title:hover{
+  color: #696CFF;
+}
+.dataTables_length{
+  padding-top: 20px;
+  padding-left: 20px;
+
+}
+.dataTables_info{
+  padding: 20px;
+}
+.dataTables_filter{
+  margin-right:80px;
+}
+.dataTables_paginate {
+  padding-right: 30px;
+}
+</style>
+<div class="card m-3">
+<div class="card">
+  <div class="row">
+    <div class="col-md-6">
+      <strong>
+        <h4 class="card-header">
+          <b>
+            Project
+          </b>
+          <br>
+          <span class="" style="font-size: 16px" > <a href="{% url 'base' %}" class="sub_title" title="Dashboard"> Dashboard</a>/Project</span>
+        </h4>
+      </strong>
+    </div>
+    <div class="col-md-3 mt-3">
+     
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary">Download Data</button>
+      <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="visually-hidden"> </span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item excel" href="" target="_blank" id="excel"><i class='bx bx-file'></i>Excel</a></li>
+        <li><a class="dropdown-item csv" href=""  id="csv"><i class='bx bxs-file'></i>CSV</a></li>
+        <li><a class="dropdown-item pdf" href=""  id="pdf"><i class='bx bxs-file'></i>PDf</a></li>
+
+        </ul>
+    </div>
+    <script>
+        $(document).ready(function() {
+        $('#excel').on('click', function(e) {
+            var excel = $('#excel');
+            excel.attr('href', "/download_data_project_all/xls/");
+        });
+    });
+
+    $(document).ready(function() {
+      $('#csv').on('click', function(e) {
+          var csv = $('#csv');
+          csv.attr('href', "/download_data_project_all/csv/");
+      });
+  });
+  $(document).ready(function() {
+    $('#pdf').on('click', function(e) {
+        var pdf = $('#pdf');
+        pdf.attr('href', "/download_data_project_all/pdf/");
+    });
+});
+    </script>
+    </div>
+
+
+    
+    {% if staff %}
+      {% if project_per.add %}
+        <div class="col-md-3 mt-3">
+          <button
+            type="button"
+            class="btn btn-primary project_open_form"
+            data-url="{% url 'project_create' %}"
+          >
+          <i class='bx bx-customize'></i>
+            Add New
+          </button>
+        </div>
+      {% endif %}
+      {% else %} 
+      <div class="col-md-3 mt-3">
+        <button
+          type="button"
+          class="btn btn-primary project_open_form"
+          data-url="{% url 'project_create' %}"
+        >
+        <i class='bx bx-customize'></i>
+          Add New
+        </button>
+      </div>
+      {% endif %}
+
+   
+    
+        
+
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-hover" id="project-table">
+      <thead>
+        <tr>
+            <th>project id </th>
+            <th>project name</th>
+            <th>Project value</th>
+            <th>Kickoff date</th>
+            <th>Active Status</th>
+            <th class="text-center">Actions</th>
+
+            
+       
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        {% if my_model_instances %}
+
+        {% for instance in my_model_instances %}
+        <tr>
+
+          <td>{{ forloop.counter }}</td>
+          
+          <td style="cursor: pointer;">
+            <u><a
+              class="project_view_js "
+              data-url="{% url 'view_project'  instance.pk  %}"
+            >
+          {{ instance.project_name }}
+            </a></u></td>
+          <td>{{ instance.Project_value }}</td>
+          <td>{{ instance.Kickoff_date }}</td>
+          <td>
+          {% if instance.status == True %}
+          <i class='bx bxs-badge-check' style="color: green;"></i>Active
+            {% else %}
+            <i class='bx bx-error-circle' style='color:#c10c0f'  ></i>In Active
+          {% endif %}
+          </td>
+          <td>
+
+            <div class="row">
+            <div class="col-md-4">
+              {% if staff %}
+                {% if project_per.view %}
+                  <a
+                  type="button"
+                  class="btn btn-sm project_view_js "
+                  data-url="{% url 'view_project'  instance.pk  %}"
+                >
+                <i class='bx bx-show' style='color:#11e3f3'  ></i>
+                </a>
+            {% endif %}
+            {% else %} 
+
+            <a
+            type="button"
+            class="btn btn-sm project_view_js "
+            data-url="{% url 'view_project'  instance.pk  %}"
+          >
+          <i class='bx bx-show' style='color:#11e3f3'  ></i>
+          </a>
+          {% endif %}
+        </div> 
+
+            
+
+              <div class="col-md-4">
+                {% if staff %}
+                {% if project_per.edit %}
+          
+                <button
+                type="button"
+                class="btn btn-sm project_edit_js"
+                data-url="{% url 'project_update'  instance.pk  %}"
+              >
+              <i class='bx bx-edit-alt' style='color:#2bdc19'  ></i>
+            </button>
+            {% endif %}
+              {% else %} 
+              <button
+              type="button"
+              class="btn btn-sm project_edit_js"
+              data-url="{% url 'project_update'  instance.pk  %}"
+            >
+            <i class='bx bx-edit-alt' style='color:#2bdc19'  ></i>
+            </button>
+              {% endif %}
+
+              </div>
+              <div class="col-md-4">
+                {% if staff %}
+                {% if project_per.can_delete %}
+                <form>
+                  {% csrf_token %}
+                 <button
+                 type="button"
+                 class="btn btn-sm  js-delete-data"
+                 data-id="{{  instance.pk  }}">
+                 <i class='bx bx-trash' style='color:#ce0d11'  ></i>
+                </button>
+              </form>
+              {% endif %}
+              {% else %} 
+              <form>
+                {% csrf_token %}
+               <button
+               type="button"
+               class="btn btn-sm  js-delete-data"
+               data-id="{{  instance.pk  }}">
+               <i class='bx bx-trash' style='color:#ce0d11'  ></i>
+              </button>
+            </form>
+              {% endif %}
+
+
+              </div>
+              </div>
+
+              
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    
+        
+
+
+      {% endif %}
+    </table>
+   
+</div>
+</div>
+<div id="snackbar"></div>
+
+<div class="modal fade" id="modal-project">
+  <div class="modal-dialog  modal-lg">
+    <div class="modal-content"></div>
+  </div>
+
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  
+  <script>
+
+    $(document).ready(function() {
+      $('#project-table').DataTable({
+          responsive: true,
+          
+          language: {
+            search: "",
+            searchPlaceholder: "Search...",
+          },
+          
+      });
+      $('#project-table_filter input[type="search"]').addClass('form-control');
+      $('#project-table_filter input[type="search"]').attr('placeholder', 'Search...');
+      $('#project-table_filter input[type="search"]').attr('aria-label', 'Search...')
+
+    });
+   
+    $(function () {
+      var loadForm = function () {
+        var btn = $(this);
+        $.ajax({
+          url: btn.attr("data-url"),
+          type: "get",
+          dataType: "json",
+          beforeSend: function () {
+            $("#modal-project").modal("show");
+          },
+          success: function (data) {
+            $("#modal-project .modal-content").html(data.html_form);
+          },
+        });
+      };
+
+      var saveForm = function () {
+        var form = $(this);
+        $.ajax({
+          url: form.attr("action"),
+          data: form.serialize(),
+          type: form.attr("method"),
+          dataType: "json",
+          success: function (data) {
+            if (data.form_is_valid) {
+              if (data.update){
+                Swal.fire(
+                  'Updated!',
+                  'Your Details Have Been Updated.',
+                  'success'
+                ).then(() => {
+                  $("#modal-project").modal("hide");
+                  location.reload(); 
+    
+                });
+               
+              }
+              if (data.add){
+                Swal.fire(
+                  'Added!',
+                  'Your Details Have Been Added.',
+                  'success'
+                ).then(() => {
+                  $("#modal-project").modal("hide");
+                  location.reload(); 
+                });
+              }
+             
+             
+            }
+            
+            if (data.error_message) {
+              snackbar_show()
+              $("#snackbar").html("Project Name already exists");
+            }
+          },
+         
+        });
+        return false;
+      };
+
+    
+        $(document).on('click', '.js-delete-data', function() {
+          var id = $(this).data('id');
+          var csrf_token = $('input[name="csrfmiddlewaretoken"]').val(); 
+      
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this data!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              $.ajax({
+                url: '/detele_project/' + id + '/',
+                type: 'DELETE',
+                headers: { 'X-CSRFToken': csrf_token }, // Add the CSRF token to the request headers
+                success: function() {
+                  Swal.fire(
+                    'Deleted!',
+                    'The data has been deleted.',
+                    'success'
+                  ).then(() => {
+                    location.reload(); // Reload the page after successful deletion
+                  });
+                },
+                error: function(xhr, status, error) {
+                  var response = JSON.parse(xhr.responseText);
+                  $("#modal-project").modal("hide");
+                  swal.fire({
+                      title: 'Error!',
+                      text: response.error,
+                      icon: 'error'
+                  });
+                }
+              });
+            }
+          });
+        });
+      
+        $(document).ready(function() {
+          $('#modal-project').on('hidden.bs.modal', function() {
+            location.reload();
+          });
+        });
+        
+
+      $(".project_open_form").click(loadForm);
+      $("#modal-project").on("submit", ".project-form-reg", saveForm);
+
+      $("#project-table").on("click", ".project_edit_js", loadForm);
+      $("#project-table").on("click", ".project_view_js", loadForm);
+
+      $("#modal-project").on("submit", ".project_up_form", saveForm);
+
+     
+    });
+  </script>
+</div>
+ 
+    {% endblock content %}
+  
